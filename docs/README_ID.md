@@ -18,7 +18,7 @@ dan setiap potongan diperiksa terhadap rekaman itu sebelum lanjut. rust-anything
   <a href="https://crates.io/crates/rust-anything"><img src="https://img.shields.io/crates/v/rust-anything?color=E2862A&label=crates.io" alt="crates.io version"></a>
   <a href="https://www.npmjs.com/package/rust-anything"><img src="https://img.shields.io/npm/v/rust-anything?color=E2862A&label=npm" alt="npm version"></a>
   <br>
-  <a href="https://coderabbit.link/erkamyaman"><img src="https://img.shields.io/coderabbit/prs/github/erkamyaman/rust-anything?labelColor=171717&color=FF570A&label=Reviewed+by+CodeRabbit" alt="Pull requests reviewed by CodeRabbit"></a>
+  <a href="https://coderabbit.link/er-kam"><img src="https://img.shields.io/coderabbit/prs/github/erkamyaman/rust-anything?labelColor=171717&color=FF570A&label=Reviewed+by+CodeRabbit" alt="Pull requests reviewed by CodeRabbit"></a>
   <a href="https://github.com/rust-unofficial/awesome-rust#development-tools"><img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Rust"></a>
   <a href="https://github.com/AIshihzong/awesome-reverse-engineer-anything"><img src="https://img.shields.io/badge/Featured%20in-Awesome%20REA-f0b429" alt="Featured in Awesome REA"></a>
   <a href="https://github.com/erkamyaman/rust-anything"><img src="https://img.shields.io/github/stars/erkamyaman/rust-anything?style=social" alt="GitHub stars"></a>
@@ -33,7 +33,7 @@ dan setiap potongan diperiksa terhadap rekaman itu sebelum lanjut. rust-anything
 
 <p align="center"><b><a href="#mulai-cepat">Instal</a></b> · <a href="https://github.com/erkamyaman/rust-anything/releases">Rilis</a> · <a href="#mulai-cepat">Plugin Claude Code</a> · <a href="https://registry.modelcontextprotocol.io/v0.1/servers?search=rust-anything">MCP Registry</a> · <a href="real-world.md">Port di dunia nyata</a> · <a href="faq.md#faq">FAQ</a><br>
 <sub><a href="#bahasa">Bahasa</a> · <a href="how-it-works.md#how-it-works">Cara kerjanya</a> · <a href="whole-apps.md#port-a-whole-app">Aplikasi utuh</a> · <a href="#sponsor">Sponsor</a> · <a href="../LICENSE">MIT</a></sub><br>
-Dibuat di Türkiye 🇹🇷 oleh <a href="https://github.com/erkamyaman">erKam Yaman</a> · <a href="https://github.com/sponsors/erkamyaman">❤️ Sponsori saya</a> · Disponsori oleh <a href="https://coderabbit.link/erkamyaman"><img src="assets/brands/coderabbit.png" width="22" height="22" align="absmiddle" alt=""> <b>CodeRabbit</b></a></p>
+Dibuat di Türkiye 🇹🇷 oleh <a href="https://github.com/erkamyaman">erKam Yaman</a> · <a href="https://github.com/sponsors/erkamyaman">❤️ Sponsori saya</a> · Disponsori oleh <a href="https://coderabbit.link/er-kam"><img src="assets/brands/coderabbit.png" width="22" height="22" align="absmiddle" alt=""> <b>CodeRabbit</b></a></p>
 
 <p align="center">Proyek lain dari pembuatnya: <a href="https://github.com/erkamyaman/safe-anything"><b>safe-anything</b></a>, pemindai keamanan 100% Rust untuk kode, secret, konfigurasi, dan setup agen AI. Temukan celahnya sebelum orang lain menemukannya.</p>
 
@@ -362,7 +362,7 @@ apa pun: biarkan satu shell tetap terbuka dan kirimkan perintah ke sana (lihat [
 <p align="center"><sub>Keamanan Anda yang utama: sponsor mendapat logo dan tautan di sini, tidak lebih. Tidak ada rekomendasi berbayar dan tidak ada panduan setup untuk reseller API AI pihak ketiga, jadi tidak ada apa pun di sini yang mengarahkan kode, key, atau data Anda ke tempat yang tidak Anda pilih.</sub></p>
 
 <p align="center">
-  <a href="https://coderabbit.link/erkamyaman">
+  <a href="https://coderabbit.link/er-kam">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/company-dark.svg">
       <img src="assets/sponsors/company-light.svg" width="800" alt="Company sponsor: CodeRabbit">
