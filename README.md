@@ -303,9 +303,17 @@ For PHP, `analyze` plans a PHP app (Composer packages and PSR-4 autoloading, ris
 such as loose comparison and integer overflow into floats, Composer packages mapped to crates),
 and a PHP CLI or server can be recorded, replayed and put behind a Rust front door. A unit's
 top-level functions with scalar, string, list and assoc-array parameters are bridged through PHP's
-FFI extension (`php` with `ext-ffi`, on by default for the CLI): require the generated
-`php/<crate>.php` in place of the original file once `diff` passes. Each call crosses as JSON, about
-1 µs, so `bench` shows small functions slower than PHP; there is no `shadow` for PHP yet
+FFI extension (`php` with `ext-ffi`, on by default for the CLI): once `diff` passes, require the
+generated `php/<crate>.php` (the name is the crate with `-` written as `_`, so `foo-rs` is
+`php/foo_rs.php`) where the app required the original, and leave both files where they are: the
+wrapper loads its native library relative to its own folder, so moving it breaks the load. The wrapper
+declares each bridged function unconditionally, with no `function_exists` guard, so it replaces the
+original file rather than joining it. Whatever else that file holds cannot come along: classes,
+`public static` methods, functions the bridge keeps in PHP (a `callable` or `Closure` parameter, say),
+and top-level statements such as `define('FEATURE_ENABLED', true)` are not in the wrapper, and requiring
+both files redeclares the bridged functions. Keep those in a file that stays required.
+Each
+call crosses as JSON, about 1 µs, so `bench` shows small functions slower than PHP; there is no `shadow` for PHP yet
 ([issue #200](https://github.com/erkamyaman/rust-anything/issues/200)).
 
 C# works the same way: `analyze` reads `.csproj` projects and their NuGet packages
@@ -313,8 +321,11 @@ C# works the same way: `analyze` reads `.csproj` projects and their NuGet packag
 (`decimal`, `dynamic`, LINQ's deferred queries, `Task`, `lock`, reflection). A C# CLI or ASP.NET
 server can be recorded, replayed and put behind a Rust front door. A unit's public static methods
 with scalar, string, array, list, dictionary and record or plain-class parameters are bridged
-through P/Invoke (`dotnet` on PATH to record and diff): call the generated `<namespace>.Rust`
-classes, or alias them with `using`, once `diff` passes. Each call crosses as JSON, about 1-3 µs,
+through P/Invoke (`dotnet` on PATH to record and diff): once `diff` passes, compile the generated
+`cs/` wrapper (one file named after the crate: `foo-rs` gives `cs/FooRs.cs`) into the project and keep
+the built native library next to the app, then call
+the generated classes in the `<namespace>.Rust` namespace (`Acme.Text.Slug.Slugify` becomes
+`Acme.Text.Rust.Slug.Slugify`), or alias them with `using`. Each call crosses as JSON, about 1-3 µs,
 so `bench` shows small methods slower than .NET; there is no `shadow` for C# yet
 ([issue #200](https://github.com/erkamyaman/rust-anything/issues/200)).
 
