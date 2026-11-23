@@ -47,6 +47,25 @@ fn driver(crate_dir: &Path) -> Result<PathBuf> {
     Ok(path)
 }
 
+/// The unit's source files, written as a JSON list for the driver (a file, not an argument: any path
+/// survives, and a large unit cannot outgrow the command line): their packages stay importable during
+/// `diff`.
+fn source_files(crate_dir: &Path, manifest: &Manifest) -> Result<PathBuf> {
+    let files: std::collections::BTreeSet<&str> = manifest
+        .exports
+        .iter()
+        .map(|f| f.file.as_str())
+        .chain(manifest.classes.iter().map(|c| c.file.as_str()))
+        .collect();
+    let paths: Vec<String> = files
+        .into_iter()
+        .map(|f| manifest.root.join(f).to_string_lossy().into_owned())
+        .collect();
+    let path = crate_dir.join(WORK_DIR).join("diff-sources.json");
+    std::fs::write(&path, serde_json::to_string(&paths)?)?;
+    Ok(path)
+}
+
 /// The folder the wrapper package lives in, and the package name.
 pub fn package(crate_dir: &Path, manifest: &Manifest) -> (PathBuf, String) {
     (crate_dir.join("python"), manifest.lib_name())
@@ -138,6 +157,7 @@ pub fn diff(crate_dir: &Path, manifest: &Manifest, ignore_key_order: bool) -> Re
         .arg(dir)
         .arg(name)
         .arg(if ignore_key_order { "sort" } else { "keep" })
+        .arg(source_files(crate_dir, manifest)?)
         .env("PYTHONHASHSEED", "0")
         // Recording must not leave `__pycache__` folders in the source tree.
         .env("PYTHONDONTWRITEBYTECODE", "1");
@@ -364,8 +384,8 @@ def canon(v, sort):
     return json.dumps(v, sort_keys=sort, ensure_ascii=False)
 
 
-def load(path):
-    """Imports a source file with its package context, so relative imports work."""
+def import_root(path):
+    """The folder a source file is imported from, with its package context, and its module name."""
     path = os.path.abspath(path)
     directory, filename = os.path.split(path)
     parts = [os.path.splitext(filename)[0]]
@@ -374,9 +394,15 @@ def load(path):
         parts.insert(0, package)
     if parts[-1] == "__init__":
         parts.pop()
+    return directory, ".".join(parts)
+
+
+def load(path):
+    """Imports a source file with its package context, so relative imports work."""
+    directory, module = import_root(path)
     if directory not in sys.path:
         sys.path.insert(0, directory)
-    return importlib.import_module(".".join(parts))
+    return importlib.import_module(module)
 
 
 def error_text(e):
@@ -486,8 +512,15 @@ def same(expected, actual, sort):
     return canon(expected.get("ok"), sort) == canon(actual.get("ok"), sort)
 
 
-def diff(cases_path, out_path, package_dir, name, key_order):
+def diff(cases_path, out_path, package_dir, name, key_order, sources_path=None):
     mod = native(package_dir, name)
+    # The original's packages stay importable, as they are in the app: a port raises the
+    # original's own exception classes by importing them (`Err("pkg.errors.Bad: ...")`).
+    sources = json.load(open(sources_path, encoding="utf-8")) if sources_path else []
+    for source in sources:
+        directory = import_root(source)[0]
+        if directory not in sys.path:
+            sys.path.insert(0, directory)
     sort = key_order == "sort"
     summary = {"total": 0, "passed": 0, "failed": 0, "missing": [], "mismatches": []}
     for index, line in enumerate(open(cases_path, encoding="utf-8")):

@@ -11,6 +11,13 @@
   such a function and, when two hot functions share the name, takes the one that can cross; the
   functions `go` leaves in the original keep `bridge`'s own reason in `rust-anything.json`
   instead of "not hot in the profiled run"; `profile` reads and judges each hot file once.
+- Python ports can raise the original's own exception classes: `Err("sqlparse.exceptions.SQLParseError: msg")`
+  imports `sqlparse.exceptions` and raises `SQLParseError("msg")`, and any built-in exception goes by
+  its name (`Err("FileNotFoundError: msg")`), not only the twelve the bindings matched before. A
+  name that is no `Exception` subclass still gives `ValueError` with the whole message. `diff`
+  compares exception classes, so a library with its own error class could not match before;
+  `diff` now keeps the original's packages importable (put first on `sys.path` as `record` does,
+  not imported), as they are in the app.
 - `bridge` no longer refuses a Java, Kotlin or C# file because of an overloaded method. Every
   overload of a name is kept in the original (the bindings name each export by its name
   alone), but the duplicate-name check counted each kept overload, so the unit failed with "`pad`
