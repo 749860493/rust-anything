@@ -16,6 +16,15 @@ and record its state after. Replay compares those too, so a rewrite that returns
 sends an email twice, or writes different rows, fails the case. See
 [Side effects](whole-apps.md#side-effects-email-webhooks-and-databases).
 
+**What happens when the Rust code fails?** It comes back as a normal error in the caller's
+language, never a crash. A port returns `Result`: `Err("TypeError: message")` becomes that
+exception in Python, Ruby and Java, a thrown error in JavaScript and an `error` value in Go, and a
+Python port can raise the original's own class (`Err("mypkg.errors.ParseError: message")`). If
+the Rust code panics anyway, the bridge catches it at the boundary and returns an error ("Rust
+panic: ..."). `gate` fails a port that uses `unwrap`, `expect` or `panic!` where the original
+throws, and needs a recorded failing case for every error path, so errors are checked against the
+original like any other output.
+
 **Will my app's API change?** No. Callers import the same functions (or the shadow module, which
 runs both and returns the original's result while you build confidence).
 
