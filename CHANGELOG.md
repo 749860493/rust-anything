@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.4.0 (2026-11-23)
+
 - PowerShell units (#209). `analyze` reads `.psm1` modules, `.ps1` scripts and `.psd1` manifests,
   follows `Import-Module`, `using module` and dot-sourced files, and adds notes on implicit output
   and array unrolling, case-insensitive comparison and implicit conversions. `bridge` takes the
@@ -64,6 +66,23 @@
   stops counting it as bridgeable, and it tells overloads apart by class: `Json.Parse` and
   `Xml.Parse` in one file are no longer called overloads (`bridge` still refuses them as one name
   defined twice). The same overloaded name in two files of one unit is still refused.
+- Fixes from new contributors, each with a test:
+  - `/*` inside a `//` comment no longer hides the Gradle dependencies after it (#222 by @XiaoBinGan).
+  - The second `<script>` block of a `.vue`, `.svelte` or `.astro` file keeps its line numbers (#259 by @XiaoBinGan).
+  - A huge `RUST_ANYTHING_COMMAND_TIMEOUT`, `RUST_ANYTHING_CASE_TIMEOUT` or `fuzz --time` is rejected or ignored
+    instead of panicking (#254, #278 by @XiaoBinGan).
+  - The coverage line never rounds 999 of 1000 lines up to 100% (#283 by @XiaoBinGan).
+  - The card and `clean` print values just under a unit boundary in the next unit, such as `1.0 ms`, not
+    `1000.0 µs` (#221, #253 by @XiaoBinGan).
+  - Plans and `record` say "1 line", "1 unit", "1 case" and "1 export" (#282 by @XiaoBinGan, #284 by @tridev-tej).
+  - A wasm port switches on through its wrapper (#205 by @XiaoBinGan), and a Python float subclass is recorded as its
+    float value (#203 by @fullfud).
+- Docs: every CLI flag and MCP parameter is described, and `--help` no longer calls the tool TypeScript-only
+  (#228, #236, #250, #258 by @XiaoBinGan); the FAQ names the two timeout variables (#230 by @Kiranpjk); CONTRIBUTING
+  lists every test file and what CI installs (#232 by @XiaoBinGan, #244 by @MikeFTV); the Spanish, Italian, French
+  and German READMEs describe the PHP and C# unit bridges (#234, #235, #251, #252, #276, #277 by @XiaoBinGan).
+- Thanks to @OnurrUgur (#206, #211, #212, #255), @fullfud (#203, #207), @XiaoBinGan, @tridev-tej, @ege-arhan (#224),
+  @Kiranpjk and @MikeFTV: 32 contributions from 7 people since 3.3.0.
 
 ## 3.3.0 (2026-11-22)
 
