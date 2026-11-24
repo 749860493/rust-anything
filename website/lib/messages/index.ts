@@ -16,6 +16,7 @@ import tt from './tt.json'
 import ug from './ug.json'
 import pt from './pt.json'
 import ar from './ar.json'
+import fa from './fa.json'
 
 export const translations: Record<string, unknown> = {
   'tr': tr,
@@ -36,4 +37,5 @@ export const translations: Record<string, unknown> = {
   'ug': ug,
   'pt': pt,
   'ar': ar,
+  'fa': fa,
 }

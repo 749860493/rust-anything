@@ -18,6 +18,7 @@ export const LOCALES = [
   { code: 'ug', name: 'ئۇيغۇرچە', lang: 'ug', rtl: true },
   { code: 'pt', name: 'Português', lang: 'pt' },
   { code: 'ar', name: 'العربية', lang: 'ar', rtl: true },
+  { code: 'fa', name: 'فارسی', lang: 'fa', rtl: true },
 ] as const
 
 export type Locale = (typeof LOCALES)[number]['code']
