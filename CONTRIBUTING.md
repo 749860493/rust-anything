@@ -132,7 +132,8 @@ the same way:
 
 ## Translate the README
 
-Translations are welcome and community-maintained. A new one:
+Translations are welcome and community-maintained. Say which language you are taking in
+[#425](https://github.com/erkamyaman/rust-anything/issues/425) so two people don't do the same one. A new one:
 
 1. Lives in `docs/README_<CODE>.md` (for example `docs/README_PT.md`); the root `README.md` stays
    English and is never renamed or replaced.
