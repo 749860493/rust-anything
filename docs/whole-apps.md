@@ -93,6 +93,13 @@ rust-anything app replay . --build "target/release/mytool"
 - Cases are [trycmd](https://docs.rs/trycmd) files in `rust/app-cases/`: `<case>.toml` (argv, env,
   exit code), `.stdin`, `.stdout`, `.stderr`, `.in/` (files in) and `.out/` (files written). Read
   and edit them by hand; a Rust test can run them with `trycmd` once the port has a binary.
+- Recording again replaces what the last recording wrote: a case it no longer writes (its input
+  was removed or renamed, or the original timed out on it) is deleted, in `http/` too. The names
+  are kept in `rust-anything.json` as `recorded`, so a case you added by hand is left in place,
+  and `app record` names it, even when an input of its name timed out. A removed case's `.in/`
+  folder stays while the `fs.base` of a case that is kept is in it or goes through it.
+  The names count only in the folder they were recorded in: after switching between a CLI and
+  `--http`, nothing is removed.
 - `app replay` runs any build against the cases, prints `passed/total`, writes
   `rust/app-cases/replay-report.md` with a diff per failing case, and exits non-zero on any
   mismatch. A build that appends to the file named by `RUST_ANYTHING_FALLBACK_LOG` (one line per

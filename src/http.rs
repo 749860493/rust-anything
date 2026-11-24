@@ -1141,6 +1141,9 @@ pub(crate) fn record(
         noise: Vec::new(),
         unstable: Vec::new(),
         timed_out: Vec::new(),
+        recorded: Vec::new(),
+        stale: Vec::new(),
+        kept: Vec::new(),
     };
     for (((name, req), (a, _, fx_a)), (b, _, fx_b)) in planned.iter().zip(one).zip(two) {
         let (Ok(a), Ok(b)) = (a, b) else {
@@ -1159,6 +1162,7 @@ pub(crate) fn record(
             fx_noise = noise;
         }
         outcome.cases += 1;
+        outcome.recorded.push(name.clone());
         if body_noise.is_some() || header_noisy || fx_noise.is_some() {
             outcome.noisy.push(name.clone());
         }
