@@ -196,10 +196,12 @@ A mesma saída não basta. Registe também o que a aplicação envia, e uma rees
 | Go | Pacote | Chamadas cgo tipadas e um protocolo binário gerado, num pacote com a API original | Um driver Go gerado, compilado como módulo independente |
 | Ruby | Ficheiro ou pasta de funções de módulo | Uma extensão magnus nos módulos originais | Um driver Ruby gerado |
 | Java | Pacote de métodos `public static` | JNI tipado e um protocolo binário gerado, em classes wrapper com os métodos originais | Um driver de reflexão gerado |
+| Kotlin | Módulo Gradle de funções de topo e métodos `@JvmStatic` | A ponte Java: JNI tipado em classes wrapper Java que chamam os métodos estáticos Kotlin compilados | Um driver de reflexão gerado, com o código Kotlin compilado por `kotlinc` |
 | PHP | Ficheiro ou pasta de funções de topo (os métodos `public static` ficam em PHP) | Um despachante JSON sobre `ext-ffi`, num ficheiro que redeclara as funções com os parâmetros originais | Um condutor PHP gerado; aplicações completas com `app record`, `app replay` e a front door, para CLIs e servidores (`php -S`) |
+| PowerShell | Módulo `.psm1` ou script `.ps1` de funções com blocos `param()` (exportadas segundo `Export-ModuleMember`) | Um despachante JSON sobre P/Invoke, declarado no carregamento com Reflection.Emit, num `.ps1` que redeclara cada função com o seu bloco `param()` original | Um condutor `pwsh` gerado (PowerShell 7.4+) |
 | C# | Ficheiro ou pasta de métodos `public static` | Um despachante JSON sobre P/Invoke, em classes `<namespace>.Rust` com os métodos originais | Um condutor de reflexão gerado, compilado com o código do projeto por `dotnet build`; aplicações completas com `app record`, `app replay` e a front door, para CLIs e servidores ASP.NET (`dotnet <app>.dll`) |
 
-Todas as linguagens, exceto C, PHP e C#, também recebem classes de processamento em lote (`--batch`): os elementos atravessam a ponte uma única vez e permanecem em Rust, e cada chamada processa todos eles em todos os núcleos.
+Todas as linguagens, exceto C, PHP, C# e PowerShell, também recebem classes de processamento em lote (`--batch`): os elementos atravessam a ponte uma única vez e permanecem em Rust, e cada chamada processa todos eles em todos os núcleos.
 
 A linguagem é detetada a partir do repositório (`go.mod`, `pom.xml`, um `.csproj` ou `.sln`, `pyproject.toml`, `Gemfile`, `composer.json`, `package.json` ou, caso contrário, os ficheiros de código-fonte mais comuns). A opção `--lang` permite substituir essa deteção. Os tipos são obtidos a partir do código-fonte: tipos de TS, anotações de Python, assinaturas de C, Go, Java e C#, tags YARD de Ruby, tipos PHP e phpdoc. Parâmetros sem tipo que são utilizados como números são inferidos como números.
 

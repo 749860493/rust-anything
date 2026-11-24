@@ -231,10 +231,12 @@ Aynı çıktı yetmez. Uygulamanın dışarı gönderdiklerini de kaydedin; iki 
 | Go | paket | orijinal API'ye sahip bir pakette tipli cgo çağrıları ve üretilmiş bir binary wire | kendi modülü olarak derlenen, üretilmiş bir Go sürücüsü |
 | Ruby | modül fonksiyonlarından oluşan dosya veya klasör | orijinal modüllerin altında bir magnus eklentisi | üretilmiş bir Ruby sürücüsü |
 | Java | `public static` metotlardan oluşan paket | orijinal metotlara sahip wrapper sınıflarda tipli JNI ve üretilmiş bir binary wire | üretilmiş bir reflection sürücüsü |
-| PHP | fonksiyonlar ve `public static` metotlardan oluşan klasör | sırada: C ABI üzerinden PHP FFI | bugün tüm uygulamalar: CLI'lar ve sunucular (`php -S`) için `app record`, `app replay` ve front door |
-| C# | `public static` metotlardan oluşan klasör | sırada: C ABI üzerinden P/Invoke | bugün tüm uygulamalar: CLI'lar ve ASP.NET sunucuları (`dotnet <app>.dll`) için `app record`, `app replay` ve front door |
+| Kotlin | üst düzey fonksiyonlar ve `@JvmStatic` metotlardan oluşan Gradle modülü | Java köprüsü: derlenmiş Kotlin statiklerini çağıran Java wrapper sınıflarında tipli JNI | Kotlin kaynakları `kotlinc` ile derlenen, üretilmiş bir reflection sürücüsü |
+| PHP | üst düzey fonksiyonlardan oluşan dosya veya klasör (`public static` metotlar PHP'de kalır) | fonksiyonları orijinal parametreleriyle yeniden tanımlayan bir dosyada, `ext-ffi` üzerinden bir JSON dağıtıcı | üretilmiş bir PHP sürücüsü; CLI'lar ve sunucular (`php -S`) için `app record`, `app replay` ve front door ile tüm uygulamalar |
+| PowerShell | `param()` bloklu fonksiyonlardan oluşan `.psm1` modülü veya `.ps1` betiği (`Export-ModuleMember`'a göre dışa aktarılır) | her fonksiyonu orijinal `param()` bloğuyla yeniden tanımlayan bir `.ps1` içinde, yükleme anında Reflection.Emit ile tanımlanan, P/Invoke üzerinden bir JSON dağıtıcı | üretilmiş bir `pwsh` sürücüsü (PowerShell 7.4+) |
+| C# | `public static` metotlardan oluşan dosya veya klasör | orijinal metotlara sahip `<namespace>.Rust` sınıflarında, P/Invoke üzerinden bir JSON dağıtıcı | projenin kaynaklarıyla birlikte `dotnet build` ile derlenen, üretilmiş bir reflection sürücüsü; CLI'lar ve ASP.NET sunucuları (`dotnet <app>.dll`) için `app record`, `app replay` ve front door ile tüm uygulamalar |
 
-C hariç her dil batch sınıfları da alır (`--batch`): öğeler köprüyü bir kez geçer ve Rust'ta kalır,
+C, PHP, C# ve PowerShell hariç her dil batch sınıfları da alır (`--batch`): öğeler köprüyü bir kez geçer ve Rust'ta kalır,
 her çağrı tüm çekirdeklerde hepsinin üzerinden çalışır.
 
 Dil, repodan tespit edilir (`go.mod`, `pom.xml`, bir `.csproj` veya `.sln`, `pyproject.toml`,

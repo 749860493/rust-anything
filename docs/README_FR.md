@@ -230,10 +230,12 @@ Une sortie identique ne suffit pas. Enregistrez aussi ce que l'application envoi
 | Go | paquet | appels cgo typés et protocole binaire généré, dans un paquet conservant l'API d'origine | un pilote Go généré, compilé comme son propre module |
 | Ruby | fichier ou dossier de fonctions de module | une extension magnus sous les modules d'origine | un pilote Ruby généré |
 | Java | paquet de méthodes `public static` | JNI typé et protocole binaire généré, dans des classes enveloppes conservant les méthodes d'origine | un pilote par réflexion généré |
-| PHP | fichier ou dossier de fonctions de premier niveau (les méthodes `public static` restent en PHP) | un répartiteur JSON sur `ext-ffi`, dans un fichier qui redéclare les fonctions avec les paramètres d'origine | applications complètes dès aujourd'hui : `app record`, `app replay` et la porte d'entrée, pour les CLI et les serveurs (`php -S`) |
-| C# | fichier ou dossier de méthodes `public static` | un répartiteur JSON sur P/Invoke, dans des classes `<namespace>.Rust` avec les méthodes d'origine | applications complètes dès aujourd'hui : `app record`, `app replay` et la porte d'entrée, pour les CLI et les serveurs ASP.NET (`dotnet <app>.dll`) |
+| Kotlin | module Gradle de fonctions de premier niveau et de méthodes `@JvmStatic` | le pont Java : JNI typé dans des classes enveloppes Java qui appellent les méthodes statiques Kotlin compilées | un pilote par réflexion généré, avec les sources Kotlin compilées par `kotlinc` |
+| PHP | fichier ou dossier de fonctions de premier niveau (les méthodes `public static` restent en PHP) | un répartiteur JSON sur `ext-ffi`, dans un fichier qui redéclare les fonctions avec les paramètres d'origine | un pilote PHP généré ; applications complètes avec `app record`, `app replay` et la porte d'entrée, pour les CLI et les serveurs (`php -S`) |
+| PowerShell | module `.psm1` ou script `.ps1` de fonctions avec des blocs `param()` (exportées selon `Export-ModuleMember`) | un répartiteur JSON sur P/Invoke, déclaré au chargement avec Reflection.Emit, dans un `.ps1` qui redéclare chaque fonction avec son bloc `param()` d'origine | un pilote `pwsh` généré (PowerShell 7.4+) |
+| C# | fichier ou dossier de méthodes `public static` | un répartiteur JSON sur P/Invoke, dans des classes `<namespace>.Rust` avec les méthodes d'origine | un pilote par réflexion généré, compilé avec les sources du projet par `dotnet build` ; applications complètes avec `app record`, `app replay` et la porte d'entrée, pour les CLI et les serveurs ASP.NET (`dotnet <app>.dll`) |
 
-Chaque langage sauf C, PHP et C# obtient également des classes de traitement par lots (`--batch`) : les éléments
+Chaque langage sauf C, PHP, C# et PowerShell obtient également des classes de traitement par lots (`--batch`) : les éléments
 traversent la frontière une seule fois et restent en Rust, et chaque appel s'exécute sur l'ensemble des
 éléments sur tous les cœurs.
 

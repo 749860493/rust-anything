@@ -232,10 +232,12 @@ Bir xil natija yetarli emas. Ilova tashqariga yuboradigan narsalarni ham yozib o
 | Go | paket | asl API'li paketda tiplangan cgo chaqiruvlari va generatsiya qilingan binary wire | o'z moduli sifatida build qilinadigan generatsiya qilingan Go drayveri |
 | Ruby | modul funksiyalaridan iborat fayl yoki papka | asl modullar ostida magnus kengaytmasi | generatsiya qilingan Ruby drayveri |
 | Java | `public static` metodlardan iborat paket | asl metodlarga ega wrapper klasslarda tiplangan JNI va generatsiya qilingan binary wire | generatsiya qilingan reflection drayveri |
-| PHP | funksiyalar va `public static` metodlardan iborat papka | navbatda: C ABI orqali PHP FFI | bugun butun ilovalar: CLI'lar va serverlar (`php -S`) uchun `app record`, `app replay` va front door |
-| C# | `public static` metodlardan iborat papka | navbatda: C ABI orqali P/Invoke | bugun butun ilovalar: CLI'lar va ASP.NET serverlari (`dotnet <app>.dll`) uchun `app record`, `app replay` va front door |
+| Kotlin | yuqori darajadagi funksiyalar va `@JvmStatic` metodlardan iborat Gradle moduli | Java ko'prigi: kompilyatsiya qilingan Kotlin static'larini chaqiradigan Java wrapper klasslarida tiplangan JNI | generatsiya qilingan reflection drayveri, Kotlin manbalari `kotlinc` bilan kompilyatsiya qilinadi |
+| PHP | yuqori darajadagi funksiyalardan iborat fayl yoki papka (`public static` metodlar PHP'da qoladi) | funksiyalarni asl parametrlari bilan qayta e'lon qiladigan faylda `ext-ffi` orqali JSON dispetcher | generatsiya qilingan PHP drayveri; CLI'lar va serverlar (`php -S`) uchun `app record`, `app replay` va front door bilan butun ilovalar |
+| PowerShell | `param()` bloklari bor funksiyalardan iborat `.psm1` moduli yoki `.ps1` skripti (`Export-ModuleMember` bo'yicha eksport qilinganlari) | yuklanish vaqtida Reflection.Emit bilan e'lon qilinadigan P/Invoke orqali JSON dispetcher, har bir funksiyani asl `param()` bloki bilan qayta e'lon qiladigan `.ps1` faylida | generatsiya qilingan `pwsh` drayveri (PowerShell 7.4+) |
+| C# | `public static` metodlardan iborat fayl yoki papka | asl metodlarga ega `<namespace>.Rust` klasslarida P/Invoke orqali JSON dispetcher | loyiha manbalari bilan birga `dotnet build` orqali kompilyatsiya qilinadigan generatsiya qilingan reflection drayveri; CLI'lar va ASP.NET serverlari (`dotnet <app>.dll`) uchun `app record`, `app replay` va front door bilan butun ilovalar |
 
-C'dan tashqari har bir til batch klasslarini ham oladi (`--batch`): elementlar ko'prikdan bir marta
+C, PHP, C# va PowerShell'dan tashqari har bir til batch klasslarini ham oladi (`--batch`): elementlar ko'prikdan bir marta
 o'tadi va Rust'da qoladi, har bir chaqiruv esa barcha yadrolarda ularning hammasi ustida ishlaydi.
 
 Til repozitoriydan aniqlanadi (`go.mod`, `pom.xml`, `.csproj` yoki `.sln`, `pyproject.toml`,

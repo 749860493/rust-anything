@@ -231,10 +231,12 @@ Birmeňzeş çykyş ýeterlik däl. Programmanyň daşaryk iberýän zatlaryny h
 | Go | paket | tipli cgo çagyryşlary we döredilen binar wire, asyl API-li paketde | döredilen Go draýweri, aýratyn modul hökmünde gurulýar |
 | Ruby | modul funksiýalaryndan ybarat faýl ýa-da bukja | asyl modullaryň aşagyndaky magnus giňeltmesi | döredilen Ruby draýweri |
 | Java | `public static` usullaryndan ybarat paket | tipli JNI we döredilen binar wire, asyl usullary bolan wrapper klaslarynda | döredilen reflection draýweri |
-| PHP | funksiýalardan we `public static` usullaryndan ybarat bukja | indiki nobatda: C ABI arkaly PHP FFI | häzir tutuş programmalar: `app record`, `app replay` we front door, CLI-ler we serwerler üçin (`php -S`) |
-| C# | `public static` usullaryndan ybarat bukja | indiki nobatda: C ABI arkaly P/Invoke | häzir tutuş programmalar: `app record`, `app replay` we front door, CLI-ler we ASP.NET serwerleri üçin (`dotnet <app>.dll`) |
+| Kotlin | ýokary derejeli funksiýalardan we `@JvmStatic` usullaryndan ybarat Gradle moduly | Java bridge-i: kompilirlenen Kotlin static-lerini çagyrýan Java wrapper klaslarynda tipli JNI | döredilen reflection draýweri, Kotlin çeşme faýllary `kotlinc` bilen kompilirlenýär |
+| PHP | ýokary derejeli funksiýalardan ybarat faýl ýa-da bukja (`public static` usullary PHP-de galýar) | `ext-ffi` arkaly JSON dispetçeri, funksiýalary asyl parametrleri bilen täzeden yglan edýän faýlda | döredilen PHP draýweri; tutuş programmalar: `app record`, `app replay` we front door, CLI-ler we serwerler üçin (`php -S`) |
+| PowerShell | `param()` bloklary bolan funksiýalardan ybarat `.psm1` moduly ýa-da `.ps1` skripti (`Export-ModuleMember` boýunça eksport edilenler) | P/Invoke arkaly JSON dispetçeri, ýüklenende Reflection.Emit bilen yglan edilýär, her funksiýany asyl `param()` bloky bilen täzeden yglan edýän `.ps1` faýlynda | döredilen `pwsh` draýweri (PowerShell 7.4+) |
+| C# | `public static` usullaryndan ybarat faýl ýa-da bukja | P/Invoke arkaly JSON dispetçeri, asyl usullary bolan `<namespace>.Rust` klaslarynda | döredilen reflection draýweri, taslamanyň çeşme faýllary bilen bilelikde `dotnet build` arkaly kompilirlenýär; tutuş programmalar: `app record`, `app replay` we front door, CLI-ler we ASP.NET serwerleri üçin (`dotnet <app>.dll`) |
 
-C-den başga her dil batch klaslaryny hem alýar (`--batch`): elementler serhetden bir gezek geçýär we
+C, PHP, C# we PowerShell-den başga her dil batch klaslaryny hem alýar (`--batch`): elementler serhetden bir gezek geçýär we
 Rust-da galýar, her çagyryş bolsa olaryň hemmesini ähli ýadrolarda işleýär.
 
 Dil repozitoriýden kesgitlenýär (`go.mod`, `pom.xml`, `.csproj` ýa-da `.sln`, `pyproject.toml`,

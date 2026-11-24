@@ -192,10 +192,12 @@ rust-anything 自体はコードを自動翻訳しません。Rust コードを�
 | Go | パッケージ | 型付き cgo 呼び出しと自動生成バイナリワイヤ、元の API を持つパッケージとして提供 | 独立したモジュールとしてビルドされる自動生成 Go ドライバ |
 | Ruby | モジュール関数を含むファイルまたはフォルダ | 元のモジュール配下に配置される magnus 拡張 | 自動生成 Ruby ドライバ |
 | Java | `public static` メソッドのパッケージ | 型付き JNI と自動生成バイナリワイヤ、元のメソッドを持つラッパークラスとして提供 | 自動生成リフレクションドライバ |
-| PHP | 関数および `public static` メソッドのフォルダ | 近日対応予定: C ABI 越しの PHP FFI | 現時点でアプリ全体に対応: CLI およびサーバー（`php -S`）向けの `app record`、`app replay`、フロントドア |
-| C# | `public static` メソッドのフォルダ | 近日対応予定: C ABI 越しの P/Invoke | 現時点でアプリ全体に対応: CLI および ASP.NET サーバー（`dotnet <app>.dll`）向けの `app record`、`app replay`、フロントドア |
+| Kotlin | トップレベル関数と `@JvmStatic` メソッドを含む Gradle モジュール | Java ブリッジ: コンパイル済みの Kotlin static を呼び出す Java ラッパークラス内の型付き JNI | 自動生成リフレクションドライバ（Kotlin ソースは `kotlinc` でコンパイル） |
+| PHP | トップレベル関数のファイルまたはフォルダ（`public static` メソッドは PHP 側に残る） | `ext-ffi` 越しの JSON ディスパッチャ、元の引数で関数を再宣言するファイルとして提供 | 自動生成 PHP ドライバ。アプリ全体は CLI およびサーバー（`php -S`）向けの `app record`、`app replay`、フロントドアで対応 |
+| PowerShell | `param()` ブロックを持つ関数の `.psm1` モジュールまたは `.ps1` スクリプト（`Export-ModuleMember` に従ってエクスポート） | P/Invoke 越しの JSON ディスパッチャ、ロード時に Reflection.Emit で宣言され、各関数を元の `param()` ブロックで再宣言する `.ps1` として提供 | 自動生成 `pwsh` ドライバ（PowerShell 7.4 以降） |
+| C# | `public static` メソッドのファイルまたはフォルダ | P/Invoke 越しの JSON ディスパッチャ、元のメソッドを持つ `<namespace>.Rust` クラスとして提供 | 自動生成リフレクションドライバ、プロジェクトのソースとともに `dotnet build` でコンパイル。アプリ全体は CLI および ASP.NET サーバー（`dotnet <app>.dll`）向けの `app record`、`app replay`、フロントドアで対応 |
 
-C 言語を除くすべての言語でバッチクラス（`--batch`）も生成されます。要素は一度だけ境界を越えて Rust 側に保持され、呼び出しのたびに全コアを使って全要素を一括処理します。
+C、PHP、C#、PowerShell を除くすべての言語でバッチクラス（`--batch`）も生成されます。要素は一度だけ境界を越えて Rust 側に保持され、呼び出しのたびに全コアを使って全要素を一括処理します。
 
 言語はリポジトリから自動検出されます（`go.mod`、`pom.xml`、`.csproj` または `.sln`、`pyproject.toml`、`Gemfile`、`composer.json`、`package.json`、該当しない場合は最も多いソースファイルから判断）。`--lang` で上書きもできます。型情報はソースから取得します: TS の型、Python の型ヒント、C/Go/Java/C# のシグネチャ、Ruby の YARD タグ、PHP の型および phpdoc。型注釈がなく数値として使われている引数は数値型と推論されます。
 

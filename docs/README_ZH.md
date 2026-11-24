@@ -192,10 +192,12 @@ rust-anything 并不负责自动翻译代码：具体 Rust 代码由你的编程
 | Go | 包（package） | 类型化 cgo 调用与生成的二进制传输协议，封装为保持原 API 的包 | 生成独立的 Go 驱动模块进行构建运行 |
 | Ruby | 包含模块函数的文件或文件夹 | 挂载在原模块名下的 magnus 扩展 | 生成的 Ruby 驱动 |
 | Java | 包含 `public static` 方法的包 | 类型化 JNI 与生成的二进制传输协议，封装为保持原方法的包装类 | 生成的反射驱动 |
-| PHP | 包含函数和 `public static` 方法的文件夹 | 下一步规划：基于 C ABI 的 PHP FFI | 现已支持整应用级工作流：`app record`、`app replay` 和前门代理，适用于 CLI 与服务端（`php -S`） |
-| C# | 包含 `public static` 方法的文件夹 | 下一步规划：基于 C ABI 的 P/Invoke | 现已支持整应用级工作流：`app record`、`app replay` 和前门代理，适用于 CLI 与 ASP.NET 服务端（`dotnet <app>.dll`） |
+| Kotlin | 包含顶层函数和 `@JvmStatic` 方法的 Gradle 模块 | 复用 Java 桥接：在 Java 包装类中通过类型化 JNI 调用编译后的 Kotlin 静态方法 | 生成的反射驱动，Kotlin 源码由 `kotlinc` 编译 |
+| PHP | 包含顶层函数的文件或文件夹（`public static` 方法保留在 PHP 中） | 基于 `ext-ffi` 的 JSON 分发层，生成一个以原参数重新声明这些函数的文件 | 生成的 PHP 驱动；整应用级可使用 `app record`、`app replay` 和前门代理，适用于 CLI 与服务端（`php -S`） |
+| PowerShell | 由带 `param()` 块的函数组成的 `.psm1` 模块或 `.ps1` 脚本（按 `Export-ModuleMember` 导出） | 基于 P/Invoke 的 JSON 分发层，加载时通过 Reflection.Emit 声明，生成一个以原 `param()` 块重新声明每个函数的 `.ps1` | 生成的 `pwsh` 驱动（PowerShell 7.4+） |
+| C# | 包含 `public static` 方法的文件或文件夹 | 基于 P/Invoke 的 JSON 分发层，生成保留原方法的 `<namespace>.Rust` 类 | 生成的反射驱动，与项目源码一起由 `dotnet build` 编译；整应用级可使用 `app record`、`app replay` 和前门代理，适用于 CLI 与 ASP.NET 服务端（`dotnet <app>.dll`） |
 
-除 C 语言外，每种语言都支持生成批处理类（`--batch`）：数据只需跨边界传入一次并常驻 Rust 侧，每次调用即可在全部 CPU 核心上并行处理所有条目。
+除 C、PHP、C# 和 PowerShell 外，每种语言都支持生成批处理类（`--batch`）：数据只需跨边界传入一次并常驻 Rust 侧，每次调用即可在全部 CPU 核心上并行处理所有条目。
 
 语言会根据代码库自动检测（依次检查 `go.mod`、`pom.xml`、`.csproj` 或 `.sln`、`pyproject.toml`、`Gemfile`、`composer.json`、`package.json`，否则统计最常见的源码文件）；也可以通过 `--lang` 手动指定。类型信息直接从源码提取：TS 类型、Python 类型注解、C/Go/Java/C# 函数签名、Ruby YARD 标签、PHP 类型与 phpdoc；对于未标注类型但按数值使用的参数，会自动推断为数值类型。
 

@@ -230,10 +230,12 @@ Eyni çıxış kifayət deyil. Tətbiqin göndərdiklərini də qeydə alın, on
 | Go | paket | orijinal API-li paketdə tipli cgo çağırışları və yaradılmış binary wire | öz modulu kimi qurulan yaradılmış Go drayveri |
 | Ruby | modul funksiyalarından ibarət fayl və ya qovluq | orijinal modulların altında magnus genişlənməsi | yaradılmış Ruby drayveri |
 | Java | `public static` metodlardan ibarət paket | orijinal metodlara malik wrapper siniflərdə tipli JNI və yaradılmış binary wire | yaradılmış reflection drayveri |
-| PHP | funksiyalardan və `public static` metodlardan ibarət qovluq | növbədə: C ABI üzərindən PHP FFI | bu gün bütöv tətbiqlər: CLI-lar və serverlər (`php -S`) üçün `app record`, `app replay` və front door |
-| C# | `public static` metodlardan ibarət qovluq | növbədə: C ABI üzərindən P/Invoke | bu gün bütöv tətbiqlər: CLI-lar və ASP.NET serverləri (`dotnet <app>.dll`) üçün `app record`, `app replay` və front door |
+| Kotlin | yuxarı səviyyəli funksiyalardan və `@JvmStatic` metodlardan ibarət Gradle modulu | Java körpüsü: kompilyasiya olunmuş Kotlin static-lərini çağıran Java wrapper siniflərində tipli JNI | yaradılmış reflection drayveri, Kotlin mənbələri `kotlinc` ilə kompilyasiya olunur |
+| PHP | yuxarı səviyyəli funksiyalardan ibarət fayl və ya qovluq (`public static` metodlar PHP-də qalır) | funksiyaları orijinal parametrlərlə yenidən elan edən faylda `ext-ffi` üzərindən JSON dispetçeri | yaradılmış PHP drayveri; CLI-lar və serverlər (`php -S`) üçün `app record`, `app replay` və front door ilə bütöv tətbiqlər |
+| PowerShell | `param()` bloklu funksiyalardan ibarət `.psm1` modulu və ya `.ps1` skripti (`Export-ModuleMember` üzrə ixrac olunanlar) | yükləmə zamanı Reflection.Emit ilə elan edilən P/Invoke üzərindən JSON dispetçeri, hər funksiyanı orijinal `param()` bloku ilə yenidən elan edən `.ps1` faylında | yaradılmış `pwsh` drayveri (PowerShell 7.4+) |
+| C# | `public static` metodlardan ibarət fayl və ya qovluq | orijinal metodlara malik `<namespace>.Rust` siniflərində P/Invoke üzərindən JSON dispetçeri | layihənin mənbələri ilə birlikdə `dotnet build` ilə kompilyasiya olunan yaradılmış reflection drayveri; CLI-lar və ASP.NET serverləri (`dotnet <app>.dll`) üçün `app record`, `app replay` və front door ilə bütöv tətbiqlər |
 
-C-dən başqa hər dil batch sinifləri də alır (`--batch`): elementlər körpünü bir dəfə keçir və
+C, PHP, C# və PowerShell-dən başqa hər dil batch sinifləri də alır (`--batch`): elementlər körpünü bir dəfə keçir və
 Rust-da qalır, hər çağırış isə bütün nüvələrdə hamısının üzərində işləyir.
 
 Dil repozitoriyadan müəyyən edilir (`go.mod`, `pom.xml`, `.csproj` və ya `.sln`, `pyproject.toml`,

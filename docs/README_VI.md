@@ -194,7 +194,9 @@ rust-anything không tự dịch code: bạn hoặc coding agent (Claude Code, C
 | Go | package | lời gọi cgo có kiểu rõ ràng, dùng wire nhị phân do công cụ tạo; nằm trong package giữ nguyên API | Go driver do công cụ tạo, build thành module riêng |
 | Ruby | tệp hoặc thư mục chứa các module có function | extension magnus nằm trong các module gốc | Ruby driver do công cụ tạo |
 | Java | package chứa các hàm `public static` | JNI có kiểu rõ ràng, dùng wire nhị phân do công cụ tạo; wrapper class giữ nguyên method gốc | reflection driver do công cụ tạo |
+| Kotlin | Gradle module chứa các function cấp cao nhất và method `@JvmStatic` | cầu nối của Java: JNI có kiểu rõ ràng trong các wrapper class Java gọi tới các hàm static Kotlin đã biên dịch | reflection driver do công cụ tạo, source Kotlin được biên dịch bằng `kotlinc` |
 | PHP | tệp hoặc thư mục chứa các function cấp cao nhất (method `public static` vẫn ở lại PHP) | JSON dispatcher qua `ext-ffi`, nằm trong một tệp khai báo lại các function với tham số gốc | PHP driver do công cụ tạo; cả ứng dụng với `app record`, `app replay` và front door cho CLI lẫn server (`php -S`) |
+| PowerShell | module `.psm1` hoặc script `.ps1` chứa các function có khối `param()` (export theo `Export-ModuleMember`) | JSON dispatcher qua P/Invoke, khai báo lúc nạp bằng Reflection.Emit, nằm trong một tệp `.ps1` khai báo lại từng function với khối `param()` gốc | `pwsh` driver do công cụ tạo (PowerShell 7.4+) |
 | C# | tệp hoặc thư mục chứa các method `public static` | JSON dispatcher qua P/Invoke, nằm trong các class `<namespace>.Rust` giữ nguyên method gốc | reflection driver do công cụ tạo, biên dịch cùng source của project bằng `dotnet build`; cả ứng dụng với `app record`, `app replay` và front door cho CLI lẫn server ASP.NET (`dotnet <app>.dll`) |
 
 Mọi ngôn ngữ trừ C, PHP, C# và PowerShell đều có thêm batch class (`--batch`): dữ liệu chỉ qua cầu nối một lần rồi nằm trong Rust, mỗi lần gọi sẽ xử lý cả lô trên mọi core.

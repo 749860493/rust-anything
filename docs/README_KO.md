@@ -195,10 +195,12 @@ rust-anything은 코드를 자동 번역하지 않습니다. Rust 코드는 코�
 | Go | 패키지 | 기존 API를 유지하는 패키지 내의 타입 지정 cgo 호출 및 생성된 바이너리 와이어 | 별도 모듈로 빌드된 생성 Go 드라이버 |
 | Ruby | 모듈 함수가 담긴 파일 또는 폴더 | 기존 모듈 하위의 magnus 확장 | 생성된 Ruby 드라이버 |
 | Java | `public static` 메서드가 담긴 패키지 | 기존 메서드를 유지하는 래퍼 클래스 내의 타입 지정 JNI 및 생성된 바이너리 와이어 | 생성된 리플렉션 드라이버 |
-| PHP | 함수 및 `public static` 메서드가 담긴 폴더 | 향후 지원 예정: C ABI 기반 PHP FFI | 현재 전체 앱 지원: CLI 및 서버(`php -S`)용 `app record`, `app replay`, 프론트 도어 |
-| C# | `public static` 메서드가 담긴 폴더 | 향후 지원 예정: C ABI 기반 P/Invoke | 현재 전체 앱 지원: CLI 및 ASP.NET 서버(`dotnet <app>.dll`)용 `app record`, `app replay`, 프론트 도어 |
+| Kotlin | 최상위 함수와 `@JvmStatic` 메서드가 담긴 Gradle 모듈 | Java 브리지: 컴파일된 Kotlin 정적 메서드를 호출하는 Java 래퍼 클래스 내의 타입 지정 JNI | 생성된 리플렉션 드라이버(Kotlin 소스는 `kotlinc`로 컴파일) |
+| PHP | 최상위 함수가 담긴 파일 또는 폴더(`public static` 메서드는 PHP에 유지) | 기존 매개변수로 함수를 다시 선언하는 파일 내의 `ext-ffi` 기반 JSON 디스패처 | 생성된 PHP 드라이버. 전체 앱은 CLI 및 서버(`php -S`)용 `app record`, `app replay`, 프론트 도어로 지원 |
+| PowerShell | `param()` 블록을 가진 함수가 담긴 `.psm1` 모듈 또는 `.ps1` 스크립트(`Export-ModuleMember` 기준으로 내보냄) | 각 함수를 기존 `param()` 블록으로 다시 선언하는 `.ps1` 내의 P/Invoke 기반 JSON 디스패처(로드 시 Reflection.Emit으로 선언) | 생성된 `pwsh` 드라이버(PowerShell 7.4 이상) |
+| C# | `public static` 메서드가 담긴 파일 또는 폴더 | 기존 메서드를 유지하는 `<namespace>.Rust` 클래스 내의 P/Invoke 기반 JSON 디스패처 | 프로젝트 소스와 함께 `dotnet build`로 컴파일되는 생성된 리플렉션 드라이버. 전체 앱은 CLI 및 ASP.NET 서버(`dotnet <app>.dll`)용 `app record`, `app replay`, 프론트 도어로 지원 |
 
-C를 제외한 모든 언어는 배치 클래스(`--batch`)도 지원합니다. 항목들이 한 번만 경계를 넘어 Rust 내부에 머무르며, 각 호출마다 모든 코어에서 전체 항목을 처리합니다.
+C, PHP, C#, PowerShell을 제외한 모든 언어는 배치 클래스(`--batch`)도 지원합니다. 항목들이 한 번만 경계를 넘어 Rust 내부에 머무르며, 각 호출마다 모든 코어에서 전체 항목을 처리합니다.
 
 언어는 저장소 파일(`go.mod`, `pom.xml`, `.csproj` 또는 `.sln`, `pyproject.toml`, `Gemfile`, `composer.json`, `package.json`, 그 외에는 가장 많은 소스 파일)로부터 자동 감지되며 `--lang`으로 재정의할 수 있습니다. 타입 정보는 소스에서 추출합니다(TS 타입, Python 힌트, C/Go/Java/C# 시그니처, Ruby YARD 태그, PHP 타입 및 phpdoc). 타입이 없는 매개변수라도 숫자로 사용되면 숫자로 추론됩니다.
 
