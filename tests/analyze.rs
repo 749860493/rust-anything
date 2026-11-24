@@ -221,6 +221,47 @@ fn a_c_unit_depends_on_what_its_own_header_includes() {
 }
 
 #[test]
+fn a_language_the_folder_lacks_is_an_error_not_an_empty_plan() {
+    use rust_anything::analyze::analyze_lang;
+    use rust_anything::lang::Lang;
+    let mini = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/mini");
+    let err = analyze_lang(&mini, Lang::Python).unwrap_err().to_string();
+    assert!(err.contains("no Python source files"), "{err}");
+    assert!(err.contains("TypeScript/JavaScript"), "{err}");
+    assert!(analyze_lang(&mini, Lang::Ts).is_ok());
+
+    // A folder that is empty in its own detected language still gets its (empty) plan.
+    let empty = std::env::temp_dir().join(format!("ra-lang-empty-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&empty);
+    std::fs::create_dir_all(&empty).unwrap();
+    let plan = analyze(&empty);
+    std::fs::remove_dir_all(&empty).unwrap();
+    assert_eq!(plan.unwrap().summary.source_files, 0);
+
+    let root = std::env::temp_dir().join(format!("ra-lang-cases-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&root);
+    let write = |path: &str, text: &str| {
+        let path = root.join(path);
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(path, text).unwrap();
+    };
+    // UI files are the language too: a Go module whose TypeScript is only a React frontend.
+    write("go.mod", "module example.com/app\n\ngo 1.22\n");
+    write("web/App.tsx", "export function App() { return <div />; }\n");
+    assert_eq!(Lang::detect(&root), Lang::Go);
+    let frontend = analyze_lang(&root, Lang::Ts);
+    // Python files hidden by ignore rules: the error keeps analyze's reason for the empty plan.
+    write(".ignore", "py/\n");
+    write("py/tool.py", "def tool():\n    return 1\n");
+    let hidden = analyze_lang(&root, Lang::Python);
+    std::fs::remove_dir_all(&root).unwrap();
+    assert_eq!(frontend.unwrap().summary.ui_files, 1);
+    let err = hidden.unwrap_err().to_string();
+    assert!(err.contains("no Python source files"), "{err}");
+    assert!(err.contains("excluded by ignore rules"), "{err}");
+}
+
+#[test]
 fn json_output_is_versioned() {
     let json = serde_json::to_value(mini()).unwrap();
     assert_eq!(json["schema"], "rust-anything/analyze@1");

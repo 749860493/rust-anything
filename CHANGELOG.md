@@ -13,6 +13,10 @@
 - `app record` joins example commands wrapped with a trailing `\` before reading them, so a curl
   example split over lines becomes its request instead of being dropped, and a wrapped `$ tool`
   line is no longer recorded with `\` as an argument (#328).
+- `analyze --lang` for a language the folder does not hold is an error that names the language it
+  found (`no Python source files found; the code here looks like TypeScript/JavaScript`) and why
+  any of its files were left out (such as ignore rules), instead of an empty plan with exit 0
+  (#345).
 
 ## 3.4.0 (2026-11-23)
 
