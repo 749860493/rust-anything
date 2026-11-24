@@ -345,6 +345,18 @@ pub fn lookup(name: &str) -> Option<CrateMatch> {
 /// A Java type in the TS-like dialect, or why the bridge cannot carry it.
 pub fn java_to_ts(t: &str) -> Result<String, String> {
     let t = t.trim();
+    // A wildcard cannot cross the recorder's converter yet: it casts each type argument to
+    // `Class`, so a `WildcardType` throws there. Say which wildcard, instead of calling it a class.
+    if let Some(rest) = t.strip_prefix('?') {
+        let rest = rest.trim();
+        return Err(
+            if rest.starts_with("super") || rest.starts_with("extends") {
+                format!("uses a wildcard `{t}`")
+            } else {
+                "takes or returns `Object`: values of any type".into()
+            },
+        );
+    }
     if let Some(inner) = t.strip_suffix("[]") {
         return java_to_ts(inner).map(|i| format!("{i}[]"));
     }
@@ -581,6 +593,29 @@ pub fn receiver(f: &ExportedFn) -> (String, String) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_wildcard_is_named_as_one_and_stays_refused() {
+        // A wildcard is a wildcard, not a class name: the refusal says which one. It stays a refusal
+        // because the recorder's converter casts each type argument to `Class`.
+        for t in ["List<? extends CharSequence>", "List<? extends Number>"] {
+            let reason = java_to_ts(t).unwrap_err();
+            assert!(reason.contains("wildcard"), "{t}: {reason}");
+            assert!(!reason.contains("uses the class"), "{t}: {reason}");
+        }
+        assert_eq!(java_to_ts("List<String>").unwrap(), "string[]");
+        // `? super` writes, and an unbounded `?` is `Object`: both stay refusals that name why.
+        assert!(
+            java_to_ts("List<? super String>")
+                .unwrap_err()
+                .contains("? super String")
+        );
+        assert!(
+            java_to_ts("List<?>")
+                .unwrap_err()
+                .contains("values of any type")
+        );
+    }
 
     #[test]
     fn maps_types() {
