@@ -149,7 +149,10 @@ fn direct(ty: &str) -> bool {
         "crate",
         "pynum",
     ];
-    ty.split(|c: char| !(c.is_alphanumeric() || c == '_'))
+    let compact: String = ty.chars().filter(|c| !c.is_whitespace()).collect();
+    let normalized = compact.replace("Vec<u8>", "String");
+    normalized
+        .split(|c: char| !(c.is_alphanumeric() || c == '_'))
         .filter(|w| !w.is_empty())
         .all(|w| KNOWN.contains(&w))
 }
@@ -604,8 +607,8 @@ def _enc(v):
         return {"$tuple": [_enc(x) for x in v]}
     if isinstance(v, (set, frozenset)):
         return {"$set": sorted((_enc(x) for x in v), key=_json.dumps)}
-    if isinstance(v, (bytes, bytearray)):
-        return {"$bytes": list(v)}
+    if isinstance(v, (bytes, bytearray, memoryview)):
+        return {"$bytes": list(bytes(v))}
     if isinstance(v, dict):
         if all(isinstance(k, str) for k in v):
             return {k: _enc(x) for k, x in v.items()}
@@ -670,7 +673,10 @@ pub const PYCONV_RS: &str = r#"//! Python objects to `serde_json::Value` and bac
 #![forbid(unsafe_code)]
 
 use pyo3::prelude::*;
-use pyo3::types::{PyBool, PyBytes, PyDict, PyFloat, PyFrozenSet, PyInt, PyList, PySet, PyString, PyTuple};
+use pyo3::types::{
+    PyBool, PyByteArray, PyBytes, PyDict, PyFloat, PyFrozenSet, PyInt, PyList, PyMemoryView,
+    PySet, PyString, PyTuple,
+};
 use serde_json::{Map, Value, json};
 
 fn type_error(obj: &Bound<'_, PyAny>) -> String {
@@ -696,6 +702,35 @@ fn items(obj: &Bound<'_, PyAny>) -> Result<Vec<Value>, String> {
         out.push(from_py(&item.map_err(|e| e.to_string())?)?);
     }
     Ok(out)
+}
+
+fn extract_bytes(obj: &Bound<'_, PyAny>) -> Option<Result<Vec<u8>, String>> {
+    if obj.is_instance_of::<PyBytes>() {
+        return Some(
+            obj.cast::<PyBytes>()
+                .map(|b| b.as_bytes().to_vec())
+                .map_err(|e| e.to_string()),
+        );
+    }
+    if obj.is_instance_of::<PyByteArray>() {
+        return Some(
+            obj.cast::<PyByteArray>()
+                .map(|b| b.to_vec())
+                .map_err(|e| e.to_string()),
+        );
+    }
+    if obj.is_instance_of::<PyMemoryView>() {
+        return Some(
+            obj.call_method0("tobytes")
+                .and_then(|b| {
+                    b.cast::<PyBytes>()
+                        .map(|b| b.as_bytes().to_vec())
+                        .map_err(Into::into)
+                })
+                .map_err(|e| e.to_string()),
+        );
+    }
+    None
 }
 
 /// A Python object as a JSON value.
@@ -744,8 +779,8 @@ pub fn from_py(obj: &Bound<'_, PyAny>) -> Result<Value, String> {
     if obj.is_instance_of::<PySet>() || obj.is_instance_of::<PyFrozenSet>() {
         return Ok(json!({"$set": items(obj)?}));
     }
-    if obj.is_instance_of::<PyBytes>() {
-        return Ok(json!({"$bytes": obj.extract::<Vec<u8>>().map_err(|e| e.to_string())?}));
+    if let Some(bytes) = extract_bytes(obj) {
+        return Ok(json!({"$bytes": bytes?}));
     }
     Err(type_error(obj))
 }
@@ -846,6 +881,18 @@ impl<T: ToPy> ToPy for Option<T> {
             Some(v) => v.to_py(py),
             None => Ok(py.None()),
         }
+    }
+}
+
+impl FromPy for Vec<u8> {
+    fn from_py(obj: &Bound<'_, PyAny>) -> Result<Self, String> {
+        extract_bytes(obj).unwrap_or_else(|| Err(type_error(obj)))
+    }
+}
+
+impl ToPy for Vec<u8> {
+    fn to_py(&self, py: Python<'_>) -> PyResult<Py<PyAny>> {
+        Ok(PyBytes::new(py, self).into_any().unbind())
     }
 }
 
@@ -1251,5 +1298,56 @@ mod tests {
         // `None` converts to `None`; a value converts through the port's type.
         assert!(lib.contains("match &thresholds"), "{lib}");
         assert!(lib.contains("None => None,"), "{lib}");
+    }
+
+    #[test]
+    fn bytes_params_and_results_convert_directly_without_json() {
+        assert!(direct("Vec<u8>"));
+        assert!(direct("Option<Vec<u8>>"));
+        assert!(direct("Vec<Vec<u8>>"));
+        assert!(!direct("u8"));
+        assert!(!direct("Option<u8>"));
+        assert_eq!(binding_type("Vec<u8>"), "Bound<'_, PyAny>");
+        assert_eq!(binding_type("Option<Vec<u8>>"), "Option<Bound<'_, PyAny>>");
+
+        let crc = PortFn {
+            js_name: "crc".into(),
+            rust_name: "crc".into(),
+            params: vec![("data".into(), "Vec<u8>".into())],
+            ret: "Vec<u8>".into(),
+            fallible: true,
+            is_async: false,
+        };
+        let mut manifest = verdict_manifest();
+        manifest.exports = vec![ExportedFn {
+            name: "crc".into(),
+            file: "geo/crc.py".into(),
+            line: 1,
+            params: vec![Param {
+                name: "data".into(),
+                ts_type: "pybytes".into(),
+                ..Default::default()
+            }],
+            returns: "pybytes".into(),
+            ..Default::default()
+        }];
+        let api = PortApi {
+            functions: vec![crc],
+            ..Default::default()
+        };
+        let modules = Modules {
+            utf16: false,
+            js: false,
+        };
+        let lib = lib_rs(&manifest, &api, &modules);
+        assert!(
+            lib.contains("fn crc_inner(data: Bound<'_, PyAny>) -> Result<Vec<u8>, String>"),
+            "{lib}"
+        );
+        assert!(
+            lib.contains("let data: Vec<u8> = crate::pyconv::FromPy::from_py(&data)?;"),
+            "{lib}"
+        );
+        assert!(!lib.contains("serde_json::to_value"), "{lib}");
     }
 }
