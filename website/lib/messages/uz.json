@@ -130,9 +130,9 @@
         "k": "toza Rust binary'sida mos kelgan json-server HTTP holatlari"
       },
       {
-        "v": "8",
+        "v": "10",
         "unit": "",
-        "k": "til: oltitasida tekshirilgan birlik portlari, PHP va C# butun ilovalar uchun"
+        "k": "languages: eight with verified ports, Kotlin and PowerShell tested end to end"
       }
     ],
     "installTitle": "O'rnatish",
@@ -267,9 +267,7 @@
       "c": "extern \"C\". glibc fasadi: 1,859/1,859",
       "go": "cgo va binary wire. Go path: 2,642/2,642",
       "ruby": "magnus. shellwords: 1,617/1,617",
-      "java": "JNI va binary wire. JDK fasadi: 4,492/4,492",
-      "php": "butun ilovani yozib olish va qayta ijro etish; birlik ko'priklari navbatda",
-      "csharp": "butun ilovani yozib olish va qayta ijro etish; birlik ko'priklari navbatda"
+      "java": "JNI va binary wire. JDK fasadi: 4,492/4,492"
     },
     "sponsorsTitle": "Homiylar",
     "sponsorsDesc": "rust-anything bepul va ochiq manbali. Agar u ishingizga yordam bersa, iltimos, unga homiylik qilishni o'ylab ko'ring. Qo'llab-quvvatlashingiz ishlab chiqishni davom ettirishga yordam beradi.",

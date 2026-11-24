@@ -130,9 +130,9 @@
         "k": "純粋な Rust バイナリで一致した json-server の HTTP ケース"
       },
       {
-        "v": "8",
+        "v": "10",
         "unit": "",
-        "k": "言語: 6 つは検証済みのユニット移植、PHP と C# はアプリ全体に対応"
+        "k": "languages: eight with verified ports, Kotlin and PowerShell tested end to end"
       }
     ],
     "installTitle": "インストール",
@@ -267,9 +267,7 @@
       "c": "extern \"C\"。glibc ファサード: 1,859/1,859",
       "go": "cgo とバイナリワイヤ。Go path: 2,642/2,642",
       "ruby": "magnus。shellwords: 1,617/1,617",
-      "java": "JNI とバイナリワイヤ。JDK ファサード: 4,492/4,492",
-      "php": "アプリ全体の記録とリプレイ。ユニットのブリッジは次に対応予定",
-      "csharp": "アプリ全体の記録とリプレイ。ユニットのブリッジは次に対応予定"
+      "java": "JNI とバイナリワイヤ。JDK ファサード: 4,492/4,492"
     },
     "sponsorsTitle": "スポンサー",
     "sponsorsDesc": "rust-anything は無料のオープンソースです。お役に立ちましたら、ぜひスポンサーをご検討ください。皆様のご支援が開発を支えます。",

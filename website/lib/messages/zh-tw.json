@@ -130,9 +130,9 @@
         "k": "json-server 在純 Rust 執行檔上一致的 HTTP 案例"
       },
       {
-        "v": "8",
+        "v": "10",
         "unit": "",
-        "k": "種語言：其中六種有已驗證的單元移植，PHP 與 C# 支援整個應用程式"
+        "k": "languages: eight with verified ports, Kotlin and PowerShell tested end to end"
       }
     ],
     "installTitle": "安裝",
@@ -267,9 +267,7 @@
       "c": "extern \"C\"。glibc 外觀層：1,859/1,859",
       "go": "cgo 與二進位線路協定。Go path：2,642/2,642",
       "ruby": "magnus。shellwords：1,617/1,617",
-      "java": "JNI 與二進位線路協定。JDK 外觀層：4,492/4,492",
-      "php": "整個應用程式的錄製與重播；單元橋接即將推出",
-      "csharp": "整個應用程式的錄製與重播；單元橋接即將推出"
+      "java": "JNI 與二進位線路協定。JDK 外觀層：4,492/4,492"
     },
     "sponsorsTitle": "贊助者",
     "sponsorsDesc": "rust-anything 是免費的開源軟體。如果它對你的工作有幫助，請考慮贊助。你的支持能讓開發持續下去。",

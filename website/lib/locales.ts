@@ -35,8 +35,12 @@ export function stripLocale(path: string): string {
   return rest === '' ? '/' : rest
 }
 
+declare const __TRANSLATED_DOCS__: string[]
+const TRANSLATED = new Set<string>(typeof __TRANSLATED_DOCS__ === 'undefined' ? [] : __TRANSLATED_DOCS__)
+
 export function withLocale(path: string, locale: string): string {
   if (locale === DEFAULT_LOCALE || !path.startsWith('/')) return path
+  if (path.startsWith('/docs/') && TRANSLATED.size > 0 && !TRANSLATED.has(`/${locale}${path}`)) return path
   return path === '/' ? `/${locale}` : `/${locale}${path}`
 }
 

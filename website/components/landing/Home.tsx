@@ -84,15 +84,15 @@ const LANGS = [
   { key: 'go', name: 'Go' },
   { key: 'ruby', name: 'Ruby' },
   { key: 'java', name: 'Java' },
-  { key: 'php', name: 'PHP', wholeApp: true },
-  { key: 'csharp', name: 'C#', wholeApp: true },
+  { key: 'php', name: 'PHP' },
+  { key: 'csharp', name: 'C#' },
+  { key: 'kotlin', name: 'Kotlin', tested: true },
+  { key: 'powershell', name: 'PowerShell', tested: true },
 ] as const
 
-const SPONSORS = [
-  { login: 'aliyilmazco', name: 'Ali Yilmaz' },
-  { login: 'ashley-hunter', name: 'Ashley Hunter' },
-  { login: 'fatihuzuntas', name: 'Fatih Uzuntaş' },
-]
+const TRENDSHIFT = ['daily', 'daily?language=Rust', 'weekly', 'weekly?language=Rust']
+
+const CODERABBIT = 'https://coderabbit.link/er-kam'
 
 const BENCH = [
   ['GET /posts', '11.1k / 10.8k', '27.3k / 23.9k', '19.7k / 20.4k', '115.0k / 110.7k'],
@@ -119,7 +119,34 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
             </div>
           ))}
         </div>
+        <div className="trend-badges">
+          {TRENDSHIFT.map((b) => (
+            <a key={b} href="https://trendshift.io/repositories/363468">
+              <img src={`https://trendshift.io/api/badge/trendshift/repositories/363468/${b}`} width={250} height={55} alt={`rust-anything on Trendshift (${b})`} loading="lazy" />
+            </a>
+          ))}
+        </div>
+        <p className="sponsored-by">
+          {m.sponsoredBy}{' '}
+          <a href={CODERABBIT}>
+            <img src="/brands/coderabbit.png" width={22} height={22} alt="" /> CodeRabbit
+          </a>
+        </p>
       </div>
+
+      <section className="section" aria-labelledby="prettier-title">
+        <div className="wrap">
+          <div className="section-head">
+            <h2 id="prettier-title" className="section-title">
+              {m.prettierTitle}
+            </h2>
+            <p className="section-desc">{m.prettierDesc}</p>
+          </div>
+          <a href="https://github.com/erkamyaman/rust-anything/blob/main/docs/real-world.md#prettier" className="prettier-demo">
+            <img src="/prettier.gif" width={820} alt={m.prettierAlt} loading="lazy" />
+          </a>
+        </div>
+      </section>
 
       <section className="section" aria-labelledby="install-title">
         <div className="wrap">
@@ -289,9 +316,9 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
           <ul className="langs">
             {LANGS.map((l) => (
               <li key={l.key}>
-                <a href={L(`/docs/languages/${l.key}`)} className="lang">
+                <a href={'tested' in l ? `${REPO_URL}#languages` : L(`/docs/languages/${l.key}`)} className="lang">
                   <span className="name">{l.name}</span>
-                  <span className={`badge${'wholeApp' in l ? ' preview' : ''}`}>{'wholeApp' in l ? m.wholeApps : m.verified}</span>
+                  <span className={`badge${'tested' in l ? ' preview' : ''}`}>{'tested' in l ? m.tested : m.verified}</span>
                   <span className="meta">{m.langMeta[l.key]}</span>
                 </a>
               </li>
@@ -309,23 +336,21 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
             <p className="section-desc">{m.sponsorsDesc}</p>
           </div>
           <div className="sponsors">
-            <a href="https://coderabbit.ai" className="sponsor-company">
-              <img src="https://github.com/coderabbitai.png?size=120" width={48} height={48} alt="" loading="lazy" />
+            <a href={CODERABBIT} className="sponsor-company">
+              <img src="/brands/coderabbit.png" width={48} height={48} alt="" loading="lazy" />
               <span>
                 <span className="who">CodeRabbit</span>
                 <span className="role">{m.companySponsor}</span>
               </span>
             </a>
-            {SPONSORS.map((p) => (
-              <a key={p.login} href={`https://github.com/${p.login}`} className="sponsor-person">
-                <img src={`https://github.com/${p.login}.png?size=100`} width={40} height={40} alt="" loading="lazy" />
-                {p.name}
-              </a>
-            ))}
             <a className="btn btn-quiet" href="https://github.com/sponsors/erkamyaman">
               {m.becomeSponsor}
             </a>
           </div>
+          <a href="https://github.com/sponsors/erkamyaman" className="sponsor-wall">
+            <img className="only-light" src="/sponsors/sponsors-light.svg" alt={m.sponsorWallAlt} loading="lazy" />
+            <img className="only-dark" src="/sponsors/sponsors-dark.svg" alt={m.sponsorWallAlt} loading="lazy" />
+          </a>
         </div>
       </section>
     </div>

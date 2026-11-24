@@ -130,9 +130,9 @@
         "k": "json-server HTTP-Fälle stimmen auf einer reinen Rust-Binary überein"
       },
       {
-        "v": "8",
+        "v": "10",
         "unit": "",
-        "k": "Sprachen: sechs mit verifizierten Unit-Portierungen, PHP und C# für ganze Apps"
+        "k": "languages: eight with verified ports, Kotlin and PowerShell tested end to end"
       }
     ],
     "installTitle": "Installation",
@@ -267,9 +267,7 @@
       "c": "extern \"C\". glibc-Fassade: 1,859/1,859",
       "go": "cgo und ein binärer Wire. Go path: 2,642/2,642",
       "ruby": "magnus. shellwords: 1,617/1,617",
-      "java": "JNI und ein binärer Wire. JDK-Fassade: 4,492/4,492",
-      "php": "Aufzeichnen und Abspielen ganzer Apps; Unit-Bridges folgen",
-      "csharp": "Aufzeichnen und Abspielen ganzer Apps; Unit-Bridges folgen"
+      "java": "JNI und ein binärer Wire. JDK-Fassade: 4,492/4,492"
     },
     "sponsorsTitle": "Sponsoren",
     "sponsorsDesc": "rust-anything ist kostenlos und Open Source. Wenn es dir bei deiner Arbeit hilft, denk bitte über ein Sponsoring nach. Deine Unterstützung hält die Entwicklung am Laufen.",

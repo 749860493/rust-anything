@@ -130,9 +130,9 @@
         "k": "json-server 的 HTTP 用例在纯 Rust 二进制上全部一致"
       },
       {
-        "v": "8",
+        "v": "10",
         "unit": "",
-        "k": "种语言：六种已验证单元迁移，PHP 和 C# 支持整个应用"
+        "k": "languages: eight with verified ports, Kotlin and PowerShell tested end to end"
       }
     ],
     "installTitle": "安装",
@@ -267,9 +267,7 @@
       "c": "extern \"C\"。glibc 门面：1,859/1,859",
       "go": "cgo 与二进制传输协议。Go path：2,642/2,642",
       "ruby": "magnus。shellwords：1,617/1,617",
-      "java": "JNI 与二进制传输协议。JDK 门面：4,492/4,492",
-      "php": "整个应用的录制与回放；单元桥接即将推出",
-      "csharp": "整个应用的录制与回放；单元桥接即将推出"
+      "java": "JNI 与二进制传输协议。JDK 门面：4,492/4,492"
     },
     "sponsorsTitle": "赞助商",
     "sponsorsDesc": "rust-anything 免费且开源。如果它对你的工作有帮助，欢迎考虑赞助。你的支持让开发得以持续。",
