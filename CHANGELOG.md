@@ -7,6 +7,13 @@
   project root and `go` stopped with `no hot function to port`.
 - `app record` and `app replay` fail with `port <port> is already in use` before spawning a server
   on an occupied port and check whether the child exited before treating the port as ready (#326).
+- `app record --db-reset` and `--db-dump` run in the folder a CLI case runs in, as they already did
+  for servers, so a database the app keeps next to it is the one reset and dumped, and the
+  repository's own copy is left alone. Scripts they name by a relative path with a script
+  extension (`reset.py`, `"my scripts/seed.sh"`, `< schema.sql`) still come from the repository;
+  output redirects (`> dump.sql`, also unspaced) stay in the case's folder, and here-document
+  bodies and `#` comments are left as written. Quotes, line continuations and `( )` blocks are
+  read as sh and cmd read them (#324).
 - `bridge` types Go `uint64` and `uint` as `u64` and `uintptr` as `usize` in `port.rs`, alone or as
   slice items. They were `i64`, so a result above `i64::MAX` could not go back to Go and failed
   `diff` (#357).
