@@ -19,6 +19,7 @@ import ar from './ar.json'
 import fa from './fa.json'
 import vi from './vi.json'
 import hi from './hi.json'
+import es from './es.json'
 
 export const translations: Record<string, unknown> = {
   'tr': tr,
@@ -42,4 +43,5 @@ export const translations: Record<string, unknown> = {
   'fa': fa,
   'vi': vi,
   'hi': hi,
+  'es': es,
 }
