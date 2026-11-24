@@ -7,6 +7,8 @@
   project root and `go` stopped with `no hot function to port`.
 - `app record` and `app replay` fail with `port <port> is already in use` before spawning a server
   on an occupied port and check whether the child exited before treating the port as ready (#326).
+- `Err("Outer+Inner: message")` in a C# port throws the nested exception the recording names,
+  like `Acme.Parser+ParseException`, instead of falling back to `InvalidOperationException` (#363).
 - Recording again removes the cases the last recording wrote and this one did not (an input that
   was removed or renamed, or a case that timed out), for CLIs and in `http/`, so replay no longer
   compares against them. Cases added by hand are kept and named in the output, as are the files
