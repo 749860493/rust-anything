@@ -127,7 +127,7 @@ export default function Navbar({
   return (
     <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-4 px-4 sm:px-6">
       <a href={L('/')} className="shrink-0 font-display text-[17px] font-bold" aria-label={ui.home}>
-        <Logo size={30} />
+        <Logo size={32} />
       </a>
       <div className="ml-auto flex items-center gap-1 sm:gap-2">
         <nav className="mr-2 hidden items-center gap-1 md:flex" aria-label="Main">
@@ -165,11 +165,12 @@ export default function Navbar({
         </a>
         <a
           href="https://github.com/sponsors/erkamyaman"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#db61a2] hover:text-[#e879b4]"
+          className="group inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-2 text-sm text-fg/80 hover:text-fg xl:border xl:border-line xl:px-3 xl:hover:border-[#db61a2]/60"
           aria-label={ui.sponsor}
           title={ui.sponsor}
         >
-          <HeartIcon className="h-[20px] w-[20px]" />
+          <HeartIcon className="h-[18px] w-[18px] fill-transparent stroke-[#db61a2] stroke-2 transition-colors group-hover:fill-[#db61a2] motion-reduce:transition-none" />
+          <span className="hidden xl:inline">{ui.sponsor}</span>
         </a>
         <button
           type="button"
