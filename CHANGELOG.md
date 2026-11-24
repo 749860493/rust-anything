@@ -7,6 +7,9 @@
   project root and `go` stopped with `no hot function to port`.
 - `app record` and `app replay` fail with `port <port> is already in use` before spawning a server
   on an occupied port and check whether the child exited before treating the port as ready (#326).
+- `app record --http` and `app replay` find a server that listens only on `::1` (a `localhost`
+  bind can get IPv6 only) and send its requests there, instead of waiting 60 seconds and failing
+  with `did not listen within 60s` (#327).
 - `app record --db-reset` and `--db-dump` run in the folder a CLI case runs in, as they already did
   for servers, so a database the app keeps next to it is the one reset and dumped, and the
   repository's own copy is left alone. Scripts they name by a relative path with a script
