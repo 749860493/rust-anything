@@ -511,14 +511,26 @@ pub fn exports(path: &str, source: &str) -> Vec<ExportedFn> {
             if let Some(list) = method.child_by_field_name("parameters") {
                 for p in named_children(list) {
                     let (ty, pname) = match p.kind() {
-                        "formal_parameter" => (
-                            p.child_by_field_name("type")
+                        "formal_parameter" => {
+                            let base = p
+                                .child_by_field_name("type")
                                 .map_or("", |t| text(t, source))
-                                .to_string(),
-                            p.child_by_field_name("name")
-                                .map_or("", |n| text(n, source))
-                                .to_string(),
-                        ),
+                                .to_string();
+                            // `int values[]` is the same type as `int[] values`: tree-sitter keeps
+                            // the brackets in a separate `dimensions` child of the parameter.
+                            let dims = named_children(p)
+                                .iter()
+                                .find(|c| c.kind() == "dimensions")
+                                .map_or(String::new(), |d| {
+                                    text(*d, source).split_whitespace().collect::<String>()
+                                });
+                            (
+                                format!("{base}{dims}"),
+                                p.child_by_field_name("name")
+                                    .map_or("", |n| text(n, source))
+                                    .to_string(),
+                            )
+                        }
                         "spread_parameter" => {
                             blocker.get_or_insert_with(|| "is variadic".into());
                             continue;
@@ -593,6 +605,28 @@ pub fn receiver(f: &ExportedFn) -> (String, String) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_c_style_array_parameter_keeps_its_dimensions() {
+        // `int values[]` is `int[] values`: tree-sitter keeps the brackets in a `dimensions` child,
+        // which used to be dropped, so the parameter came out as a plain `int`.
+        // The brackets can hold a tab: `int values[\t]` is the same type as `int values[]`.
+        let src = "package acme;\npublic class Stats {\n    public static int sum(int values[]) { return 0; }\n    public static int plain(int[] values) { return 0; }\n    public static int grid(int rows[][]) { return 0; }\n    public static int tabbed(int xs[\t]) { return 0; }\n}\n";
+        let fns = exports("acme/Stats.java", src);
+        let types: Vec<(&str, &str)> = fns
+            .iter()
+            .map(|f| (f.name.as_str(), f.params[0].ts_type.as_str()))
+            .collect();
+        assert_eq!(
+            types,
+            [
+                ("sum", "int[]"),
+                ("plain", "int[]"),
+                ("grid", "int[][]"),
+                ("tabbed", "int[]"),
+            ]
+        );
+    }
 
     #[test]
     fn a_wildcard_is_named_as_one_and_stays_refused() {
