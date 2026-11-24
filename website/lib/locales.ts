@@ -22,6 +22,7 @@ export const LOCALES = [
   { code: 'vi', name: 'Tiếng Việt', lang: 'vi' },
   { code: 'hi', name: 'हिन्दी', lang: 'hi' },
   { code: 'es', name: 'Español', lang: 'es' },
+  { code: 'it', name: 'Italiano', lang: 'it' },
 ] as const
 
 export type Locale = (typeof LOCALES)[number]['code']
