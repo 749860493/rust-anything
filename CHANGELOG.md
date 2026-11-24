@@ -10,6 +10,9 @@
   every slot and hide the next location (#347).
 - `map --write --json` is refused (`--write` cannot be used with `--json`) instead of printing the
   JSON and silently writing nothing (#343).
+- `app record` joins example commands wrapped with a trailing `\` before reading them, so a curl
+  example split over lines becomes its request instead of being dropped, and a wrapped `$ tool`
+  line is no longer recorded with `\` as an argument (#328).
 
 ## 3.4.0 (2026-11-23)
 
