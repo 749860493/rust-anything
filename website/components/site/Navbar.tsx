@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import Logo from '../Logo'
 import ThemeToggle from './ThemeToggle'
 import SearchDialog, { SearchButton } from './SearchDialog'
-import { CloseIcon, GitHubIcon, MenuIcon } from './icons'
+import { CloseIcon, DiscordIcon, GitHubIcon, MenuIcon } from './icons'
 import type { NavGroup } from '../../lib/nav'
 import type { Messages } from '../../lib/messages/en'
 import { LOCALES, stripLocale, withLocale } from '../../lib/locales'
@@ -125,6 +125,13 @@ export default function Navbar({
           aria-label={ui.github}
         >
           <GitHubIcon className="h-[22px] w-[22px]" />
+        </a>
+        <a
+          href="https://discord.gg/FXhUEA8eBR"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-fg/80 hover:text-fg"
+          aria-label="Discord"
+        >
+          <DiscordIcon className="h-[22px] w-[22px]" />
         </a>
         <button
           type="button"
