@@ -7,6 +7,11 @@
   project root and `go` stopped with `no hot function to port`.
 - `app record` and `app replay` fail with `port <port> is already in use` before spawning a server
   on an occupied port and check whether the child exited before treating the port as ready (#326).
+- `app record --http` and `app replay` stop the whole server when it was started through a wrapper
+  (`npm start`, `sh -c`, a `.bat` file): every process it started, waiting until all are gone.
+  Ctrl-C during `app record --http` still stops the server too.
+  The real server used to keep running, so the next run met it on the port and a replay could
+  pass against it (#325).
 - `record`, `fuzz`, `diff` and `bench` pass `--experimental-strip-types` to Node 22.6 to 22.17 (and
   23.0 to 23.5), which only strip TypeScript types with that flag, so TS units no longer fail with
   `ERR_UNKNOWN_FILE_EXTENSION` on Node versions `doctor` accepts (#340).
