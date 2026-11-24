@@ -109,6 +109,7 @@ export const en = {
     sub: 'rust-anything records what your code does, then replays every recorded case against the Rust port. Your agent writes the Rust. Nothing ships until the outputs match.',
     cta: 'Read the quick start',
     source: 'Source on GitHub',
+    discord: 'Join Discord',
     sourceLanguage: 'Source language',
     bridge: 'bridge',
     verified: 'Verified {lang} port, {what}: {count} recorded cases match',

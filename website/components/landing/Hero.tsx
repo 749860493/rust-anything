@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { GitHubIcon } from '../site/icons'
+import { DiscordIcon, GitHubIcon } from '../site/icons'
 import { REPO_URL } from '../../lib/site'
 import { fill, withLocale } from '../../lib/locales'
 import type { Messages } from '../../lib/messages/en'
@@ -209,6 +209,10 @@ export default function Hero({ t, locale = 'en' }: { t: Messages['hero']; locale
           <a className="btn btn-quiet" href={REPO_URL}>
             <GitHubIcon />
             {t.source}
+          </a>
+          <a className="btn btn-quiet" href="https://discord.gg/FXhUEA8eBR">
+            <DiscordIcon />
+            {t.discord}
           </a>
         </div>
 
