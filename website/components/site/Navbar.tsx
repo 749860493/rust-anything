@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import Logo from '../Logo'
 import ThemeToggle from './ThemeToggle'
 import SearchDialog, { SearchButton } from './SearchDialog'
-import { CloseIcon, DiscordIcon, GitHubIcon, MenuIcon } from './icons'
+import { CloseIcon, DiscordIcon, GitHubIcon, HeartIcon, MenuIcon } from './icons'
 import type { NavGroup } from '../../lib/nav'
 import type { Messages } from '../../lib/messages/en'
 import { LOCALES, stripLocale, withLocale } from '../../lib/locales'
@@ -132,6 +132,14 @@ export default function Navbar({
           aria-label="Discord"
         >
           <DiscordIcon className="h-[22px] w-[22px]" />
+        </a>
+        <a
+          href="https://github.com/sponsors/erkamyaman"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#db61a2] hover:text-[#e879b4]"
+          aria-label={ui.sponsor}
+          title={ui.sponsor}
+        >
+          <HeartIcon className="h-[20px] w-[20px]" />
         </a>
         <button
           type="button"
