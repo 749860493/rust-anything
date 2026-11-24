@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Go ports map matching error messages back to the package's exported sentinel errors, so callers using `errors.Is` keep working (#365).
 - `record --ignore-key-order` saves the choice with the crate, so `gate`, `enable`, `report` and
   `go` compare objects regardless of key order too; `--no-ignore-key-order` undoes it (#352).
 - `map` gives each unit without a port `analyze`'s status and lists the blocked and kept ones
