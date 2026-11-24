@@ -10,6 +10,8 @@
 <p align="center"><b>Кушымтагызны Rust телендә яңадан языгыз һәм аның элеккечә эшләвен исбатлагыз.</b><br>
 Ул кодны үзе тәрҗемә итми: Rust'ны кодлау агентыгыз (яки сез) яза, ә rust-anything аны оригинал белән тикшерә.</p>
 
+<p align="center"><b>Документация:</b> <a href="https://rust-anything.com/tt">https://rust-anything.com/tt</a></p>
+
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">

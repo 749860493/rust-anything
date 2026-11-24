@@ -10,6 +10,8 @@
 <p align="center"><b>用 Rust 重写你的应用，并证明它的行为依然完全一致。</b><br>
 它不会自动翻译代码：Rust 由你的编程智能体（或你自己）编写，rust-anything 负责对照原程序进行验证。</p>
 
+<p align="center"><b>文档:</b> <a href="https://rust-anything.com/zh">https://rust-anything.com/zh</a></p>
+
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">

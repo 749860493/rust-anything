@@ -10,6 +10,8 @@
 <p align="center"><b>Tətbiqinizi Rust-da yenidən yazın və onun hələ də eyni davrandığını sübut edin.</b><br>
 Kodu özü tərcümə etmir: Rust-u kodlaşdırma agentiniz (və ya siz) yazır, rust-anything isə onu orijinalla yoxlayır.</p>
 
+<p align="center"><b>Sənədlər:</b> <a href="https://rust-anything.com/az">https://rust-anything.com/az</a></p>
+
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">

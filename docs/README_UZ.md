@@ -10,6 +10,8 @@
 <p align="center"><b>Ilovangizni Rust'da qayta yozing va u hamon xuddi shunday ishlashini isbotlang.</b><br>
 U kodni o'zi tarjima qilmaydi: Rust'ni kodlash agentingiz (yoki siz) yozadi, rust-anything esa uni asl nusxa bilan tekshiradi.</p>
 
+<p align="center"><b>Hujjatlar:</b> <a href="https://rust-anything.com/uz">https://rust-anything.com/uz</a></p>
+
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">

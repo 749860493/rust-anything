@@ -10,6 +10,8 @@
 Point it at your app: it records what the original does, your coding agent writes the Rust one piece at a time,<br>
 and every piece is checked against that recording before it moves on. It doesn't translate code; it proves the rewrite.</p>
 
+<p align="center"><b>Documentation:</b> <a href="https://rust-anything.com/">https://rust-anything.com/</a></p>
+
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">

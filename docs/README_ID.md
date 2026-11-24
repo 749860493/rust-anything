@@ -11,6 +11,8 @@
 Arahkan ke aplikasi Anda: rust-anything merekam apa yang dilakukan aplikasi asli, agen coding Anda menulis versi Rust sepotong demi sepotong,<br>
 dan setiap potongan diperiksa terhadap rekaman itu sebelum lanjut. rust-anything tidak menerjemahkan kode; alat ini membuktikan hasil tulis ulangnya.</p>
 
+<p align="center"><b>Dokumentasi:</b> <a href="https://rust-anything.com/">https://rust-anything.com/</a></p>
+
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">

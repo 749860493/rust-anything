@@ -11,6 +11,8 @@
 Apúntalo a tu aplicación: registra lo que hace el original, tu agente de programación escribe el Rust pieza a pieza,<br>
 y cada pieza se comprueba contra ese registro antes de pasar a la siguiente. No traduce código: demuestra la reescritura.</p>
 
+<p align="center"><b>Documentación:</b> <a href="https://rust-anything.com/">https://rust-anything.com/</a></p>
+
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">

@@ -10,6 +10,8 @@
 <p align="center"><b>Reescreva a sua aplicação em Rust e prove que continua a comportar-se da mesma forma.</b><br>
 Não traduz código: o seu agente de programação (ou você) escreve o Rust, e o rust-anything verifica-o contra o original.</p>
 
+<p align="center"><b>Documentação:</b> <a href="https://rust-anything.com/pt">https://rust-anything.com/pt</a></p>
+
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">

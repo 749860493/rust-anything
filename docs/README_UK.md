@@ -10,6 +10,8 @@
 <p align="center"><b>Перепишіть свій застосунок на Rust і доведіть, що він поводиться так само.</b><br>
 Він не перекладає код: Rust пише ваш агент для програмування (або ви), а rust-anything перевіряє його проти оригіналу.</p>
 
+<p align="center"><b>Документація:</b> <a href="https://rust-anything.com/uk">https://rust-anything.com/uk</a></p>
+
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">
