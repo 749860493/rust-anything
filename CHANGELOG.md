@@ -8,6 +8,8 @@
   bridge takes any of the three and returns `bytes` without going through JSON (#370).
 - `analyze` lists distinct lines as a risk's samples, so several hits on one line no longer fill
   every slot and hide the next location (#347).
+- `map --write --json` is refused (`--write` cannot be used with `--json`) instead of printing the
+  JSON and silently writing nothing (#343).
 
 ## 3.4.0 (2026-11-23)
 
