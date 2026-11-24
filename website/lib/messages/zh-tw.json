@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "用 Rust 逐步重寫整個應用程式",
-    "description": "用 Rust 逐步重寫你的應用程式，每一步都與原始版本比對驗證。支援 TypeScript/JavaScript、Python、C、Go、Ruby、Java、PHP 與 C# 的 CLI、伺服器與函式庫。"
+    "description": "用 Rust 逐步重寫你的應用程式，每一步都與原始版本比對驗證。支援 TypeScript/JavaScript、Python、C、Go、Ruby、Java、Kotlin、PHP、PowerShell 與 C# 的 CLI、伺服器與函式庫。"
   },
   "ui": {
     "docs": "文件",

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Butun ilovangizni Rust'da qismma-qism qayta yozing",
-    "description": "Ilovangizni Rust'da qismma-qism qayta yozing, har qadamda asl nusxa bilan tekshirib. TypeScript/JavaScript, Python, C, Go, Ruby, Java, PHP va C# tilidagi CLI'lar, serverlar va kutubxonalar."
+    "description": "Ilovangizni Rust'da qismma-qism qayta yozing, har qadamda asl nusxa bilan tekshirib. TypeScript/JavaScript, Python, C, Go, Ruby, Java, Kotlin, PHP, PowerShell va C# tilidagi CLI'lar, serverlar va kutubxonalar."
   },
   "ui": {
     "docs": "Hujjatlar",

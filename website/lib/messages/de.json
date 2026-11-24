@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Schreib deine ganze App Stück für Stück in Rust neu",
-    "description": "Schreib deine App Stück für Stück in Rust neu, bei jedem Schritt gegen das Original geprüft. CLIs, Server und Bibliotheken in TypeScript/JavaScript, Python, C, Go, Ruby, Java, PHP und C#."
+    "description": "Schreib deine App Stück für Stück in Rust neu, bei jedem Schritt gegen das Original geprüft. CLIs, Server und Bibliotheken in TypeScript/JavaScript, Python, C, Go, Ruby, Java, Kotlin, PHP, PowerShell und C#."
   },
   "ui": {
     "docs": "Doku",

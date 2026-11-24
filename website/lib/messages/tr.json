@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Uygulamanızın tamamını parça parça Rust ile yeniden yazın",
-    "description": "Uygulamanızı parça parça Rust ile yeniden yazın, her adımda orijinaline karşı doğrulayın. TypeScript/JavaScript, Python, C, Go, Ruby, Java, PHP ve C# ile yazılmış CLI'lar, sunucular ve kütüphaneler."
+    "description": "Uygulamanızı parça parça Rust ile yeniden yazın, her adımda orijinaline karşı doğrulayın. TypeScript/JavaScript, Python, C, Go, Ruby, Java, Kotlin, PHP, PowerShell ve C# ile yazılmış CLI'lar, sunucular ve kütüphaneler."
   },
   "ui": {
     "docs": "Dokümantasyon",

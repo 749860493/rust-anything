@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Bütün tətbiqinizi Rust-da hissə-hissə yenidən yazın",
-    "description": "Tətbiqinizi Rust-da hissə-hissə yenidən yazın, hər addımda orijinalla yoxlanılaraq. TypeScript/JavaScript, Python, C, Go, Ruby, Java, PHP və C# dillərində CLI-lar, serverlər və kitabxanalar."
+    "description": "Tətbiqinizi Rust-da hissə-hissə yenidən yazın, hər addımda orijinalla yoxlanılaraq. TypeScript/JavaScript, Python, C, Go, Ruby, Java, Kotlin, PHP, PowerShell və C# dillərində CLI-lar, serverlər və kitabxanalar."
   },
   "ui": {
     "docs": "Sənədlər",

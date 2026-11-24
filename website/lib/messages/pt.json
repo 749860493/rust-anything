@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Reescreva toda a sua aplicação em Rust, peça por peça",
-    "description": "Reescreva a sua aplicação em Rust peça por peça, comparada com o original em cada passo. CLIs, servidores e bibliotecas em TypeScript/JavaScript, Python, C, Go, Ruby, Java, PHP e C#."
+    "description": "Reescreva a sua aplicação em Rust peça por peça, comparada com o original em cada passo. CLIs, servidores e bibliotecas em TypeScript/JavaScript, Python, C, Go, Ruby, Java, Kotlin, PHP, PowerShell e C#."
   },
   "ui": {
     "docs": "Documentação",

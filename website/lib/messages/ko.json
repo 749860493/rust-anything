@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "앱 전체를 한 조각씩 Rust로 다시 작성하세요",
-    "description": "앱을 한 조각씩 Rust로 다시 작성하고, 매 단계마다 원본과 대조해 검증합니다. TypeScript/JavaScript, Python, C, Go, Ruby, Java, PHP, C#으로 작성된 CLI, 서버, 라이브러리를 지원합니다."
+    "description": "앱을 한 조각씩 Rust로 다시 작성하고, 매 단계마다 원본과 대조해 검증합니다. TypeScript/JavaScript, Python, C, Go, Ruby, Java, Kotlin, PHP, PowerShell, C#으로 작성된 CLI, 서버, 라이브러리를 지원합니다."
   },
   "ui": {
     "docs": "문서",

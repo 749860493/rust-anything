@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "逐块将你的整个应用重写为 Rust",
-    "description": "逐块将你的应用重写为 Rust，每一步都与原实现比对校验。支持 TypeScript/JavaScript、Python、C、Go、Ruby、Java、PHP 和 C# 编写的 CLI、服务端与程序库。"
+    "description": "逐块将你的应用重写为 Rust，每一步都与原实现比对校验。支持 TypeScript/JavaScript、Python、C、Go、Ruby、Java、Kotlin、PHP、PowerShell 和 C# 编写的 CLI、服务端与程序库。"
   },
   "ui": {
     "docs": "文档",

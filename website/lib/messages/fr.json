@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Réécrivez toute votre application en Rust, morceau par morceau",
-    "description": "Réécrivez votre application en Rust morceau par morceau, vérifiée face à l'original à chaque étape. CLI, serveurs et bibliothèques en TypeScript/JavaScript, Python, C, Go, Ruby, Java, PHP et C#."
+    "description": "Réécrivez votre application en Rust morceau par morceau, vérifiée face à l'original à chaque étape. CLI, serveurs et bibliothèques en TypeScript/JavaScript, Python, C, Go, Ruby, Java, Kotlin, PHP, PowerShell et C#."
   },
   "ui": {
     "docs": "Docs",

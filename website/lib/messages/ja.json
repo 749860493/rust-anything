@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "アプリ全体を一つずつ Rust で書き直す",
-    "description": "アプリを一つずつ Rust で書き直し、すべての段階で元の実装と照合します。TypeScript/JavaScript、Python、C、Go、Ruby、Java、PHP、C# の CLI、サーバー、ライブラリに対応。"
+    "description": "アプリを一つずつ Rust で書き直し、すべての段階で元の実装と照合します。TypeScript/JavaScript、Python、C、Go、Ruby、Java、Kotlin、PHP、PowerShell、C# の CLI、サーバー、ライブラリに対応。"
   },
   "ui": {
     "docs": "ドキュメント",

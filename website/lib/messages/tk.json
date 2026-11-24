@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Tutuş programmaňyzy Rust-da bölek-bölekden täzeden ýazyň",
-    "description": "Programmaňyzy Rust-da bölek-bölekden täzeden ýazyň, her ädimde asyl nusga bilen deňeşdirilip barlanýar. TypeScript/JavaScript, Python, C, Go, Ruby, Java, PHP we C# dillerindäki CLI-ler, serwerler we kitaphanalar."
+    "description": "Programmaňyzy Rust-da bölek-bölekden täzeden ýazyň, her ädimde asyl nusga bilen deňeşdirilip barlanýar. TypeScript/JavaScript, Python, C, Go, Ruby, Java, Kotlin, PHP, PowerShell we C# dillerindäki CLI-ler, serwerler we kitaphanalar."
   },
   "ui": {
     "docs": "Resminamalar",

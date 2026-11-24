@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Перепишите всё приложение на Rust, по частям",
-    "description": "Переписывайте приложение на Rust по частям, сверяясь с оригиналом на каждом шаге. CLI, серверы и библиотеки на TypeScript/JavaScript, Python, C, Go, Ruby, Java, PHP и C#."
+    "description": "Переписывайте приложение на Rust по частям, сверяясь с оригиналом на каждом шаге. CLI, серверы и библиотеки на TypeScript/JavaScript, Python, C, Go, Ruby, Java, Kotlin, PHP, PowerShell и C#."
   },
   "ui": {
     "docs": "Документация",
