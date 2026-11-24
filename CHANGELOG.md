@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `record --ignore-key-order` saves the choice with the crate, so `gate`, `enable`, `report` and
+  `go` compare objects regardless of key order too; `--no-ignore-key-order` undoes it (#352).
 - `map` gives each unit without a port `analyze`'s status and lists the blocked and kept ones
   with the reason, so they no longer read as work left to port (#350).
 - On Windows, `profile` and `go` find the project's own functions in a Node workload: Node's

@@ -868,6 +868,13 @@ pub struct DiffOptions<'a> {
     pub float_tolerance: Option<f64>,
 }
 
+/// Whether objects compare regardless of key order: the flag for this run, or the choice
+/// `record --ignore-key-order` saved with the crate, which `gate`, `enable`, `report` and `go` read
+/// because they have no flag of their own.
+fn ignores_key_order(opts: &DiffOptions) -> bool {
+    opts.ignore_key_order || Manifest::load(opts.crate_dir).is_ok_and(|m| m.ignore_key_order)
+}
+
 /// The first mismatches a diff reports.
 const SHOWN_MISMATCHES: usize = 20;
 
@@ -992,7 +999,7 @@ pub(crate) fn settle(opts: &DiffOptions, exact: DiffOutcome) -> Result<DiffOutco
         outcome = crate::tolerance::apply(
             outcome,
             crate::tolerance::check(t)?,
-            opts.ignore_key_order || !preserve_key_order,
+            ignores_key_order(opts) || !preserve_key_order,
         );
     }
     Ok(crate::recording::apply_known(
@@ -1022,7 +1029,7 @@ pub(crate) fn diff_exact(opts: &DiffOptions) -> Result<DiffOutcome> {
         && manifest.language == crate::lang::Lang::Python
         && opts.module.is_none()
     {
-        return crate::harness_py::diff(opts.crate_dir, &manifest, opts.ignore_key_order);
+        return crate::harness_py::diff(opts.crate_dir, &manifest, ignores_key_order(opts));
     }
     if let Ok(manifest) = Manifest::load(opts.crate_dir)
         && manifest.kind == Kind::CAbi
@@ -1094,7 +1101,7 @@ pub(crate) fn diff_exact(opts: &DiffOptions) -> Result<DiffOutcome> {
         format!("{CODEC_JS}\n{}\n{DIFF_JS}", crate::pin::PIN_JS),
     )?;
     let out = work.join("diff.json");
-    let flag = if opts.ignore_key_order {
+    let flag = if ignores_key_order(opts) {
         "sort"
     } else {
         "keep"
@@ -2339,6 +2346,46 @@ writeFileSync(outPath, JSON.stringify(summary, null, 2))
 mod tests {
     use super::*;
     use crate::ts::exports::{ExportedFn, Param};
+
+    #[test]
+    fn a_saved_key_order_choice_is_read_by_diffs_without_the_flag() {
+        // `record --ignore-key-order` writes it; `gate`, `enable`, `report` and `go` have no flag of
+        // their own, so they inherit it from here.
+        let dir = std::env::temp_dir().join(format!("ra-key-order-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let opts = |flag: bool| DiffOptions {
+            crate_dir: &dir,
+            module: None,
+            ignore_key_order: flag,
+            node_args: &[],
+            float_tolerance: None,
+        };
+        // No crate at all: the flag alone decides, and nothing panics.
+        assert!(!ignores_key_order(&opts(false)));
+        assert!(ignores_key_order(&opts(true)));
+        // What `record` saves is what `gate`, `enable` and `report` read without the flag.
+        let manifest: Manifest = serde_json::from_value(serde_json::json!({
+            "schema": crate::bridge::SCHEMA,
+            "root": ".",
+            "unit": "src/util.ts",
+            "kind": "napi",
+            "crate_name": "util-rs",
+            "exports": [],
+        }))
+        .unwrap();
+        manifest.save(&dir).unwrap();
+        assert!(!ignores_key_order(&opts(false)));
+        let mut saved = Manifest::load(&dir).unwrap();
+        saved.ignore_key_order = true;
+        saved.save(&dir).unwrap();
+        assert!(ignores_key_order(&opts(false)));
+        saved.ignore_key_order = false;
+        saved.save(&dir).unwrap();
+        assert!(!ignores_key_order(&opts(false)));
+        assert!(ignores_key_order(&opts(true)));
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
 
     #[test]
     fn node_gets_the_strip_types_flag_only_where_it_needs_it() {
