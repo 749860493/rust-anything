@@ -6,6 +6,8 @@
   ports (#280).
 - Python `bytes`, `bytearray` and `memoryview` hints become `Vec<u8>` in the port, and the PyO3
   bridge takes any of the three and returns `bytes` without going through JSON (#370).
+- `analyze` lists distinct lines as a risk's samples, so several hits on one line no longer fill
+  every slot and hide the next location (#347).
 
 ## 3.4.0 (2026-11-23)
 
