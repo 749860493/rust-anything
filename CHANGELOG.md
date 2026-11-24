@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `profile` and `go` on a Node that refuses `--cpu-prof` in `NODE_OPTIONS` (22.14) pass it to a `node`
+  command as arguments, and stop with a clear message for wrappers such as `npx` (#346).
 - `profile` leaves a script's top level (Python's `<module>`, Node's line-1 module function) out of
   "What to port" and no longer advises porting it with a function it calls in a loop (#344).
 - `app record --effects smtp` records each email as its decoded `From`, `To`, `Cc` and `Subject`
