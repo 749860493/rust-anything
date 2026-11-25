@@ -258,7 +258,7 @@ enum Cmd {
         #[arg(long)]
         seed: Option<u64>,
         /// Keep running new rounds until this many seconds have passed (one round otherwise).
-        #[arg(long, value_name = "SECS")]
+        #[arg(long, value_name = "SECS", allow_negative_numbers = true)]
         time: Option<f64>,
         /// Append the mismatching cases (`--keep`) or every fresh case (`--keep=all`) to
         /// `cases.jsonl`, so the next diff and gate check them.
@@ -1227,7 +1227,10 @@ fn run() -> Result<ExitCode> {
             // and a value `Duration` cannot hold is an error rather than a panic.
             let time = time
                 .map(|t| {
-                    anyhow::ensure!(t.is_finite() && t >= 0.0, "`--time` takes seconds");
+                    anyhow::ensure!(
+                        t.is_finite() && t >= 0.0,
+                        "`--time` must be 0 or more seconds (0 runs one round), not {t}"
+                    );
                     if t == 0.0 {
                         return Ok(std::time::Duration::ZERO);
                     }

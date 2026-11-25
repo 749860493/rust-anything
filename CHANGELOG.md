@@ -5,6 +5,10 @@
 - `map` counts units, not crates, in its first line: one unit bridged twice (napi and wasm, or a
   second `bridge --out`) reads `1 of 1 unit has a Rust port` instead of `2 of 2 units have`. The
   Ports table still lists every crate (#609 by @Aadithya-kl).
+- `fuzz --time` given a negative or non-finite value says
+  `` `--time` must be 0 or more seconds (0 runs one round), not -1 `` instead of
+  `` `--time` takes seconds ``, and `--time -1` (with a space) gets the same message instead of clap's
+  `unexpected argument '-1' found`. The MCP `fuzz` tool's `time` says the same (#612).
 
 ## 5.0.0 (2026-11-25)
 
