@@ -192,3 +192,26 @@ fn pinned_clock_and_random_numbers_are_recorded_and_matched_by_a_rust_port() {
     assert!(!dir.join(rust_anything::pin::FILE).exists());
     std::fs::remove_dir_all(&repo).unwrap();
 }
+
+#[test]
+fn a_negative_or_nan_time_names_the_range_and_the_value() {
+    // `--time -1` (with a space) used to be refused by clap as an unexpected argument, and the
+    // other spellings got "`--time` takes seconds". The check runs before the crate is read.
+    let dir = std::env::temp_dir().join(format!("rust-anything-fuzz-time-{}", std::process::id()));
+    let dir_arg = dir.to_str().unwrap();
+    for (args, value) in [
+        (vec!["fuzz", dir_arg, "--time", "-1"], "-1"),
+        (vec!["fuzz", dir_arg, "--time=-1"], "-1"),
+        (vec!["fuzz", dir_arg, "--time", "NaN"], "NaN"),
+    ] {
+        let out = Command::new(CLI).args(&args).output().unwrap();
+        let stderr = String::from_utf8_lossy(&out.stderr);
+        assert_eq!(out.status.code(), Some(2), "{args:?}: {stderr}");
+        assert!(
+            stderr.contains(&format!(
+                "`--time` must be 0 or more seconds (0 runs one round), not {value}"
+            )),
+            "{args:?}: {stderr}"
+        );
+    }
+}
