@@ -259,6 +259,8 @@ Same output is not enough. Record what the app sends too, and a rewrite that mai
   <sub>A real run of <code>app record --effects</code> and <code>app replay</code>. See <a href="docs/whole-apps.md#side-effects-email-webhooks-and-databases">Side effects</a>.</sub>
 </p>
 
+A server can also be checked on live traffic: `app shadow --build <rust binary>` answers every request with the original and compares the build's answer, with the build's mail and outbound HTTP kept in local sinks ([Shadow live traffic](docs/whole-apps.md#shadow-live-traffic)).
+
 ## Languages
 
 | Language | Unit | Bridge | Recorded and replayed by |

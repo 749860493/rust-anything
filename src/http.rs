@@ -60,7 +60,7 @@ pub struct HttpConfig {
 }
 
 /// How long a start waits for the port: the saved `--ready-timeout`, or `READY`.
-fn ready_timeout(http: &HttpConfig) -> Duration {
+pub(crate) fn ready_timeout(http: &HttpConfig) -> Duration {
     http.ready_secs.map_or(READY, Duration::from_secs)
 }
 
@@ -221,10 +221,10 @@ struct HttpInput {
 }
 
 #[derive(Debug, Clone)]
-struct Resp {
-    status: u16,
-    headers: BTreeMap<String, String>,
-    body: Vec<u8>,
+pub(crate) struct Resp {
+    pub(crate) status: u16,
+    pub(crate) headers: BTreeMap<String, String>,
+    pub(crate) body: Vec<u8>,
 }
 
 /// Picks an ephemeral port free on IPv4 loopback and not already bound on IPv6 loopback
@@ -384,14 +384,14 @@ fn read_response(stream: &mut impl Read, head_only: bool) -> Result<Resp> {
     })
 }
 
-fn send(addr: SocketAddr, req: &Req, timeout: Duration) -> Result<Resp> {
+fn connect(addr: SocketAddr, req: &Req, host: &str, timeout: Duration) -> Result<TcpStream> {
     let mut stream = TcpStream::connect_timeout(&addr, timeout)?;
     stream.set_read_timeout(Some(timeout))?;
     stream.set_write_timeout(Some(timeout))?;
     let body_opt = req.body_bytes()?;
     let body = body_opt.as_deref().unwrap_or(&[]);
     let mut head = format!(
-        "{} {} HTTP/1.1\r\nHost: {addr}\r\nConnection: close\r\n",
+        "{} {} HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n",
         req.method, req.path
     );
     for (k, v) in &req.headers {
@@ -408,14 +408,133 @@ fn send(addr: SocketAddr, req: &Req, timeout: Duration) -> Result<Resp> {
     head += "\r\n";
     stream.write_all(head.as_bytes())?;
     stream.write_all(body)?;
+    Ok(stream)
+}
+
+fn send(addr: SocketAddr, req: &Req, timeout: Duration) -> Result<Resp> {
+    let mut stream = connect(addr, req, &addr.to_string(), timeout)?;
     read_response(&mut stream, req.method == "HEAD")
 }
 
+/// Reads through to `inner` and keeps every byte read.
+struct Tee<R> {
+    inner: R,
+    seen: Vec<u8>,
+}
+
+impl<R: Read> Read for Tee<R> {
+    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+        let n = self.inner.read(buf)?;
+        self.seen.extend_from_slice(&buf[..n]);
+        Ok(n)
+    }
+}
+
+/// Sends `req` as `send` does, keeping the client's `Host`, and returns the parsed response with
+/// the bytes it came in, so a proxy can relay them unchanged.
+pub(crate) fn exchange(addr: SocketAddr, req: &Req, timeout: Duration) -> Result<(Resp, Vec<u8>)> {
+    let host = req
+        .headers
+        .iter()
+        .find(|(k, _)| k.eq_ignore_ascii_case("host"))
+        .map_or_else(|| addr.to_string(), |(_, v)| v.clone());
+    let stream = connect(addr, req, &host, timeout)?;
+    let mut tee = Tee {
+        inner: stream,
+        seen: Vec::new(),
+    };
+    let resp = read_response(&mut tee, req.method == "HEAD")?;
+    Ok((resp, tee.seen))
+}
+
+/// Headers of a client's request that belong to its connection, not to the request.
+const HOP_HEADERS: [&str; 5] = [
+    "connection",
+    "keep-alive",
+    "transfer-encoding",
+    "content-length",
+    "expect",
+];
+
+/// Reads one request from a client: the head, then a body framed by `Content-Length` or chunked.
+/// A client waiting on `Expect: 100-continue` is told to go on.
+pub(crate) fn read_request<S: Read + Write>(stream: &mut S) -> Result<Req> {
+    let mut buf = Vec::new();
+    let mut chunk = [0u8; 8192];
+    let header_end = loop {
+        if let Some(i) = find(&buf, b"\r\n\r\n") {
+            break i;
+        }
+        ensure!(buf.len() < 1 << 20, "the request head is too large");
+        let n = stream.read(&mut chunk)?;
+        ensure!(n > 0, "the connection closed before a full request");
+        buf.extend_from_slice(&chunk[..n]);
+    };
+    let head = String::from_utf8_lossy(&buf[..header_end]).into_owned();
+    let rest = buf.split_off(header_end + 4);
+    let mut lines = head.split("\r\n");
+    let line = lines.next().unwrap_or_default();
+    let mut parts = line.split_whitespace();
+    let (Some(method), Some(target), Some(_)) = (parts.next(), parts.next(), parts.next()) else {
+        bail!("not an HTTP request: `{line}`");
+    };
+    let path = match target.split_once("://") {
+        Some((_, rest)) => rest.find('/').map_or("/", |i| &rest[i..]),
+        None => target,
+    };
+    ensure!(path.starts_with('/'), "not an HTTP request: `{line}`");
+    let mut headers = BTreeMap::new();
+    let mut framing = BTreeMap::new();
+    for line in lines {
+        if let Some((k, v)) = line.split_once(':') {
+            let (k, v) = (k.trim(), v.trim().to_string());
+            let lower = k.to_ascii_lowercase();
+            if HOP_HEADERS.contains(&lower.as_str()) {
+                framing.insert(lower, v);
+            } else {
+                headers.insert(k.to_string(), v);
+            }
+        }
+    }
+    if framing
+        .get("expect")
+        .is_some_and(|e| e.eq_ignore_ascii_case("100-continue"))
+    {
+        stream.write_all(b"HTTP/1.1 100 Continue\r\n\r\n")?;
+    }
+    let chunked = framing
+        .get("transfer-encoding")
+        .is_some_and(|t| t.to_ascii_lowercase().contains("chunked"));
+    let body = if chunked {
+        Some(read_chunked(stream, rest)?)
+    } else if let Some(len) = framing.get("content-length") {
+        let len: usize = len.parse().context("invalid Content-Length")?;
+        let mut rest = rest;
+        fill(stream, &mut rest, len)?;
+        rest.truncate(len);
+        Some(rest)
+    } else {
+        None
+    };
+    let (body, body_base64) = match body {
+        Some(bytes) => Req::from_body_bytes(bytes),
+        None => (None, None),
+    };
+    Ok(Req {
+        method: method.to_string(),
+        path: path.to_string(),
+        headers,
+        body,
+        body_base64,
+        body_file: None,
+    })
+}
+
 /// A server process; stopped (SIGTERM, then SIGKILL) when dropped.
-struct Server {
+pub(crate) struct Server {
     child: Child,
     /// The loopback address that answered while waiting for the server; requests go there.
-    addr: SocketAddr,
+    pub(crate) addr: SocketAddr,
     dir: PathBuf,
     cwd: PathBuf,
     log: PathBuf,
@@ -435,7 +554,12 @@ impl std::fmt::Display for PortInUse {
 impl std::error::Error for PortInUse {}
 
 impl Server {
-    fn start(command: &[String], launch: &Launch, repo: &Path, port: u16) -> Result<Server> {
+    pub(crate) fn start(
+        command: &[String],
+        launch: &Launch,
+        repo: &Path,
+        port: u16,
+    ) -> Result<Server> {
         if listening(port, Duration::from_millis(100)).is_some() {
             return Err(anyhow::Error::new(PortInUse(port)));
         }
@@ -525,6 +649,13 @@ impl Server {
             stopped: false,
             sinks,
         })
+    }
+
+    /// Empties the sinks, for a server whose effects are not compared.
+    pub(crate) fn drain_effects(&self, repo: &Path) {
+        if let Some(sinks) = &self.sinks {
+            sinks.take(&self.cwd, repo);
+        }
     }
 
     fn fallbacks(&self) -> Option<usize> {
@@ -739,18 +870,18 @@ type Answer = (
 );
 
 /// What every start gets besides its command: the server's arguments and its fresh files.
-struct Launch<'a> {
-    args: &'a [String],
-    files: Option<&'a Path>,
-    pace: Option<Duration>,
-    effects: Option<&'a crate::effects::EffectsConfig>,
+pub(crate) struct Launch<'a> {
+    pub(crate) args: &'a [String],
+    pub(crate) files: Option<&'a Path>,
+    pub(crate) pace: Option<Duration>,
+    pub(crate) effects: Option<&'a crate::effects::EffectsConfig>,
     /// How long to wait for the port before giving up.
-    ready: Duration,
+    pub(crate) ready: Duration,
 }
 
 /// Starts a server on an auto-picked ephemeral port, retrying if another process claims the port
 /// in the brief window between `free_port()` and `Server::start()`.
-fn start_ephemeral(
+pub(crate) fn start_ephemeral(
     command: &[String],
     launch: &Launch,
     repo: &Path,
@@ -1799,6 +1930,37 @@ pub(crate) fn recorded_routes(repo: &Path) -> Result<Vec<String>> {
     Ok(out)
 }
 
+/// The curl examples in the docs no recorded case sends, as `METHOD /path`.
+pub(crate) fn unrecorded_examples(repo: &Path) -> Result<Vec<String>> {
+    let recorded: BTreeSet<String> = load_specs(&app::cases_dir(repo).join(HTTP_DIR))?
+        .iter()
+        .map(|s| req_key(&s.req))
+        .collect();
+    let mut seen = BTreeSet::new();
+    Ok(
+        app::scan_examples(repo, |line, doc_dir| parse_curl(line, repo, doc_dir))
+            .into_iter()
+            .filter(|req| !recorded.contains(&req_key(req)) && seen.insert(req_key(req)))
+            .map(|req| format!("{} {}", req.method, req.path))
+            .collect(),
+    )
+}
+
+/// Response headers whose value differed between the original's own runs in some recorded case.
+pub(crate) fn noisy_headers(repo: &Path) -> BTreeSet<String> {
+    load_specs(&app::cases_dir(repo).join(HTTP_DIR))
+        .unwrap_or_default()
+        .iter()
+        .flat_map(|spec| &spec.headers)
+        .filter(|(_, v)| v.contains("[..]"))
+        .map(|(k, _)| k.to_ascii_lowercase())
+        .collect()
+}
+
+pub(crate) fn is_skipped_header(name: &str) -> bool {
+    SKIP_HEADERS.contains(&name)
+}
+
 fn load_specs(dir: &Path) -> Result<Vec<Spec>> {
     let mut paths: Vec<PathBuf> = std::fs::read_dir(dir)
         .with_context(|| {
@@ -1851,6 +2013,7 @@ pub(crate) fn replay(
         failures: Vec::new(),
         fallback: None,
         report: dir.join(app::REPORT_FILE),
+        groups: Vec::new(),
     };
     let (mut reported, mut fell_back) = (false, Vec::new());
     for (spec, (answer, fallback, effects)) in specs.iter().zip(answers) {
@@ -1861,65 +2024,59 @@ pub(crate) fn replay(
         }
         let mut problems = Vec::new();
         match answer {
-            Err(e) => problems.push(Problem {
-                field: "response".to_string(),
-                detail: format!("no response: {e}\n"),
-            }),
+            Err(e) => problems.push(
+                Problem::new("response", format!("no response: {e}\n"))
+                    .at(crate::mismatch::At::new("no response")),
+            ),
             Ok(resp) => {
                 if resp.status != spec.status {
-                    problems.push(Problem {
-                        field: "status".to_string(),
-                        detail: format!("expected {}, got {}\n", spec.status, resp.status),
-                    });
+                    problems.push(
+                        Problem::new(
+                            "status",
+                            format!("expected {}, got {}\n", spec.status, resp.status),
+                        )
+                        .at(crate::mismatch::At::new(&format!(
+                            "{}→{}",
+                            spec.status, resp.status
+                        ))),
+                    );
                 }
                 for (k, expected) in &spec.headers {
                     let field = format!("header {k}");
                     let key = k.to_ascii_lowercase();
                     match resp.headers.get(&key) {
-                        None => problems.push(Problem {
-                            field,
-                            detail: format!("- {expected}\n(missing)\n"),
-                        }),
+                        None => problems.push(
+                            Problem::new(field, format!("- {expected}\n(missing)\n"))
+                                .at(crate::mismatch::At::new("missing key")),
+                        ),
                         Some(actual) => {
                             let (e, a) = (norm.apply(expected), norm.apply(actual));
                             if !app::line_matches(&e, &a) {
-                                problems.push(Problem {
-                                    field,
-                                    detail: format!("- {e}\n+ {a}\n"),
-                                });
+                                let literal = e.split("[..]").next().unwrap_or_default();
+                                let at = crate::mismatch::text_at("text", literal, &a);
+                                problems
+                                    .push(Problem::new(field, format!("- {e}\n+ {a}\n")).at(at));
                             }
                         }
                     }
                 }
+                let unordered = norm.unordered(&spec.name, "body");
                 if let Some(expected) = &spec.body
-                    && let Some(detail) = app::compare(
-                        norm,
-                        expected,
-                        &resp.body,
-                        spec.binary,
-                        norm.unordered(&spec.name, "body"),
-                    )
+                    && let Some(detail) =
+                        app::compare(norm, expected, &resp.body, spec.binary, unordered)
                 {
-                    problems.push(Problem {
-                        field: "body".to_string(),
-                        detail,
-                    });
+                    let at = app::locate(norm, expected, &resp.body, spec.binary, unordered);
+                    problems.push(Problem::new("body", detail).at(at));
                 }
             }
         }
+        let unordered = norm.unordered(&spec.name, crate::effects::EXT);
+        let got = effects.as_deref().unwrap_or_default();
         if let Some(expected) = &spec.effects
-            && let Some(detail) = app::compare(
-                norm,
-                expected,
-                effects.as_deref().unwrap_or_default(),
-                false,
-                norm.unordered(&spec.name, crate::effects::EXT),
-            )
+            && let Some(detail) = app::compare(norm, expected, got, false, unordered)
         {
-            problems.push(Problem {
-                field: crate::effects::EXT.to_string(),
-                detail,
-            });
+            let at = app::locate(norm, expected, got, false, unordered);
+            problems.push(Problem::new(crate::effects::EXT, detail).at(at));
         }
         if problems.is_empty() {
             outcome.passed += 1;
@@ -1939,8 +2096,6 @@ pub(crate) fn replay(
             names: fell_back,
         });
     }
-    std::fs::write(&outcome.report, app::report_markdown(&outcome))
-        .with_context(|| format!("writing {}", outcome.report.display()))?;
     Ok(outcome)
 }
 
@@ -2326,6 +2481,103 @@ mod tests {
         assert_eq!((r.status, r.body.as_slice()), (404, &b"not found"[..]));
         let close = b"HTTP/1.0 500 Oops\r\n\r\nbye";
         assert_eq!(read_response(&mut &close[..], false).unwrap().body, b"bye");
+    }
+
+    struct Client {
+        sent: std::io::Cursor<Vec<u8>>,
+        heard: Vec<u8>,
+    }
+
+    impl Read for Client {
+        fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+            self.sent.read(buf)
+        }
+    }
+
+    impl Write for Client {
+        fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+            self.heard.write(buf)
+        }
+
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+
+    fn client(raw: &[u8]) -> Client {
+        Client {
+            sent: std::io::Cursor::new(raw.to_vec()),
+            heard: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn requests_parse_with_length_chunks_or_no_body() {
+        let mut c = client(
+            b"POST /upper?x=1 HTTP/1.1\r\nHost: example.test\r\nContent-Type: text/plain\r\nContent-Length: 5\r\nConnection: keep-alive\r\n\r\nhelloEXTRA",
+        );
+        let req = read_request(&mut c).unwrap();
+        assert_eq!(
+            (req.method.as_str(), req.path.as_str()),
+            ("POST", "/upper?x=1")
+        );
+        assert_eq!(req.body.as_deref(), Some("hello"));
+        assert_eq!(
+            req.headers.keys().collect::<Vec<_>>(),
+            ["Content-Type", "Host"]
+        );
+        let mut c = client(
+            b"PUT http://example.test/a HTTP/1.1\r\nTransfer-Encoding: chunked\r\nExpect: 100-continue\r\n\r\n3\r\nab\xff\r\n0\r\n\r\n",
+        );
+        let req = read_request(&mut c).unwrap();
+        assert_eq!(req.path, "/a");
+        assert_eq!(req.body, None);
+        assert_eq!(req.body_bytes().unwrap().unwrap(), b"ab\xff");
+        assert!(req.headers.is_empty(), "{req:?}");
+        assert_eq!(c.heard, b"HTTP/1.1 100 Continue\r\n\r\n");
+        let req = read_request(&mut client(b"GET / HTTP/1.1\r\n\r\n")).unwrap();
+        assert_eq!((req.body, req.body_base64), (None, None));
+        assert!(read_request(&mut client(b"hello\r\n\r\n")).is_err());
+        assert!(
+            read_request(&mut client(
+                b"GET / HTTP/1.1\r\nContent-Length: 9\r\n\r\nshort"
+            ))
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn an_exchange_keeps_the_raw_response_and_the_client_host() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let server = std::thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let req = read_request(&mut stream).unwrap();
+            stream
+                .write_all(b"HTTP/1.1 201 Created\r\nX-Id: 7\r\nContent-Length: 2\r\n\r\nok")
+                .unwrap();
+            req
+        });
+        let mut headers = BTreeMap::new();
+        headers.insert("Host".to_string(), "example.test".to_string());
+        let req = Req {
+            method: "POST".to_string(),
+            path: "/x".to_string(),
+            headers,
+            body: Some("hi".to_string()),
+            body_base64: None,
+            body_file: None,
+        };
+        let (resp, raw) = exchange(addr, &req, Duration::from_secs(5)).unwrap();
+        assert_eq!((resp.status, resp.body.as_slice()), (201, &b"ok"[..]));
+        assert_eq!(resp.headers["x-id"], "7");
+        assert_eq!(
+            raw,
+            b"HTTP/1.1 201 Created\r\nX-Id: 7\r\nContent-Length: 2\r\n\r\nok"
+        );
+        let seen = server.join().unwrap();
+        assert_eq!(seen.headers["Host"], "example.test");
+        assert_eq!(seen.body.as_deref(), Some("hi"));
     }
 
     #[test]

@@ -64,6 +64,12 @@ pub fn get(name: &str, arguments: &Value) -> Result<Value, String> {
         ),
         _ => return Err(format!("unknown prompt `{name}`")),
     };
+    let rules = crate::rules::section(std::path::Path::new(path));
+    let text = if rules.is_empty() {
+        text
+    } else {
+        format!("{text}\n\n{}", rules.trim_end())
+    };
     Ok(json!({
         "description": description,
         "messages": [{ "role": "user", "content": { "type": "text", "text": text } }],
@@ -86,6 +92,28 @@ fn body(markdown: &str) -> &str {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn both_prompts_carry_the_project_rules() {
+        let dir = crate::app::temp_dir("prompt-rules").unwrap();
+        let text = |name: &str| {
+            get(name, &json!({ "path": dir })).unwrap()["messages"][0]["content"]["text"]
+                .as_str()
+                .unwrap()
+                .to_string()
+        };
+        assert!(!text("port_unit").contains("## Project rules"));
+        crate::rules::add(&dir, &["Keep `\\r\\n` line endings in output.".into()]).unwrap();
+        for name in ["port_unit", "port_whole_app"] {
+            let text = text(name);
+            assert!(
+                text.ends_with("- Keep `\\r\\n` line endings in output."),
+                "{name}: {text}"
+            );
+            assert!(text.contains("## Project rules"), "{name}");
+        }
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
 
     #[test]
     fn strips_lf_front_matter() {

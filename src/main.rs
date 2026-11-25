@@ -18,7 +18,9 @@ macro_rules! say_raw {
 
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand, ValueEnum};
-use rust_anything::{analyze, app, bridge, front_door, gate, harness, lift, mcp, report, shadow};
+use rust_anything::{
+    analyze, app, app_shadow, bridge, drift, front_door, gate, harness, lift, mcp, report, shadow,
+};
 
 #[derive(Parser)]
 #[command(
@@ -214,6 +216,10 @@ enum Cmd {
         /// Floats match within this tolerance for this run (the one saved by `record` otherwise).
         #[arg(long, allow_negative_numbers = true)]
         float_tolerance: Option<f64>,
+        /// Print mismatches as shapes only: where they differ, types, lengths and hashes, never
+        /// values or arguments; safe to paste into an issue or hand to another agent.
+        #[arg(long)]
+        redact: bool,
         /// Print the machine-readable report as JSON.
         #[arg(long)]
         json: bool,
@@ -492,6 +498,19 @@ enum Cmd {
         #[arg(long)]
         json: bool,
     },
+    /// Show the port rules every agent prompt includes (rust/RULES.md), or add one: behavior the
+    /// port must keep exactly, learned from a correction.
+    Rules {
+        /// Repository root, or a crate folder made by `bridge`.
+        #[arg(default_value = ".")]
+        root: PathBuf,
+        /// Append a rule (repeatable); an exact duplicate is skipped.
+        #[arg(long = "add", value_name = "TEXT")]
+        add: Vec<String>,
+        /// Print the machine-readable report as JSON.
+        #[arg(long)]
+        json: bool,
+    },
 }
 
 #[derive(Subcommand)]
@@ -632,6 +651,43 @@ enum AppCmd {
         /// The fast, repeatable loop for fixing one mismatch.
         #[arg(long)]
         case: Option<String>,
+        /// Write the report and print mismatches as shapes only (no outputs, arguments or
+        /// request paths).
+        #[arg(long)]
+        redact: bool,
+        /// Print the machine-readable report as JSON.
+        #[arg(long)]
+        json: bool,
+    },
+    /// Servers: put a proxy in front of the original and a build. Each request is answered by
+    /// the original; the build gets the same request and its answer is compared. The build's
+    /// outbound HTTP and mail go to local sinks and its files to a fresh copy, so no side effect
+    /// happens twice. Mismatches are logged to rust/app-cases/shadow/mismatches.jsonl as shapes
+    /// only (no values).
+    Shadow {
+        /// Repository root.
+        #[arg(default_value = ".")]
+        repo: PathBuf,
+        /// Command line of the build to compare (the front door, the final binary).
+        #[arg(long)]
+        build: String,
+        /// Port the proxy listens on (a free one, printed, when omitted).
+        #[arg(long, value_name = "PORT")]
+        listen: Option<u16>,
+        /// An original that is already running; otherwise the saved command starts it.
+        #[arg(long, value_name = "HOST:PORT")]
+        upstream: Option<String>,
+        /// Stop after this many requests (for tests and CI); runs until Ctrl-C otherwise.
+        #[arg(long, value_name = "N")]
+        requests: Option<usize>,
+        /// Seconds to wait for each answer (default: the one saved by `app record`, 30 seconds
+        /// unless it was changed).
+        #[arg(long)]
+        timeout: Option<u64>,
+        /// Append each mismatching request to rust/app-cases/shadow/inputs.jsonl in
+        /// `app record --inputs` format, so `app record --inputs` turns it into a case.
+        #[arg(long)]
+        keep: bool,
         /// Print the machine-readable report as JSON.
         #[arg(long)]
         json: bool,
@@ -691,6 +747,41 @@ enum AppCmd {
         #[arg(long)]
         json: bool,
     },
+    /// Check that the recording still describes the original and the port still matches:
+    /// replays the original against rust/app-cases (cases it no longer matches changed upstream),
+    /// lists examples in its docs that no case records, and replays the build. Writes
+    /// rust/app-cases/drift-report.md; exits 1 on any change. For CI after a lift.
+    Drift {
+        /// Repository root.
+        #[arg(default_value = ".")]
+        repo: PathBuf,
+        /// Build to check; defaults to rust/app, built with cargo, when it exists.
+        #[arg(long)]
+        build: Option<String>,
+        /// Seconds before a run is killed (default: the one saved by `app record`, 30 seconds
+        /// unless it was changed).
+        #[arg(long)]
+        timeout: Option<u64>,
+        /// Print the machine-readable report as JSON.
+        #[arg(long)]
+        json: bool,
+    },
+}
+
+/// `3 distinct differences in 41 cases:` and a line per difference, most cases first.
+fn say_groups(groups: &[rust_anything::mismatch::Group]) {
+    if groups.is_empty() {
+        return;
+    }
+    let cases: usize = groups.iter().map(|g| g.cases).sum();
+    say!(
+        "{} in {}:",
+        counted(groups.len(), "distinct difference"),
+        counted(cases, "case")
+    );
+    for g in groups {
+        say!("  {:>4}  {}  {}", g.cases, g.id, g.label());
+    }
 }
 
 fn say_replay(replay: &app::ReplayOutcome) {
@@ -703,8 +794,16 @@ fn say_replay(replay: &app::ReplayOutcome) {
             f.total
         );
     }
+    say_groups(&replay.groups);
     for f in replay.failures.iter().take(20) {
-        let fields: Vec<&str> = f.problems.iter().map(|p| p.field.as_str()).collect();
+        let fields: Vec<String> = f
+            .problems
+            .iter()
+            .map(|p| {
+                p.at.as_ref()
+                    .map_or_else(|| p.field.clone(), |at| at.label())
+            })
+            .collect();
         say!("- {}: {}", f.case, fields.join(", "));
     }
     if replay.failures.len() > 20 {
@@ -996,6 +1095,7 @@ fn run() -> Result<ExitCode> {
             module,
             ignore_key_order,
             float_tolerance,
+            redact,
             json,
             node_args,
         } => {
@@ -1021,7 +1121,7 @@ fn run() -> Result<ExitCode> {
                 node_args: &node_args,
                 float_tolerance,
             };
-            let d = match profile {
+            let mut d = match profile {
                 Profile::Host => {
                     if device.is_some() || jni_libs.is_some() {
                         anyhow::bail!("`--device` and `--jni-libs` need `--profile android`");
@@ -1032,6 +1132,9 @@ fn run() -> Result<ExitCode> {
                     harness::diff_android(&opts, device.as_deref(), jni_libs.as_deref())?
                 }
             };
+            if redact {
+                rust_anything::mismatch::redact_diff(&mut d);
+            }
             let stale = rust_anything::bridge::Manifest::load(&crate_dir)
                 .ok()
                 .and_then(|m| rust_anything::recording::stale(&crate_dir, &m));
@@ -1068,27 +1171,41 @@ fn run() -> Result<ExitCode> {
                         "Known diff no longer happens, remove it from {}: {}({})",
                         rust_anything::recording::KNOWN_DIFFS,
                         e["fn"].as_str().unwrap_or_default(),
-                        e["args"]
+                        e.get("args").unwrap_or(&e["case"])
                     );
                 }
                 if !d.missing.is_empty() {
                     say!("Missing exports: {}", d.missing.join(", "));
                 }
+                say_groups(&d.groups);
                 for m in &d.mismatches {
-                    say!(
-                        "- {}({}): expected {}, got {}",
-                        m["fn"].as_str().unwrap_or_default(),
-                        m["args"]
-                            .as_array()
-                            .map(|a| a
-                                .iter()
-                                .map(ToString::to_string)
-                                .collect::<Vec<_>>()
-                                .join(", "))
-                            .unwrap_or_default(),
-                        m["expected"],
-                        m["actual"]
-                    );
+                    if m.get("case").is_some() {
+                        say!(
+                            "- {} (case {})",
+                            m["fn"].as_str().unwrap_or_default(),
+                            m["case"].as_str().unwrap_or_default()
+                        );
+                    } else {
+                        say!(
+                            "- {}({}): expected {}, got {}",
+                            m["fn"].as_str().unwrap_or_default(),
+                            m["args"]
+                                .as_array()
+                                .map(|a| a
+                                    .iter()
+                                    .map(ToString::to_string)
+                                    .collect::<Vec<_>>()
+                                    .join(", "))
+                                .unwrap_or_default(),
+                            m["expected"],
+                            m["actual"]
+                        );
+                    }
+                    if let Ok(at) =
+                        serde_json::from_value::<rust_anything::mismatch::At>(m["at"].clone())
+                    {
+                        say!("  {}", at.describe());
+                    }
                 }
             }
             if d.failed > 0 || stale.is_some() {
@@ -1580,6 +1697,38 @@ fn run() -> Result<ExitCode> {
                 return Ok(ExitCode::FAILURE);
             }
         }
+        Cmd::Rules { root, add, json } => {
+            let outcome = rust_anything::rules::add(&root, &add)?;
+            if json {
+                say!("{}", serde_json::to_string_pretty(&outcome)?);
+            } else {
+                for rule in &outcome.added {
+                    say!("Added: {rule}");
+                }
+                for rule in &outcome.skipped {
+                    say!("Already a rule: {rule}");
+                }
+                if add.is_empty() {
+                    if outcome.rules.is_empty() {
+                        say!(
+                            "No port rules yet in {}. Add one with `rust-anything rules --add \"...\"`.",
+                            outcome.file.display()
+                        );
+                    } else {
+                        say!("{}:", outcome.file.display());
+                        for rule in &outcome.rules {
+                            say!("- {rule}");
+                        }
+                    }
+                } else {
+                    say!(
+                        "{} has {}.",
+                        outcome.file.display(),
+                        counted(outcome.rules.len(), "rule")
+                    );
+                }
+            }
+        }
     }
     Ok(ExitCode::SUCCESS)
 }
@@ -1732,21 +1881,90 @@ fn run_app(command: AppCmd) -> Result<ExitCode> {
             timeout,
             port,
             case,
+            redact,
             json,
         } => {
-            let outcome = app::replay(&app::ReplayOptions {
+            let opts = app::ReplayOptions {
                 repo: &repo,
                 build: build.as_deref(),
                 timeout_secs: timeout,
                 port,
                 case: case.as_deref(),
-            })?;
+            };
+            let outcome = if redact {
+                app::replay_redacted(&opts)?
+            } else {
+                app::replay(&opts)?
+            };
             if json {
                 say!("{}", serde_json::to_string_pretty(&outcome)?);
             } else {
                 say_replay(&outcome);
             }
             if !outcome.failures.is_empty() {
+                return Ok(ExitCode::FAILURE);
+            }
+        }
+        AppCmd::Shadow {
+            repo,
+            build,
+            listen,
+            upstream,
+            requests,
+            timeout,
+            keep,
+            json,
+        } => {
+            let progress = |event: app_shadow::Event| match event {
+                app_shadow::Event::Listening(addr) if !json => {
+                    say!(
+                        "Shadowing on http://{addr}: answers come from the original, `{build}` is compared"
+                    );
+                }
+                app_shadow::Event::Mismatch(f) if !json => {
+                    let places: Vec<String> = f
+                        .problems
+                        .iter()
+                        .map(|p| {
+                            p.at.as_ref()
+                                .map_or_else(|| p.field.clone(), |at| at.label())
+                        })
+                        .collect();
+                    say!("- {}: {}", f.case, places.join(", "));
+                }
+                _ => {}
+            };
+            let outcome = app_shadow::shadow(&app_shadow::ShadowOptions {
+                repo: &repo,
+                build: &build,
+                listen,
+                upstream: upstream.as_deref(),
+                requests,
+                timeout_secs: timeout,
+                keep,
+                progress: Some(&progress),
+            })?;
+            if json {
+                say!("{}", serde_json::to_string_pretty(&outcome)?);
+            } else {
+                say!("{}/{} requests matched", outcome.matched, outcome.requests);
+                say_groups(&outcome.groups);
+                if !outcome.mismatches.is_empty() {
+                    say!("Log: {}", outcome.log.display());
+                }
+                if let Some(inputs) = outcome
+                    .inputs
+                    .as_ref()
+                    .filter(|_| !outcome.mismatches.is_empty())
+                {
+                    say!(
+                        "Kept: {} (`rust-anything app record --inputs {}` makes them cases)",
+                        inputs.display(),
+                        inputs.display()
+                    );
+                }
+            }
+            if !outcome.mismatches.is_empty() {
                 return Ok(ExitCode::FAILURE);
             }
         }
@@ -1934,6 +2152,55 @@ fn run_app(command: AppCmd) -> Result<ExitCode> {
                 }
             }
             if !outcome.lifted {
+                return Ok(ExitCode::FAILURE);
+            }
+        }
+        AppCmd::Drift {
+            repo,
+            build,
+            timeout,
+            json,
+        } => {
+            let outcome = drift::drift(&drift::DriftOptions {
+                repo: &repo,
+                build: build.as_deref(),
+                timeout_secs: timeout,
+            })?;
+            if json {
+                say!("{}", serde_json::to_string_pretty(&outcome)?);
+            } else {
+                say!(
+                    "{} cases; build: {}",
+                    outcome.cases,
+                    outcome
+                        .build
+                        .as_ref()
+                        .map(|b| b.join(" "))
+                        .unwrap_or_else(|| "none".to_string())
+                );
+                for (title, list) in [
+                    ("Changed upstream", &outcome.changed),
+                    ("Port failures", &outcome.failing),
+                ] {
+                    if !list.is_empty() {
+                        say!("{title}:");
+                        for d in list {
+                            say!("- {}: {} ({})", d.case, d.fields.join(", "), d.verdict);
+                        }
+                    }
+                }
+                if !outcome.new.is_empty() {
+                    say!("New examples, not recorded:");
+                    for n in &outcome.new {
+                        say!("- {n}");
+                    }
+                }
+                if !outcome.drifted {
+                    say!("No drift.");
+                }
+                say!("Report: {}", outcome.report.display());
+            }
+            if outcome.drifted {
                 return Ok(ExitCode::FAILURE);
             }
         }

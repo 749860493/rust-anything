@@ -12,6 +12,60 @@
 - `--float-tolerance -0.5` (with a space) on `record`, `diff` and `app record` gets the range message
   instead of clap's `unexpected argument '-0' found`, and `diff` checks the tolerance before it
   reads or runs anything (#574, #597 by @alvaroalonsoparrondo-a11y).
+- `diff` names where each mismatch first differs, as `at` in the JSON: the channel (`return`,
+  `throw`, `return vs throw` or `call N` for a class scenario), the JSON path (`$.items[2].name`),
+  the kind (`value`, `type`, `missing key`, `extra key`, `length`) and, for strings, the character
+  with a little context around it. `app replay` does the same for each failing field: the line
+  and column of text output, the JSON path in a JSON body, the status change (`200→500`).
+- `diff`, `app replay` and `report` group the failing cases that differ the same way into
+  distinct differences, each with a short stable id and a count, so 40 mismatches from one bug
+  read as one line. `rust/app-cases/replay-report.md` gains a "Distinct differences" table before
+  the failing cases, `report` a "Remaining differences" table (and `differences` in its JSON)
+  while cases still differ, and `go` hands the agent each difference once with an example and
+  where it starts, instead of the first five raw mismatches.
+- `diff --redact` and `app replay --redact` (MCP `redact: true`) print mismatches as shapes only:
+  where they differ, types, lengths and hashes, never arguments, outputs or request paths. The
+  replay report is written redacted too, so it can be pasted into an issue or handed to another
+  agent.
+- `app shadow` checks a server build on live traffic: a proxy answers every request with the
+  original, then sends it to the build and compares status, headers and body with the saved
+  normalizers. The build's outbound HTTP and mail go to local sinks and its `--fresh` files to a
+  copy of its own, so no side effect happens twice. Mismatches are logged to
+  `rust/app-cases/shadow/mismatches.jsonl` as redacted shapes (where each field first differs,
+  never values) and grouped into distinct differences at the end; `--keep` saves the requests in
+  `app record --inputs` format. `--upstream` uses an original that is already running,
+  `--requests` stops after a count. Servers only, no MCP tool.
+- `app drift [REPO] [--build CMD]` (MCP `app_drift`) checks that the recording still describes
+  the original and the port still matches: it replays the original against `rust/app-cases`
+  (cases it no longer matches changed upstream), lists examples in its docs that no case records,
+  and replays the build (`rust/app`, built with cargo, by default), marking each case "original
+  changed, port still old" or "port regression". It writes `rust/app-cases/drift-report.md`,
+  leaves `replay-report.md` as it was, and exits 1 on any change. `docs/whole-apps.md` has a
+  GitHub Actions workflow that runs it on a schedule.
+- `gate` has a cheat guard. `literals` fails when the port writes three or more recorded arguments
+  or results (strings of 8 or more characters, numbers with 5 or more significant digits) that the
+  original's source never spells out, or names `cases.jsonl`, `known-diffs.jsonl` or
+  `recorded-from.json`; one or two are named and pass, and `// recorded-literal: <reason>` on a line
+  lets a library constant stay. `tests` fails when the crate has fewer `#[test]`s or assertions, or
+  more `#[ignore]`s, than at its last passing gate (kept in `.rust-anything/tests.json`). `record`
+  now also saves the number and hash of the recorded lines in `recorded-from.json`, and `recording`
+  fails when one of them was edited or removed; appended cases (`fuzz --keep`) still pass, and older
+  recordings are not checked until recorded again. `go`'s TASK.md says so.
+- `rules` keeps port rules in `rust/RULES.md`: `rust-anything rules <repo>` lists them and
+  `--add "<rule>"` appends one (an exact duplicate is skipped; a crate folder stands for its
+  repository). `go` puts them in TASK.md (and so in every retry prompt), both MCP prompts end with
+  them, and the MCP server's instructions, the `rules` tool and the skill tell agents to read them
+  before porting and to add each correction the user makes.
+
+### Upgrading
+
+- `rust/app-cases/replay-report.md` gains a "Distinct differences" section and an `at` line above
+  each failing field, so a committed report differs once after upgrading: replay and commit it
+  again.
+- `gate` has new `literals` and `tests` checks and an extended `recording` check, which can fail
+  ports that passed before. A constant the original really takes from a library can stay with
+  `// recorded-literal: <reason>` on its line; to accept fewer tests on purpose, delete
+  `<crate>/.rust-anything/tests.json` and run `gate` again to save a new baseline.
 
 ## 4.2.0 (2026-11-25)
 

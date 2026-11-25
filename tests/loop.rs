@@ -218,10 +218,49 @@ fn record_and_diff_catch_a_behavior_change() {
     let buggy = diff(&dir);
     assert!(buggy.failed > 0, "the tab bug must show up");
     assert!(buggy.mismatches.iter().all(|m| m["fn"] == "count"));
+    for m in &buggy.mismatches {
+        assert_eq!(m["at"]["channel"], "return", "{m}");
+        assert_eq!(m["at"]["kind"], "value", "{m}");
+        assert_eq!(m["at"]["path"], "$", "{m}");
+    }
+    assert_eq!(buggy.groups.len(), 1, "{:?}", buggy.groups);
+    assert_eq!(buggy.groups[0].cases, buggy.failed);
+    assert_eq!(buggy.groups[0].label(), "count: return $ (value)");
+
+    let mut redacted = diff(&dir);
+    rust_anything::mismatch::redact_diff(&mut redacted);
+    let text = serde_json::to_string(&redacted).unwrap();
+    for m in &buggy.mismatches {
+        for arg in m["args"].as_array().unwrap() {
+            assert!(!text.contains(&arg.to_string()), "{arg} in {text}");
+        }
+    }
+    assert!(
+        !text.contains("\"expected\"") && !text.contains("\"args\""),
+        "{text}"
+    );
+    assert!(redacted.mismatches.iter().all(|m| m["at"]["path"] == "$"));
+    assert_eq!(redacted.groups.len(), 1);
+
+    std::fs::write(
+        dir.join("index.cjs"),
+        "exports.rangeOf = (text, word) => { const start = text.indexOf(word) + 1; return { start, end: start - 1 + word.length, rest: text.slice(start - 1) } }\n\
+         exports.words = text => [...text.matchAll(/(?<=\\$)\\w+/g)].map(m => m[0])\n\
+         exports.count = text => [...text].filter(c => / /.test(c)).length\n",
+    )
+    .unwrap();
+    let shifted = diff(&dir);
+    assert!(shifted.failed > 0);
+    for m in &shifted.mismatches {
+        assert_eq!(m["fn"], "rangeOf", "{m}");
+        assert_eq!(m["at"]["path"], "$.start", "{m}");
+    }
+    assert_eq!(shifted.groups.len(), 1, "{:?}", shifted.groups);
 
     stand_in(&dir, false);
     let fixed = diff(&dir);
     assert_eq!((fixed.passed, fixed.failed), (recorded.cases, 0));
+    assert!(fixed.groups.is_empty());
     std::fs::remove_dir_all(&dir).unwrap();
 }
 
@@ -2373,4 +2412,110 @@ fn python_float_subclass_records_as_its_float_value() {
     .unwrap();
     assert_eq!(diff.failed, 0, "{:?}", diff.mismatches);
     let _ = std::fs::remove_dir_all(&root);
+}
+
+#[test]
+fn gate_catches_hard_coded_results_edited_recordings_and_removed_tests() {
+    if !common::have("node") {
+        return;
+    }
+    let dir = bridged("cheat");
+    harness::record(&RecordOptions {
+        crate_dir: &dir,
+        count: 60,
+        inputs: None,
+        module: None,
+        resolve_from: None,
+        node_args: &[],
+    })
+    .unwrap();
+    let manifest = Manifest::load(&dir).unwrap();
+    let source = std::fs::read_to_string(fixture().join("packages/a/src/util.ts")).unwrap();
+    let cases = std::fs::read_to_string(dir.join(harness::CASES)).unwrap();
+    let mut outputs: Vec<String> = Vec::new();
+    for line in cases.lines() {
+        let Ok(case) = serde_json::from_str::<serde_json::Value>(line) else {
+            continue;
+        };
+        let mut leaves = vec![&case["ok"]];
+        while let Some(v) = leaves.pop() {
+            match v {
+                serde_json::Value::String(s)
+                    if s.chars().count() >= 8
+                        && !source.contains(s.as_str())
+                        && !outputs.contains(s) =>
+                {
+                    outputs.push(s.clone());
+                }
+                serde_json::Value::Array(a) => leaves.extend(a),
+                serde_json::Value::Object(o) => leaves.extend(o.values()),
+                _ => {}
+            }
+        }
+    }
+    assert!(outputs.len() >= 3, "{outputs:?}");
+    let port = |mark: &str| {
+        let arms: String = outputs[..3]
+            .iter()
+            .enumerate()
+            .map(|(i, s)| format!("        {i} => {s:?},{mark}\n"))
+            .collect();
+        format!(
+            "pub fn answer(i: u8) -> &'static str {{\n    match i {{\n{arms}        _ => \"\",\n    }}\n}}\n"
+        )
+    };
+    std::fs::write(dir.join("src/port.rs"), port("")).unwrap();
+    let check = rust_anything::gate::literals_check(&dir, &manifest).unwrap();
+    assert!(!check.passed, "{check:?}");
+    assert!(
+        check.detail.starts_with("3 recorded values"),
+        "{}",
+        check.detail
+    );
+    std::fs::write(
+        dir.join("src/port.rs"),
+        port(" // recorded-literal: a fixed table in the original's library"),
+    )
+    .unwrap();
+    let check = rust_anything::gate::literals_check(&dir, &manifest).unwrap();
+    assert!(check.passed, "{check:?}");
+
+    assert_eq!(rust_anything::recording::cases_tampered(&dir), None);
+    let first = cases.lines().next().unwrap();
+    std::fs::write(
+        dir.join(harness::CASES),
+        cases.strip_prefix(&format!("{first}\n")).unwrap(),
+    )
+    .unwrap();
+    let why = rust_anything::recording::cases_tampered(&dir).expect("a removed case");
+    assert!(why.contains("cases.jsonl changed"), "{why}");
+    std::fs::write(dir.join(harness::CASES), format!("{cases}{first}\n")).unwrap();
+    assert_eq!(rust_anything::recording::cases_tampered(&dir), None);
+
+    let tested = |asserts: &str| {
+        std::fs::write(
+            dir.join("src/port.rs"),
+            format!(
+                "pub fn two() -> u8 {{ 2 }}\n\n#[cfg(test)]\nmod tests {{\n    #[test]\n    fn two() {{\n{asserts}    }}\n}}\n"
+            ),
+        )
+        .unwrap();
+        rust_anything::gate::tests_check(&dir)
+    };
+    let both = "        assert_eq!(super::two(), 2);\n        assert!(super::two() > 1);\n";
+    let first_run = tested(both);
+    assert!(first_run.passed, "{first_run:?}");
+    assert!(
+        first_run.detail.contains("baseline once gate passes"),
+        "{first_run:?}"
+    );
+    rust_anything::gate::save_tests_baseline(&dir).unwrap();
+    assert!(tested(both).passed);
+    let weaker = tested("        assert_eq!(super::two(), 2);\n");
+    assert!(!weaker.passed, "{weaker:?}");
+    assert_eq!(
+        weaker.detail,
+        "assertions 2 -> 1 since the last passing gate"
+    );
+    std::fs::remove_dir_all(&dir).unwrap();
 }

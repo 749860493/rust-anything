@@ -9,6 +9,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use rust_anything::app::{self, RecordOptions, ReplayOptions};
+use rust_anything::drift::{self, DriftOptions};
 use rust_anything::front_door::{self, FrontDoorOptions, WireOptions};
 use rust_anything::lift::{self, LiftOptions};
 
@@ -714,7 +715,33 @@ fn check_language(lang: &Lang) {
     for f in &bug.failures {
         assert!(f.args[1].starts_with("/div/"), "{f:?}");
         assert!(f.problems.iter().all(|p| p.field == "body"), "{f:?}");
+        let at = f.problems[0].at.as_ref().unwrap();
+        assert_eq!((at.channel.as_str(), at.kind.as_str()), ("body", "text"));
+        assert_eq!((at.line, at.column), (Some(1), Some(12)), "{at:?}");
+        assert!(
+            at.context.as_ref().unwrap().actual.contains("divi⟨d⟩e"),
+            "{at:?}"
+        );
     }
+    assert_eq!(bug.groups.len(), 1, "{:?}", bug.groups);
+    assert_eq!(bug.groups[0].cases, bug.failures.len());
+    assert_eq!(bug.groups[0].label(), "body (text)");
+    let report = std::fs::read_to_string(&bug.report).unwrap();
+    assert!(report.contains("## Distinct differences"), "{report}");
+    assert!(
+        report.contains("at body, line 1, column 12, char 11: "),
+        "{report}"
+    );
+    let redacted = app::redacted(bug).unwrap();
+    let report = std::fs::read_to_string(&redacted.report).unwrap();
+    assert!(
+        !report.contains("zero") && !report.contains("/div/"),
+        "{report}"
+    );
+    assert!(
+        report.contains("body (text), line 1, column 12"),
+        "{report}"
+    );
     std::fs::remove_dir_all(&repo).unwrap();
 
     if !common::have("cargo") {
@@ -1670,5 +1697,173 @@ http.server.HTTPServer(("127.0.0.1", int(os.environ["PORT"])), H).serve_forever(
     let rep5 = replay(&repo, None);
     assert_eq!((rep5.passed, rep5.total), (2, 2), "{:?}", rep5.failures);
 
+    std::fs::remove_dir_all(&repo).unwrap();
+}
+
+#[test]
+fn drift_on_a_server_finds_a_port_regression_and_a_new_curl_example() {
+    if !common::have("node") {
+        return;
+    }
+    let repo = fixture("ts", "drift");
+    record(&repo, "node server.js", false);
+    let text = std::fs::read_to_string(repo.join("server.js")).unwrap();
+    std::fs::write(
+        repo.join("server_bug.js"),
+        text.replace("division by zero", "divide by zero"),
+    )
+    .unwrap();
+    let readme = std::fs::read_to_string(repo.join("README.md")).unwrap();
+    std::fs::write(
+        repo.join("README.md"),
+        readme.replace(
+            "$ curl http://localhost:8080/missing\n",
+            "$ curl http://localhost:8080/missing\n$ curl http://localhost:8080/div/9/3\n",
+        ),
+    )
+    .unwrap();
+    let outcome = drift::drift(&DriftOptions {
+        repo: &repo,
+        build: Some("node server_bug.js"),
+        timeout_secs: None,
+    })
+    .unwrap();
+    std::fs::remove_dir_all(&repo).unwrap();
+    assert!(outcome.drifted);
+    assert!(outcome.changed.is_empty(), "{outcome:?}");
+    assert_eq!(
+        outcome
+            .failing
+            .iter()
+            .map(|f| (f.case.as_str(), f.verdict.as_str()))
+            .collect::<Vec<_>>(),
+        [("example-004-get-div", "port regression")],
+        "{outcome:?}"
+    );
+    assert_eq!(outcome.new, ["GET /div/9/3"]);
+}
+
+/// Sends one raw request to `port`, retrying while the proxy is not accepting yet, and returns
+/// the whole answer.
+fn ask(port: u16, raw: &str) -> String {
+    use std::io::{Read, Write};
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(120);
+    loop {
+        if let Ok(mut stream) = std::net::TcpStream::connect(("127.0.0.1", port)) {
+            stream.write_all(raw.as_bytes()).unwrap();
+            let mut out = String::new();
+            stream.read_to_string(&mut out).unwrap();
+            return out;
+        }
+        assert!(
+            std::time::Instant::now() < deadline,
+            "the proxy never listened"
+        );
+        std::thread::sleep(std::time::Duration::from_millis(50));
+    }
+}
+
+#[test]
+fn shadow_answers_with_the_original_and_logs_the_build_mismatch_as_a_shape() {
+    if !common::have_with("node", &["--version"], "was not found") {
+        return;
+    }
+    let repo = fixture("ts", "shadow");
+    let source = std::fs::read_to_string(repo.join("server.js")).unwrap();
+    std::fs::write(
+        repo.join("server_bug.js"),
+        source.replace("division by zero", "divide by zero"),
+    )
+    .unwrap();
+    record(&repo, "node server.js", false);
+
+    let port = rust_anything::http::free_port().unwrap();
+    let shadow = {
+        let repo = repo.clone();
+        std::thread::spawn(move || {
+            rust_anything::app_shadow::shadow(&rust_anything::app_shadow::ShadowOptions {
+                repo: &repo,
+                build: "node server_bug.js",
+                listen: Some(port),
+                upstream: None,
+                requests: Some(3),
+                timeout_secs: None,
+                keep: true,
+                progress: None,
+            })
+            .unwrap()
+        })
+    };
+    let hello = ask(
+        port,
+        "GET /hello HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n",
+    );
+    assert!(hello.contains("{\"message\":\"hello\"}"), "{hello}");
+    let upper = ask(
+        port,
+        "POST /upper HTTP/1.1\r\nHost: localhost\r\nContent-Length: 11\r\nConnection: close\r\n\r\nhello world",
+    );
+    assert!(upper.contains("HELLO WORLD"), "{upper}");
+    let div = ask(
+        port,
+        "GET /div/5/0 HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n",
+    );
+    assert!(div.starts_with("HTTP/1.1 400"), "{div}");
+    assert!(div.contains("error: division by zero"), "{div}");
+
+    let outcome = shadow.join().unwrap();
+    assert_eq!((outcome.requests, outcome.matched), (3, 2), "{outcome:?}");
+    assert_eq!(outcome.mismatches.len(), 1, "{outcome:?}");
+    let fields: Vec<&str> = outcome.mismatches[0]
+        .problems
+        .iter()
+        .map(|p| p.field.as_str())
+        .collect();
+    assert_eq!(fields, ["body"]);
+    let at = outcome.mismatches[0].problems[0].at.as_ref().unwrap();
+    assert_eq!((at.channel.as_str(), at.kind.as_str()), ("body", "text"));
+    assert!(at.context.is_none(), "{at:?}");
+    assert_eq!(outcome.groups.len(), 1, "{outcome:?}");
+    let outcome_text = format!("{outcome:?}");
+    assert!(!outcome_text.contains("zero"), "{outcome_text}");
+    assert!(!outcome_text.contains("/div"), "{outcome_text}");
+
+    let log = std::fs::read_to_string(&outcome.log).unwrap();
+    assert_eq!(log.lines().count(), 1, "{log}");
+    assert!(log.contains("\"body\""), "{log}");
+    assert!(log.contains("\"kind\":\"text\""), "{log}");
+    assert!(log.starts_with("{\"case\":\"GET "), "{log}");
+    assert!(!log.contains("zero") && !log.contains("/div"), "{log}");
+
+    let kept = outcome.inputs.clone().unwrap();
+    let inputs = std::fs::read_to_string(&kept).unwrap();
+    assert_eq!(inputs.lines().count(), 1, "{inputs}");
+    assert!(inputs.contains("\"path\":\"/div/5/0\""), "{inputs}");
+    let rerecorded = app::record(&RecordOptions {
+        repo: &repo,
+        run: &[],
+        inputs: Some(&kept),
+        normalize: &[],
+        name: None,
+        traps: false,
+        timeout_secs: None,
+        http: None,
+        server_args: None,
+        fresh: None,
+        pace_ms: None,
+        port: None,
+        float_tolerance: None,
+        float_files: &[],
+        effects: None,
+        ready_secs: None,
+    })
+    .unwrap();
+    assert_eq!(rerecorded.inputs, 1, "{rerecorded:?}");
+    let bug = replay(&repo, Some("node server_bug.js"));
+    assert!(
+        bug.failures.iter().any(|f| f.case.starts_with("input-")),
+        "{:?}",
+        bug.failures
+    );
     std::fs::remove_dir_all(&repo).unwrap();
 }

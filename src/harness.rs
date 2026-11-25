@@ -100,6 +100,10 @@ pub struct DiffOutcome {
     /// Matches across the last changes to `port.rs`, and whether they stopped going up.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub trend: Option<crate::recording::Trend>,
+    /// The distinct differences among all the mismatches (not only the first ones), most cases
+    /// first.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub groups: Vec<crate::mismatch::Group>,
 }
 
 fn is_zero(n: &usize) -> bool {
@@ -955,7 +959,7 @@ pub fn diff(opts: &DiffOptions) -> Result<DiffOutcome> {
 
 /// Like `diff`, without truncating `mismatches`, so callers can inspect per-function results.
 pub fn diff_full(opts: &DiffOptions) -> Result<DiffOutcome> {
-    let mut outcome = settle(opts, diff_exact(opts)?)?;
+    let mut outcome = located(settle(opts, diff_exact(opts)?)?);
     anyhow::ensure!(
         outcome.total > 0,
         "no recorded cases to compare; run `rust-anything record` first"
@@ -1045,7 +1049,7 @@ pub fn diff_android(
 }
 
 fn diff_after(opts: &DiffOptions, exact: DiffOutcome) -> Result<DiffOutcome> {
-    let mut outcome = settle(opts, exact)?;
+    let mut outcome = located(settle(opts, exact)?);
     outcome.mismatches.truncate(SHOWN_MISMATCHES);
     anyhow::ensure!(
         outcome.total > 0,
@@ -1055,6 +1059,13 @@ fn diff_after(opts: &DiffOptions, exact: DiffOutcome) -> Result<DiffOutcome> {
         outcome.trend = crate::recording::track(opts.crate_dir, outcome.passed, outcome.total);
     }
     Ok(outcome)
+}
+
+/// Each mismatch with where it starts, and the distinct differences among them.
+fn located(mut outcome: DiffOutcome) -> DiffOutcome {
+    crate::mismatch::annotate(&mut outcome);
+    outcome.groups = crate::mismatch::group_mismatches(&outcome.mismatches);
+    outcome
 }
 
 /// Applies the float tolerance and `known-diffs.jsonl` to a driver's outcome, keeping every
