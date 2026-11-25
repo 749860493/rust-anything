@@ -1040,7 +1040,9 @@ fn call(name: &str, args: &Value) -> Result<Value> {
                 Some(t) if t.is_finite() && t > 0.0 => {
                     Some(crate::process::seconds(t).context("`time` is too large")?)
                 }
-                Some(_) => anyhow::bail!("`time` takes seconds"),
+                Some(t) => {
+                    anyhow::bail!("`time` must be 0 or more seconds (0 runs one round), not {t}")
+                }
                 None => None,
             };
             serde_json::to_value(crate::fuzz::fuzz(&crate::fuzz::FuzzOptions {
@@ -1271,6 +1273,17 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert!(err.contains("too large"), "{err}");
+    }
+
+    #[test]
+    fn a_negative_fuzz_time_names_the_range_and_the_value() {
+        let err = call("fuzz", &json!({ "crate": ".", "time": -1 }))
+            .unwrap_err()
+            .to_string();
+        assert_eq!(
+            err,
+            "`time` must be 0 or more seconds (0 runs one round), not -1"
+        );
     }
 
     #[test]
