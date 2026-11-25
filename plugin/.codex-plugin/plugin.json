@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/erkamyaman/rust-anything",
   "repository": "https://github.com/erkamyaman/rust-anything",
-  "license": "MIT",
+  "license": "MIT OR Apache-2.0",
   "keywords": [
     "rust",
     "performance",
@@ -25,7 +25,7 @@
     "developerName": "Erkam Yaman",
     "websiteUrl": "https://github.com/erkamyaman/rust-anything",
     "privacyPolicyUrl": "https://github.com/erkamyaman/rust-anything/blob/main/docs/privacy.md",
-    "termsOfServiceUrl": "https://github.com/erkamyaman/rust-anything/blob/main/LICENSE",
+    "termsOfServiceUrl": "https://github.com/erkamyaman/rust-anything/blob/main/README.md#license",
     "logo": "./.claude-plugin/icon.png"
   }
 }

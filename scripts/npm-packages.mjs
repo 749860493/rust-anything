@@ -38,6 +38,6 @@ const pkg = JSON.parse(fs.readFileSync(path.join(pkgDir, 'package.json'), 'utf8'
 pkg.version = version
 fs.writeFileSync(path.join(pkgDir, 'package.json'), JSON.stringify(pkg, null, 2) + '\n')
 fs.copyFileSync(path.join(root, 'README.md'), path.join(pkgDir, 'README.md'))
-fs.copyFileSync(path.join(root, 'LICENSE'), path.join(pkgDir, 'LICENSE'))
+for (const f of ['LICENSE-MIT', 'LICENSE-APACHE']) fs.copyFileSync(path.join(root, f), path.join(pkgDir, f))
 
 console.log(pkgDir)

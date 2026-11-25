@@ -99,7 +99,7 @@ Les traductions sont les bienvenues et maintenues par la communauté. Une nouvel
 
 1. Se trouve dans `docs/README_<CODE>.md` (par exemple `docs/README_PT.md`) ; le `README.md` racine reste
    en anglais et n'est jamais renommé ni remplacé.
-2. Utilise des chemins qui fonctionnent depuis `docs/` : `assets/logo.svg`, `../LICENSE`, `../README.md`.
+2. Utilise des chemins qui fonctionnent depuis `docs/` : `assets/logo.svg`, `../LICENSE-MIT`, `../README.md`.
 3. Commence par la même ligne de langues que les autres traductions, avec sa propre langue en texte
    simple, suivie de la note indiquant qu'elle est maintenue par la communauté et peut être en retard sur le README
    anglais (copiez-la depuis `docs/README_DE.md` et traduisez-la).

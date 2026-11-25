@@ -98,7 +98,7 @@ PHP 和 C# 是以预览形式在两个提交中加入的，值得先读一读：
 
 1. 放在 `docs/README_<CODE>.md` 中（例如 `docs/README_PT.md`）；根目录的 `README.md` 保持
    英文，永远不会被重命名或替换。
-2. 使用从 `docs/` 出发有效的路径：`assets/logo.svg`、`../LICENSE`、`../README.md`。
+2. 使用从 `docs/` 出发有效的路径：`assets/logo.svg`、`../LICENSE-MIT`、`../README.md`。
 3. 以与其他译文相同的语言行开头，其中自己的语言用纯文本表示，后面跟一句说明：译文由社区维护，可能落后于英文
    README（从 `docs/README_DE.md` 复制并翻译）。
 4. 放在语言行的**末尾**，`README.md` 和每份译文中都是如此。已列出语言的

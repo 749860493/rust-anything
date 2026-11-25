@@ -99,7 +99,7 @@ Tarjimalar mamnuniyat bilan qabul qilinadi va hamjamiyat tomonidan yuritiladi. Y
 
 1. `docs/README_<CODE>.md` da joylashadi (masalan `docs/README_PT.md`); ildizdagi `README.md` inglizcha
    qoladi va hech qachon qayta nomlanmaydi yoki almashtirilmaydi.
-2. `docs/` dan ishlaydigan yo'llardan foydalanadi: `assets/logo.svg`, `../LICENSE`, `../README.md`.
+2. `docs/` dan ishlaydigan yo'llardan foydalanadi: `assets/logo.svg`, `../LICENSE-MIT`, `../README.md`.
 3. Boshqa tarjimalar bilan bir xil til qatoridan boshlanadi, o'z tili oddiy matn sifatida
    bo'ladi, undan keyin u hamjamiyat tomonidan yuritilishi va inglizcha README'dan ortda qolishi mumkinligi
    haqidagi izoh keladi (uni `docs/README_DE.md` dan ko'chirib, tarjima qiling).

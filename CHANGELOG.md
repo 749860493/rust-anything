@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- rust-anything is now dual licensed under MIT OR Apache-2.0, the usual license for Rust projects. You
+  can keep using it under MIT exactly as before; Apache-2.0 adds an explicit patent grant. `LICENSE` is
+  now `LICENSE-MIT`, next to a new `LICENSE-APACHE`, and both ship in the crate, the npm package and
+  the release archives.
 - `map` counts units, not crates, in its first line: one unit bridged twice (napi and wasm, or a
   second `bridge --out`) reads `1 of 1 unit has a Rust port` instead of `2 of 2 units have`. The
   Ports table still lists every crate (#609 by @Aadithya-kl).

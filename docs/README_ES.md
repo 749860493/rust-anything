@@ -16,7 +16,7 @@ y cada pieza se comprueba contra ese registro antes de pasar a la siguiente. No 
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">
-  <a href="../LICENSE"><img src="https://img.shields.io/badge/license-MIT-555" alt="MIT license"></a>
+  <a href="../LICENSE-MIT"><img src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-555" alt="MIT or Apache-2.0 license"></a>
   <a href="https://crates.io/crates/rust-anything"><img src="https://img.shields.io/crates/v/rust-anything?color=E2862A&label=crates.io" alt="crates.io version"></a>
   <a href="https://www.npmjs.com/package/rust-anything"><img src="https://img.shields.io/npm/v/rust-anything?color=E2862A&label=npm" alt="npm version"></a>
   <br>
@@ -31,7 +31,7 @@ y cada pieza se comprueba contra ese registro antes de pasar a la siguiente. No 
 <p align="center"><a href="https://trendshift.io/repositories/363468" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/363468/daily?language=Rust" alt="erkamyaman/rust-anything: #1 Rust repository of the day on Trendshift" width="250" height="55"/></a></p>
 
 <p align="center"><b><a href="#inicio-rápido">Instalar</a></b> · <a href="https://github.com/erkamyaman/rust-anything/releases">Versiones</a> · <a href="#inicio-rápido">Plugin para Claude Code</a> · <a href="https://registry.modelcontextprotocol.io/v0.1/servers?search=rust-anything">Registro MCP</a> · <a href="real-world.md">Portes reales</a> · <a href="faq.md#faq">Preguntas frecuentes</a><br>
-<sub><a href="#lenguajes">Lenguajes</a> · <a href="how-it-works.md#how-it-works">Cómo funciona</a> · <a href="whole-apps.md#port-a-whole-app">Aplicaciones completas</a> · <a href="#patrocinadores">Patrocinadores</a> · <a href="../LICENSE">MIT</a></sub><br>
+<sub><a href="#lenguajes">Lenguajes</a> · <a href="how-it-works.md#how-it-works">Cómo funciona</a> · <a href="whole-apps.md#port-a-whole-app">Aplicaciones completas</a> · <a href="#patrocinadores">Patrocinadores</a> · <a href="../LICENSE-MIT">MIT / Apache-2.0</a></sub><br>
 Hecho en Türkiye 🇹🇷 por <a href="https://github.com/erkamyaman">erKam Yaman</a> · <a href="https://github.com/sponsors/erkamyaman">❤️ Patrocíname</a> · Con el patrocinio de <a href="https://coderabbit.link/er-kam"><img src="assets/brands/coderabbit.png" width="22" height="22" align="absmiddle" alt=""> <b>CodeRabbit</b></a></p>
 
 <p align="center">Nuevo en 2.0: <a href="real-world.md#prettier">Prettier, portado a Rust</a>. 19 veces más rápido · 15.861 de 17.224 ejecuciones registradas enteramente en Rust · cada ejecución idéntica byte a byte</p>
@@ -371,4 +371,4 @@ especialmente bienvenidos. Informa en privado de los problemas de seguridad
 
 ## Licencia
 
-[MIT](../LICENSE) © [Erkam Yaman](https://github.com/erkamyaman). Los portes y el código generado en tu repositorio son tuyos.
+[MIT](../LICENSE-MIT) / [Apache-2.0](../LICENSE-APACHE) © [Erkam Yaman](https://github.com/erkamyaman). Los portes y el código generado en tu repositorio son tuyos.

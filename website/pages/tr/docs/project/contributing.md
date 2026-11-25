@@ -99,7 +99,7 @@ PHP ve C# önizleme olarak, önce okunmaya değer iki commit'te eklendi:
 
 1. `docs/README_<CODE>.md` içinde yaşar (örneğin `docs/README_PT.md`); kökteki `README.md` İngilizce
    kalır ve asla yeniden adlandırılmaz ya da değiştirilmez.
-2. `docs/` içinden çalışan yollar kullanır: `assets/logo.svg`, `../LICENSE`, `../README.md`.
+2. `docs/` içinden çalışan yollar kullanır: `assets/logo.svg`, `../LICENSE-MIT`, `../README.md`.
 3. Diğer çevirilerle aynı dil satırıyla başlar, kendi dili düz metin olarak yazılır; ardından
    topluluk tarafından sürdürüldüğünü ve İngilizce README'nin gerisinde kalabileceğini belirten not
    gelir (`docs/README_DE.md`'den kopyalayıp çevirin).

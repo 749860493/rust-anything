@@ -99,7 +99,7 @@ As traduções são bem-vindas e mantidas pela comunidade. Uma nova tradução:
 
 1. Fica em `docs/README_<CODE>.md` (por exemplo `docs/README_PT.md`); o `README.md` da raiz continua em
    inglês e nunca é renomeado nem substituído.
-2. Utiliza caminhos que funcionam a partir de `docs/`: `assets/logo.svg`, `../LICENSE`, `../README.md`.
+2. Utiliza caminhos que funcionam a partir de `docs/`: `assets/logo.svg`, `../LICENSE-MIT`, `../README.md`.
 3. Começa com a mesma linha de idiomas das outras traduções, com o seu próprio idioma em texto
    simples, seguida da nota de que é mantida pela comunidade e pode estar desatualizada em relação ao
    README em inglês (copie-a de `docs/README_DE.md` e traduza-a).

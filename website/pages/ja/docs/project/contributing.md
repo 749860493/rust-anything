@@ -98,7 +98,7 @@ PHP と C# はプレビューとして 2 つのコミットで追加されまし
 
 1. `docs/README_<CODE>.md`（例: `docs/README_PT.md`）に置きます。ルートの `README.md` は英語のままで、
    名前を変えたり置き換えたりすることはありません。
-2. `docs/` から機能するパスを使います: `assets/logo.svg`、`../LICENSE`、`../README.md`。
+2. `docs/` から機能するパスを使います: `assets/logo.svg`、`../LICENSE-MIT`、`../README.md`。
 3. 他の翻訳と同じ言語の行で始め、自身の言語はプレーンテキストにし、その後に
    コミュニティによって管理されており英語版 README より古い場合があるという注記を続けます
    （`docs/README_DE.md` からコピーして翻訳してください）。

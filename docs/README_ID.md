@@ -16,7 +16,7 @@ dan setiap potongan diperiksa terhadap rekaman itu sebelum lanjut. rust-anything
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/erkamyaman/rust-anything?logo=rust&label=Rust&color=CE422B" alt="Rust share of the code">
   <img src="https://img.shields.io/badge/macOS%20·%20Linux%20·%20Windows-native-2563EB" alt="Native binaries for macOS, Linux and Windows">
-  <a href="../LICENSE"><img src="https://img.shields.io/badge/license-MIT-555" alt="MIT license"></a>
+  <a href="../LICENSE-MIT"><img src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-555" alt="MIT or Apache-2.0 license"></a>
   <a href="https://crates.io/crates/rust-anything"><img src="https://img.shields.io/crates/v/rust-anything?color=E2862A&label=crates.io" alt="crates.io version"></a>
   <a href="https://www.npmjs.com/package/rust-anything"><img src="https://img.shields.io/npm/v/rust-anything?color=E2862A&label=npm" alt="npm version"></a>
   <br>
@@ -34,7 +34,7 @@ dan setiap potongan diperiksa terhadap rekaman itu sebelum lanjut. rust-anything
 <a href="https://trendshift.io/repositories/363468" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/363468/weekly?language=Rust" alt="erkamyaman/rust-anything: #1 Rust repository of the week on Trendshift" width="250" height="55"/></a></p>
 
 <p align="center"><b><a href="#mulai-cepat">Instal</a></b> · <a href="https://github.com/erkamyaman/rust-anything/releases">Rilis</a> · <a href="#mulai-cepat">Plugin Claude Code</a> · <a href="https://registry.modelcontextprotocol.io/v0.1/servers?search=rust-anything">MCP Registry</a> · <a href="real-world.md">Port di dunia nyata</a> · <a href="faq.md#faq">FAQ</a><br>
-<sub><a href="#bahasa">Bahasa</a> · <a href="how-it-works.md#how-it-works">Cara kerjanya</a> · <a href="whole-apps.md#port-a-whole-app">Aplikasi utuh</a> · <a href="#sponsor">Sponsor</a> · <a href="../LICENSE">MIT</a></sub><br>
+<sub><a href="#bahasa">Bahasa</a> · <a href="how-it-works.md#how-it-works">Cara kerjanya</a> · <a href="whole-apps.md#port-a-whole-app">Aplikasi utuh</a> · <a href="#sponsor">Sponsor</a> · <a href="../LICENSE-MIT">MIT / Apache-2.0</a></sub><br>
 Dibuat di Türkiye 🇹🇷 oleh <a href="https://github.com/erkamyaman">erKam Yaman</a> · <a href="https://github.com/sponsors/erkamyaman">❤️ Sponsori saya</a> · Disponsori oleh <a href="https://coderabbit.link/er-kam"><img src="assets/brands/coderabbit.png" width="22" height="22" align="absmiddle" alt=""> <b>CodeRabbit</b></a></p>
 
 <p align="center">Proyek lain dari pembuatnya: <a href="https://github.com/erkamyaman/safe-anything"><b>safe-anything</b></a>, pemindai keamanan 100% Rust untuk kode, secret, konfigurasi, dan setup agen AI. Temukan celahnya sebelum orang lain menemukannya.</p>
@@ -396,4 +396,4 @@ keamanan secara privat ([SECURITY.md](../SECURITY.md)), dan lihat
 
 ## Lisensi
 
-[MIT](../LICENSE) © [Erkam Yaman](https://github.com/erkamyaman). Port dan kode yang dihasilkan di repositori Anda adalah milik Anda.
+[MIT](../LICENSE-MIT) / [Apache-2.0](../LICENSE-APACHE) © [Erkam Yaman](https://github.com/erkamyaman). Port dan kode yang dihasilkan di repositori Anda adalah milik Anda.

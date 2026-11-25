@@ -99,7 +99,7 @@ PHP 與 C# 是在兩個值得先閱讀的 commit 中以預覽形式加入的：
 
 1. 放在 `docs/README_<CODE>.md`（例如 `docs/README_PT.md`）；根目錄的 `README.md` 維持
    英文，絕不重新命名或取代。
-2. 使用在 `docs/` 中有效的路徑：`assets/logo.svg`、`../LICENSE`、`../README.md`。
+2. 使用在 `docs/` 中有效的路徑：`assets/logo.svg`、`../LICENSE-MIT`、`../README.md`。
 3. 以與其他翻譯相同的語言列開頭，其中自己的語言以純文字表示，
    接著是說明該翻譯由社群維護、可能落後於英文 README 的註記
    （從 `docs/README_DE.md` 複製並翻譯）。

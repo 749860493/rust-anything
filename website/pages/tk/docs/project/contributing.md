@@ -101,7 +101,7 @@ Terjimeler hoş görülýär we olary jemgyýetçilik goldaýar. Täze terjime:
 
 1. `docs/README_<CODE>.md` içinde ýerleşýär (meselem `docs/README_PT.md`); kökdäki `README.md` iňlisçe
    galýar we hiç haçan adyny üýtgetmeýär ýa-da çalşyrylmaýar.
-2. `docs/` içinden işleýän ýollary ulanýar: `assets/logo.svg`, `../LICENSE`, `../README.md`.
+2. `docs/` içinden işleýän ýollary ulanýar: `assets/logo.svg`, `../LICENSE-MIT`, `../README.md`.
 3. Beýleki terjimeler ýaly şol bir dil setiri bilen başlaýar, öz dili ýönekeý tekst hökmünde, soňra
    onuň jemgyýetçilik tarapyndan goldanýandygy we iňlisçe README-den yzda galyp biljekdigi barada
    bellik gelýär (ony `docs/README_DE.md`-den göçürip terjime ediň).

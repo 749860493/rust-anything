@@ -99,7 +99,7 @@ genauso:
 
 1. Liegt in `docs/README_<CODE>.md` (zum Beispiel `docs/README_PT.md`); die `README.md` im Wurzelverzeichnis bleibt
    Englisch und wird nie umbenannt oder ersetzt.
-2. Nutzt Pfade, die von `docs/` aus funktionieren: `assets/logo.svg`, `../LICENSE`, `../README.md`.
+2. Nutzt Pfade, die von `docs/` aus funktionieren: `assets/logo.svg`, `../LICENSE-MIT`, `../README.md`.
 3. Beginnt mit derselben Sprachzeile wie die anderen Übersetzungen, mit ihrer eigenen Sprache als einfachem
    Text, gefolgt von dem Hinweis, dass sie von der Community gepflegt wird und hinter der englischen
    README zurückliegen kann (kopiere ihn aus `docs/README_DE.md` und übersetze ihn).

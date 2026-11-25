@@ -146,7 +146,7 @@ Translations are welcome and community-maintained. Say which language you are ta
 
 1. Lives in `docs/README_<CODE>.md` (for example `docs/README_PT.md`); the root `README.md` stays
    English and is never renamed or replaced.
-2. Uses paths that work from `docs/`: `assets/logo.png`, `../LICENSE`, `../README.md`.
+2. Uses paths that work from `docs/`: `assets/logo.png`, `../LICENSE-MIT`, `../README.md`.
 3. Starts with the same language line as the other translations, with its own language as plain
    text, followed by the note that it is community-maintained and may lag behind the English
    README (copy it from `docs/README_DE.md` and translate it).
@@ -179,6 +179,13 @@ waits for a maintainer to approve the CI run, so expect a short delay before the
 
 Pull requests are merged with their commits kept, so your history stays yours. If a change needs
 small adjustments, a maintainer may add a commit on top rather than ask for another round.
+
+## License of your contribution
+
+rust-anything is licensed under either of [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE), at the
+user's option. Unless you explicitly state otherwise, any contribution you intentionally submit for
+inclusion in rust-anything, as defined in the Apache-2.0 license, is dual licensed as above, without
+any additional terms or conditions.
 
 ## Share a real port
 
