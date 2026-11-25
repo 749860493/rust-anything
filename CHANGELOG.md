@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 4.2.0 (2026-11-25)
+
 - MCP boolean arguments (`force`, `dry_run`, `whole_app`, `ignore_key_order`, `pin_clock`, `partial`,
   `traps`, `http`, `library`, `check`, `skip_gate`) given a non-boolean such as `"false"` or `1` are
   refused with `` `<key>` must be a boolean ``, instead of silently falling back to the default
@@ -106,6 +108,25 @@
 - `docs/types.md` lists, for each language, what each source type becomes in `port.rs` and the
   reason a type keeps a function in its language; a test checks every row against the code
   (#373, #456 by @puretechteam).
+- Docs: the README unit-port caption and the FAQ runtime extras table include PowerShell (#505,
+  #506), the translated READMEs got a `+ add yours` language link (#513), the PHP and C# unit
+  bridges are documented in the Azerbaijani, Uzbek, Turkish, Ukrainian, Simplified Chinese and
+  Korean READMEs (#479, #480, #481, #482, #483, #484), the `port.rs` comment is translated in the
+  Vietnamese, Kazakh, Kyrgyz and Turkmen READMEs (#485), and the Turkish, Ukrainian, Azerbaijani,
+  Vietnamese, Hindi and Arabic READMEs mention Gradle and Kotlin detection (#507, #508, #509,
+  #510, #511, #512), by @Papito084; whole-app support for any language (#445), the
+  `rust/app-cases/rust-anything.json` settings (#446) and the Japanese Gradle and Kotlin note
+  (#444) by @Papito084; the Persian, Kazakh, Kyrgyz, Turkmen, Tatar, Uyghur and Uzbek READMEs
+  mention Gradle and Kotlin detection (#547, #548, #549, #550, #551, #552, #553) and include
+  PowerShell in the unit-port caption (#559, #560), by @alvaroalonsoparrondo-a11y; the Arabic,
+  French, Spanish, German, Italian and Portuguese captions (#555 by @Lewandox) and the Turkish and
+  Azerbaijani ones (#558 by @ardazeybek) do too; the Japanese README says PHP and C# units port
+  now (#460 by @XiaoBinGan); the Simplified and Traditional Chinese READMEs mention Gradle and
+  Kotlin detection (#471, #473 by @hkhkkh); a Thai README was added (#475 by @matavanary); and the
+  plugin directory copy of `SKILL.md` is back in sync (#474 by @AyhamJo7).
+- Tests: end-to-end Python and Node profile workloads (#447) and a report on a built crate (#459)
+  by @Papito084; the busy-port and exiting-build messages (#458) and a check that a forked server
+  is gone after record (#544) by @XiaoBinGan.
 
 ## 4.1.0 (2026-11-24)
 
