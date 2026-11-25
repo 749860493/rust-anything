@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `app record` spreads CLI and HTTP traps round-robin across every base case, deduplicates traps
+  before capping at 300, always keeps the HTTP unknown-route probe (`GET /rust-anything-missing`),
+  and reports how many traps were dropped (`traps_dropped` in JSON and CLI output) (#335, #454 by @Lewandox).
 - HTTP cases support binary request bodies via `body_base64` and `body_file` in `--inputs` and case
   `.toml` files, `curl --data-binary @file` reads raw bytes instead of UTF-8 text, and `curl -F` /
   `--form` builds deterministic `multipart/form-data` uploads (#336, #452 by @Lewandox).
