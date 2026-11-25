@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `enable --partial` and `enable --only` (without `--force`) on a crate with no `cases.jsonl` say
+  ``no cases.jsonl in <crate> (run `rust-anything record` first)`` like plain `enable`, instead of
+  the bare `No such file or directory (os error 2)` (#540, #545 by @alvaroalonsoparrondo-a11y).
 - MCP tools refuse a numeric argument of the wrong type, a negative one or one out of range
   (`count`, `rounds`, `cases`, `seed`, `min_ms`, `time`, `float_tolerance`, `port`, `pace`,
   `ready_timeout`) instead of silently using the default; a `port` above 65535 is an error rather
