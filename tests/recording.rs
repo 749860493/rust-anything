@@ -219,6 +219,13 @@ fn diff_replays_python_keyword_arguments_by_their_binding_names() {
     let manifest = Manifest::load(&crate_dir).unwrap();
     let package = crate_dir.join("python").join(manifest.lib_name());
     std::fs::create_dir_all(&package).unwrap();
+    // An empty file marks the crate as built, which `diff` checks before it starts python.
+    let native = if cfg!(windows) {
+        "_native.pyd"
+    } else {
+        "_native.abi3.so"
+    };
+    std::fs::write(package.join(native), "").unwrap();
     std::fs::write(
         package.join("__init__.py"),
         "def scale(n, *, scale_by=2.0):\n    return n * scale_by\n\n\n\

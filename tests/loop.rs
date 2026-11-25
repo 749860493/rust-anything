@@ -34,6 +34,10 @@ fn bridged(name: &str) -> PathBuf {
         allocator: Default::default(),
     })
     .unwrap();
+    // The tests replace the compiled module with a JS stand-in, so no `.node` file is ever built;
+    // an empty one marks the crate as built, which `diff` and `bench` check before starting node.
+    let lib = bridge::Manifest::load(&dir).unwrap().lib_name();
+    std::fs::write(dir.join(format!("{lib}.node")), "").unwrap();
     dir
 }
 
@@ -559,6 +563,7 @@ fn benchmark_awaits_async_typescript_calls_and_counts_rejections() {
         "exports.delayed = async () => { await new Promise(r => setTimeout(r, 15)); throw new Error('intentional') }",
     )
     .unwrap();
+    common::mark_built(&dir);
     let result = harness::bench(&harness::BenchOptions {
         crate_dir: &dir,
         min_ms: 1,
@@ -616,6 +621,7 @@ fn benchmark_marks_functions_whose_cases_do_not_match() {
         "exports.double = (n) => n * 2\nexports.triple = (n) => { throw new Error('not implemented') }\n",
     )
     .unwrap();
+    common::mark_built(&dir);
     let result = harness::bench(&harness::BenchOptions {
         crate_dir: &dir,
         min_ms: 1,
@@ -694,6 +700,7 @@ fn classes_are_bridged_recorded_and_replayed() {
          module.exports = { TextStats, LruCache }\n",
     )
     .unwrap();
+    common::mark_built(&dir);
     let diff = harness::diff(&DiffOptions {
         crate_dir: &dir,
         module: None,
@@ -1024,6 +1031,7 @@ fn python_modules_bridge_record_and_diff() {
         "return int(-(-total / per_page))",
     );
     std::fs::write(package.join("__init__.py"), format!("{buggy}\n{stack}")).unwrap();
+    common::mark_built(&dir);
     let diff = |dir: &Path| {
         harness::diff(&DiffOptions {
             crate_dir: dir,
@@ -2425,6 +2433,7 @@ fn python_float_subclass_records_as_its_float_value() {
         "def centre(x):\n    return float(x - x)\n",
     )
     .unwrap();
+    common::mark_built(&dir);
     let diff = harness::diff(&DiffOptions {
         crate_dir: &dir,
         module: None,
