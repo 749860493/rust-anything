@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `bench`, `report` and the MCP `bench` tool leave functions whose recorded cases do not all match
+  out of the overall speedup and the advice, and name them: a port that still panics was timed at
+  the cost of catching the panic, which pulled the verdict down (#341, #470 by @AyhamJo7).
 - `app record` keeps the saved effects a run does not name: `--effects` replaces the kinds,
   `--effect-env` adds or replaces one variable, and `--db-reset`/`--db-dump` replace only
   themselves, so re-recording with one flag no longer drops the HTTP sink and its variables
