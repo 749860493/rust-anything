@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `bridge` on a crate folder that already has a port names the next step: run
+  `rust-anything refresh <crate>` to regenerate the bindings, pass `--out` or `--name` for a new
+  crate, or remove the folder to start over (#568, #599 by @alvaroalonsoparrondo-a11y).
 - `bridge --kind napi` (or `wasm`) on a unit that is not TS/JS stops before writing anything, with
   `--kind napi is for TS/JS units; mathy.py is Python and is bridged with PyO3`, instead of writing a
   napi crate for a Python unit that only fails at `diff`. The `--kind` help says it is for TS/JS units
