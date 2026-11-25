@@ -215,8 +215,9 @@ pub fn built_library(crate_dir: &Path, manifest: &Manifest) -> Result<PathBuf> {
     .find(|p| p.exists())
     .with_context(|| {
         format!(
-            "no built library in {} (run `rust-anything build` first)",
-            release.display()
+            "no built library in {} (run `rust-anything build {}` first)",
+            release.display(),
+            crate_dir.display()
         )
     })
 }

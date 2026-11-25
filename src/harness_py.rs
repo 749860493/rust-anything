@@ -147,6 +147,15 @@ pub fn diff(crate_dir: &Path, manifest: &Manifest, ignore_key_order: bool) -> Re
             crate_dir.display()
         );
     }
+    let native = native_file(crate_dir, manifest);
+    if !native.exists() {
+        let dir = native.parent().unwrap_or(crate_dir);
+        bail!(
+            "no built library in {} (run `rust-anything build {}` first)",
+            dir.display(),
+            crate_dir.display()
+        );
+    }
     let driver = driver(crate_dir)?;
     let (dir, name) = package(crate_dir, manifest);
     let out = crate_dir.join(WORK_DIR).join("diff.json");
@@ -173,6 +182,15 @@ pub fn bench(crate_dir: &Path, manifest: &Manifest, min_ms: u64) -> Result<Vec<B
     if !cases.exists() {
         bail!(
             "no {CASES} in {} (run `rust-anything record` first)",
+            crate_dir.display()
+        );
+    }
+    let native = native_file(crate_dir, manifest);
+    if !native.exists() {
+        let dir = native.parent().unwrap_or(crate_dir);
+        bail!(
+            "no built library in {} (run `rust-anything build {}` first)",
+            dir.display(),
             crate_dir.display()
         );
     }
