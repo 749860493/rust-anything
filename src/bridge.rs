@@ -642,14 +642,31 @@ pub fn substitute_constraints(f: &mut ExportedFn, types: &[LocalType]) {
     f.type_params = remaining;
 }
 
+/// The name of a declared type parameter (`T` in `T extends object`).
+fn type_param_name(tp: &str) -> &str {
+    tp.split_once(" extends ").map_or(tp, |(n, _)| n).trim()
+}
+
+/// The type parameters `file`'s exports declare, read as `ts_functions` reads them but before
+/// `substitute_constraints` resolves a data-constrained one (`T extends string`) away.
+fn declared_type_params(root: &Path, file: &str, text: &str) -> Vec<String> {
+    let mut functions = exported_functions(file, text);
+    crate::ts::jsdoc::apply_declarations(root, file, &mut functions);
+    functions
+        .iter()
+        .flat_map(|f| {
+            f.type_params
+                .iter()
+                .map(|tp| type_param_name(tp).to_string())
+        })
+        .collect()
+}
+
 /// Turns the type parameters named in `names` into `unknown` (a JSON value on the Rust side).
 pub fn substitute_json(f: &mut ExportedFn, names: &[String]) {
     let mut remaining = Vec::new();
     for tp in std::mem::take(&mut f.type_params) {
-        let name = tp
-            .split_once(" extends ")
-            .map_or(tp.as_str(), |(n, _)| n)
-            .trim();
+        let name = type_param_name(&tp);
         if !names.iter().any(|n| n == name) {
             remaining.push(tp);
             continue;
@@ -741,6 +758,24 @@ fn check_keep(keep: &[String], names: &[&str], unit: &str) -> Result<()> {
         known.dedup();
         bail!(
             "--keep `{name}` is not an export of `{unit}` (exports: {})",
+            known.join(", ")
+        );
+    }
+    Ok(())
+}
+
+/// Refuses an `--as-json` name that no export declares as a type parameter, so a typo does not
+/// leave the generic export in TS without a word.
+fn check_as_json(as_json: &[String], type_params: &[String], unit: &str) -> Result<()> {
+    if let Some(name) = as_json.iter().find(|n| !type_params.contains(n)) {
+        let mut known = type_params.to_vec();
+        known.sort_unstable();
+        known.dedup();
+        if known.is_empty() {
+            bail!("--as-json `{name}` is not a type parameter of `{unit}` (it has none)");
+        }
+        bail!(
+            "--as-json `{name}` is not a type parameter of `{unit}` (type parameters: {})",
             known.join(", ")
         );
     }
@@ -1234,6 +1269,8 @@ pub fn bridge(opts: &Options) -> Result<Outcome> {
     let mut exports = Vec::new();
     let mut classes = Vec::new();
     let mut js_only = Vec::new();
+    // Type parameters the exports declare, so an `--as-json` name none of them uses is refused.
+    let mut type_params = Vec::new();
     // Name and file of each overloaded function already kept, so its other overloads join it.
     let mut kept_overloads = std::collections::HashSet::new();
     if lang == crate::lang::Lang::C {
@@ -1307,6 +1344,7 @@ pub fn bridge(opts: &Options) -> Result<Outcome> {
                 }
             }
         }
+        type_params.extend(declared_type_params(&root, file, &text));
         for mut f in ts_functions(&root, file, &text, &types) {
             substitute_json(&mut f, &opts.as_json);
             let kept = keep_reason(&opts.keep, &f.name);
@@ -1341,6 +1379,7 @@ pub fn bridge(opts: &Options) -> Result<Outcome> {
         &defined.iter().map(|(name, _)| *name).collect::<Vec<_>>(),
         &unit.id,
     )?;
+    check_as_json(&opts.as_json, &type_params, &unit.id)?;
     if let Some(pair) = defined.windows(2).find(|w| w[0].0 == w[1].0) {
         bail!(
             "`{}` is defined twice in `{}` ({} and {}), and the bridge names every export by \
@@ -1964,6 +2003,84 @@ mod tests {
     }
 
     #[test]
+    fn bridge_refuses_an_as_json_name_that_is_not_a_type_parameter() {
+        let dir = crate::app::temp_dir("bridge-as-json").unwrap();
+        std::fs::write(
+            dir.join("package.json"),
+            r#"{"name":"demo","version":"1.0.0"}"#,
+        )
+        .unwrap();
+        std::fs::create_dir_all(dir.join("src")).unwrap();
+        std::fs::write(
+            dir.join("src/math.ts"),
+            "export function add(a: number, b: number): number { return a + b; }\n\
+             export function first<T>(items: T[]): T { return items[0]; }\n",
+        )
+        .unwrap();
+        let out = dir.join("rust/math-rs");
+        let err = bridge(&Options {
+            root: &dir,
+            unit: "src/math.ts",
+            kind: Some(Kind::Napi),
+            out: Some(out.clone()),
+            name: None,
+            force: false,
+            lang: None,
+            keep: vec![],
+            batch: vec![],
+            allocator: Allocator::default(),
+            as_json: vec!["Q".into()],
+        })
+        .unwrap_err();
+        assert!(
+            format!("{err:#}").contains(
+                "--as-json `Q` is not a type parameter of `src/math.ts` (type parameters: T)"
+            ),
+            "{err:#}"
+        );
+        assert!(!out.exists());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn bridge_accepts_as_json_for_a_type_parameter_its_constraint_resolved() {
+        // `T extends string` is resolved to `string` before the bridge sees the export, but the
+        // export still declares `T`, so naming it is not a typo.
+        let dir = crate::app::temp_dir("bridge-as-json-constrained").unwrap();
+        std::fs::write(
+            dir.join("package.json"),
+            r#"{"name":"demo","version":"1.0.0"}"#,
+        )
+        .unwrap();
+        std::fs::create_dir_all(dir.join("src")).unwrap();
+        std::fs::write(
+            dir.join("src/id.ts"),
+            "export function identity<T extends string>(x: T): T { return x; }\n",
+        )
+        .unwrap();
+        let outcome = bridge(&Options {
+            root: &dir,
+            unit: "src/id.ts",
+            kind: Some(Kind::Napi),
+            out: Some(dir.join("rust/id-rs")),
+            name: None,
+            force: false,
+            lang: None,
+            keep: vec![],
+            batch: vec![],
+            allocator: Allocator::default(),
+            as_json: vec!["T".into()],
+        })
+        .unwrap();
+        assert!(
+            outcome.exports.iter().any(|e| e == "identity"),
+            "{:?}",
+            outcome.exports
+        );
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
     fn a_relative_root_is_resolved_from_the_crate_and_kept_relative() {
         let base = std::env::temp_dir().join(format!("rust-anything-root-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&base);
@@ -2083,6 +2200,26 @@ mod tests {
         assert_eq!(fns[1].type_params, ["T"]);
         assert_eq!(fns[2].params[0].ts_type, "(readonly string[])");
         assert!(js_only_reason(&fns[0], &[]).is_none() && js_only_reason(&fns[1], &[]).is_some());
+    }
+
+    #[test]
+    fn unknown_as_json_names_are_refused() {
+        let names = |n: &[&str]| n.iter().map(|s| s.to_string()).collect::<Vec<_>>();
+        assert!(check_as_json(&names(&["T"]), &names(&["U", "T"]), "src/a.ts").is_ok());
+        let err = check_as_json(&names(&["Q"]), &names(&["U", "T", "T"]), "src/a.ts")
+            .unwrap_err()
+            .to_string();
+        assert_eq!(
+            err,
+            "--as-json `Q` is not a type parameter of `src/a.ts` (type parameters: T, U)"
+        );
+        let err = check_as_json(&names(&["T"]), &[], "src/a.ts")
+            .unwrap_err()
+            .to_string();
+        assert_eq!(
+            err,
+            "--as-json `T` is not a type parameter of `src/a.ts` (it has none)"
+        );
     }
 
     #[test]

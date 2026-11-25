@@ -9,6 +9,10 @@
   `` `--time` must be 0 or more seconds (0 runs one round), not -1 `` instead of
   `` `--time` takes seconds ``, and `--time -1` (with a space) gets the same message instead of clap's
   `unexpected argument '-1' found`. The MCP `fuzz` tool's `time` says the same (#612).
+- `bridge --as-json Q` stops before writing anything when no export declares `Q` as a type
+  parameter, with ``--as-json `Q` is not a type parameter of `src/math.ts` (type parameters: T)``
+  (or "it has none"), instead of ignoring the name and leaving the generic export in TS, as
+  `--keep` already does for unknown exports (#608).
 
 ## 5.0.0 (2026-11-25)
 
