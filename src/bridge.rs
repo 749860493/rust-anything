@@ -635,6 +635,21 @@ fn type_param_name(tp: &str) -> &str {
     tp.split_once(" extends ").map_or(tp, |(n, _)| n).trim()
 }
 
+/// The type parameters `file`'s exports declare, read as `ts_functions` reads them but before
+/// `substitute_constraints` resolves a data-constrained one (`T extends string`) away.
+fn declared_type_params(root: &Path, file: &str, text: &str) -> Vec<String> {
+    let mut functions = exported_functions(file, text);
+    crate::ts::jsdoc::apply_declarations(root, file, &mut functions);
+    functions
+        .iter()
+        .flat_map(|f| {
+            f.type_params
+                .iter()
+                .map(|tp| type_param_name(tp).to_string())
+        })
+        .collect()
+}
+
 /// Turns the type parameters named in `names` into `unknown` (a JSON value on the Rust side).
 pub fn substitute_json(f: &mut ExportedFn, names: &[String]) {
     let mut remaining = Vec::new();
@@ -1317,12 +1332,8 @@ pub fn bridge(opts: &Options) -> Result<Outcome> {
                 }
             }
         }
+        type_params.extend(declared_type_params(&root, file, &text));
         for mut f in ts_functions(&root, file, &text, &types) {
-            type_params.extend(
-                f.type_params
-                    .iter()
-                    .map(|tp| type_param_name(tp).to_string()),
-            );
             substitute_json(&mut f, &opts.as_json);
             let kept = keep_reason(&opts.keep, &f.name);
             match kept.or_else(|| js_only_reason(&f, &types)) {
@@ -2013,6 +2024,44 @@ mod tests {
             "{err:#}"
         );
         assert!(!out.exists());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn bridge_accepts_as_json_for_a_type_parameter_its_constraint_resolved() {
+        // `T extends string` is resolved to `string` before the bridge sees the export, but the
+        // export still declares `T`, so naming it is not a typo.
+        let dir = crate::app::temp_dir("bridge-as-json-constrained").unwrap();
+        std::fs::write(
+            dir.join("package.json"),
+            r#"{"name":"demo","version":"1.0.0"}"#,
+        )
+        .unwrap();
+        std::fs::create_dir_all(dir.join("src")).unwrap();
+        std::fs::write(
+            dir.join("src/id.ts"),
+            "export function identity<T extends string>(x: T): T { return x; }\n",
+        )
+        .unwrap();
+        let outcome = bridge(&Options {
+            root: &dir,
+            unit: "src/id.ts",
+            kind: Some(Kind::Napi),
+            out: Some(dir.join("rust/id-rs")),
+            name: None,
+            force: false,
+            lang: None,
+            keep: vec![],
+            batch: vec![],
+            allocator: Allocator::default(),
+            as_json: vec!["T".into()],
+        })
+        .unwrap();
+        assert!(
+            outcome.exports.iter().any(|e| e == "identity"),
+            "{:?}",
+            outcome.exports
+        );
         std::fs::remove_dir_all(dir).unwrap();
     }
 
