@@ -897,9 +897,9 @@ fn run() -> Result<ExitCode> {
                 allocator,
             })?;
             say!(
-                "Created {} ({:?}) for {}",
+                "Created {} ({}) for {}",
                 outcome.crate_dir.display(),
-                outcome.kind,
+                outcome.kind.label(),
                 outcome.exports.join(", ")
             );
             for file in &outcome.files {
