@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `bridge --as-json Q` stops before writing anything when no export declares `Q` as a type
+  parameter, with ``--as-json `Q` is not a type parameter of `src/math.ts` (type parameters: T)``
+  (or "it has none"), instead of ignoring the name and leaving the generic export in TS, as
+  `--keep` already does for unknown exports (#608).
+
 ## 5.0.0 (2026-11-25)
 
 The old program is the judge, now with sharper eyes: every mismatch says where it starts and
