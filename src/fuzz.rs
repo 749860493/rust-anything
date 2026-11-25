@@ -154,6 +154,7 @@ fn lines(text: &str) -> impl Iterator<Item = (&str, Value)> {
 pub fn fuzz(opts: &FuzzOptions) -> Result<FuzzOutcome> {
     let crate_dir = std::path::absolute(opts.crate_dir)?;
     let manifest = Manifest::load(&crate_dir)?;
+    crate::harness::ensure_built(&crate_dir, &manifest)?;
     if opts.cases == 0 {
         bail!("`--cases` must be at least 1");
     }

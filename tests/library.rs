@@ -175,6 +175,11 @@ fn a_ts_library_moves_unit_by_unit() {
     let dir = bridged(&repo, "src/text.ts");
     record(&dir, 40);
     std::fs::write(dir.join("index.cjs"), STAND_IN).unwrap();
+    // The stand-in replaces the compiled library; empty files (napi and wasm) mark the crate as
+    // built, which `diff` checks before it starts node.
+    std::fs::write(dir.join("text_rs.node"), "").unwrap();
+    std::fs::create_dir_all(dir.join("pkg")).unwrap();
+    std::fs::write(dir.join("pkg/text_rs.js"), "").unwrap();
 
     let wired = wire(&repo, "text-rs", true);
     let shadow = wired.shadow.clone().unwrap();
@@ -223,6 +228,13 @@ fn a_python_library_keeps_what_cannot_move() {
     let words = std::fs::read_to_string(repo.join("src/textkit/words.py")).unwrap();
     let stack = std::fs::read_to_string(repo.join("src/textkit/stack.py")).unwrap();
     std::fs::write(package.join("__init__.py"), format!("{words}\n{stack}")).unwrap();
+    // The stand-in replaces the compiled extension; an empty file marks the crate as built.
+    let native = if cfg!(windows) {
+        "_native.pyd"
+    } else {
+        "_native.abi3.so"
+    };
+    std::fs::write(package.join(native), "").unwrap();
 
     let wired = wire(&repo, "textkit-rs", true);
     let replay = wired.replay.unwrap();

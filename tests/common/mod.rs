@@ -74,3 +74,31 @@ pub fn python() -> Option<&'static str> {
     missing("python3", "was not found");
     None
 }
+
+/// Marks a bridged crate as built for tests that swap the compiled module for a stand-in.
+///
+/// `diff`, `bench` and `fuzz` stop before starting node or python when the crate has no built
+/// library; the stand-in replaces it, so an empty file sits where that check looks.
+pub fn mark_built(crate_dir: &std::path::Path) {
+    use rust_anything::bridge::{Kind, Manifest};
+    let manifest = Manifest::load(crate_dir).unwrap();
+    let lib = manifest.lib_name();
+    match manifest.kind {
+        Kind::Napi => std::fs::write(crate_dir.join(format!("{lib}.node")), "").unwrap(),
+        Kind::Wasm => {
+            std::fs::create_dir_all(crate_dir.join("pkg")).unwrap();
+            std::fs::write(crate_dir.join("pkg").join(format!("{lib}.js")), "").unwrap();
+        }
+        Kind::Pyo3 => {
+            let package = crate_dir.join("python").join(&lib);
+            std::fs::create_dir_all(&package).unwrap();
+            let native = if cfg!(windows) {
+                "_native.pyd"
+            } else {
+                "_native.abi3.so"
+            };
+            std::fs::write(package.join(native), "").unwrap();
+        }
+        _ => {}
+    }
+}

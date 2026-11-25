@@ -520,6 +520,82 @@ pub(crate) fn install(built: &Path, dest: &Path) -> Result<()> {
     std::fs::rename(&tmp, dest).with_context(|| format!("installing {}", dest.display()))
 }
 
+/// Confirms the port's native library exists before running diff, bench or fuzz against it.
+pub(crate) fn ensure_built(crate_dir: &Path, manifest: &Manifest) -> Result<()> {
+    match manifest.kind {
+        Kind::Napi => {
+            let node_file = crate_dir.join(format!("{}.node", manifest.lib_name()));
+            if !node_file.exists() {
+                bail!(
+                    "no built library in {} (run `rust-anything build {}` first)",
+                    crate_dir.display(),
+                    crate_dir.display()
+                );
+            }
+        }
+        Kind::Wasm => {
+            let pkg = crate_dir.join("pkg");
+            let js = pkg.join(format!("{}.js", manifest.lib_name()));
+            if !pkg.is_dir() || !js.exists() {
+                bail!(
+                    "no built library in {} (run `rust-anything build {}` first)",
+                    pkg.display(),
+                    crate_dir.display()
+                );
+            }
+        }
+        Kind::Pyo3 => {
+            let native = crate::harness_py::native_file(crate_dir, manifest);
+            if !native.exists() {
+                let dir = native.parent().unwrap_or(crate_dir);
+                bail!(
+                    "no built library in {} (run `rust-anything build {}` first)",
+                    dir.display(),
+                    crate_dir.display()
+                );
+            }
+        }
+        Kind::CAbi => {
+            crate::harness_c::built_library(crate_dir, manifest)?;
+        }
+        Kind::Ffi if manifest.language == crate::lang::Lang::Go => {
+            crate::harness_c::built_library(crate_dir, manifest)?;
+        }
+        Kind::Ffi
+            if manifest.language == crate::lang::Lang::Php
+                && crate::harness_php::built_file(crate_dir, manifest).is_none() =>
+        {
+            bail!(
+                "no built library in {} (run `rust-anything build {}` first)",
+                crate_dir.join("php").display(),
+                crate_dir.display()
+            );
+        }
+        Kind::Ffi
+            if manifest.language == crate::lang::Lang::Csharp
+                && crate::harness_csharp::built_file(crate_dir, manifest).is_none() =>
+        {
+            bail!(
+                "no built library in {} (run `rust-anything build {}` first)",
+                crate_dir.join("cs").display(),
+                crate_dir.display()
+            );
+        }
+        Kind::Ffi
+            if manifest.language == crate::lang::Lang::Powershell
+                && crate::harness_powershell::built_file(crate_dir, manifest).is_none() =>
+        {
+            bail!(
+                "no built library in {} (run `rust-anything build {}` first)",
+                crate_dir.join("ps").display(),
+                crate_dir.display()
+            );
+        }
+        _ => {}
+    }
+    Ok(())
+}
+
 /// The library `diff` loads, when it is older than the crate's sources: a forgotten `build`
 /// would otherwise test the previous port.
 fn stale_build(crate_dir: &Path, manifest: &Manifest) -> Option<PathBuf> {
@@ -910,6 +986,7 @@ fn time_functions(opts: &BenchOptions) -> Result<Vec<BenchRow>> {
             opts.crate_dir.display()
         );
     }
+    ensure_built(opts.crate_dir, &manifest)?;
     let modules: BTreeMap<String, String> = manifest
         .exports
         .iter()
@@ -1217,6 +1294,11 @@ pub(crate) fn diff_exact(opts: &DiffOptions) -> Result<DiffOutcome> {
             "no {CASES} in {} (run `rust-anything record` first)",
             opts.crate_dir.display()
         );
+    }
+    if opts.module.is_none()
+        && let Ok(manifest) = Manifest::load(opts.crate_dir)
+    {
+        ensure_built(opts.crate_dir, &manifest)?;
     }
     let module = match opts.module {
         Some(m) => m.to_path_buf(),

@@ -210,6 +210,7 @@ pub fn diff(crate_dir: &Path, m: &Manifest) -> Result<DiffOutcome> {
             crate_dir.display()
         );
     }
+    crate::harness_c::built_library(crate_dir, m)?;
     let bin = build_driver(crate_dir, m, true)?;
     let out = crate_dir.join(WORK_DIR).join("diff.json");
     run(
@@ -230,6 +231,7 @@ pub fn bench(crate_dir: &Path, m: &Manifest, min_ms: u64) -> Result<Vec<BenchRow
             crate_dir.display()
         );
     }
+    crate::harness_c::built_library(crate_dir, m)?;
     let mut timings = Vec::new();
     for rust in [false, true] {
         let bin = build_driver(crate_dir, m, rust)?;
