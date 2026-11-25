@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `package --version` (and MCP `package`'s `version`) is refused before anything is written,
+  `--dry-run` included, unless it is `MAJOR.MINOR.PATCH` with an optional `-prerelease`: an empty,
+  padded or malformed version used to land in the package and fail only at publish time (#502, #519 by
+  @alvaroalonsoparrondo-a11y).
 - `gate`'s `size` check and `go`'s "no hot function to port" message say `1 line` and
   `1 hot function` for one, like `analyze`'s plan (#503, #516 by @Papito084).
 - The `port_unit` and `port_whole_app` MCP prompts strip the skill's front matter when `SKILL.md`
