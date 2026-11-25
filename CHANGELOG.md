@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `bridge --keep` refuses a name that is not an export or class of the unit, listing the ones it
+  has, before writing anything: a typo used to bridge the export it meant to keep. A bare
+  `--keep ' add '` is trimmed like `--keep "add: reason"` already was (#499, #522 by
+  @alvaroalonsoparrondo-a11y).
 - `--batch function:param` with an unknown function or parameter lists the ones `src/port.rs` has
   (`(functions: add)`, `(parameters: a, b)`), and an empty side (`add:` or `:a`) gets the same
   "write it as function:param" error as a spec without a colon (#504, #521 by
