@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `app record --effect-response 'METHOD /path=STATUS [BODY|@FILE]'` (and MCP `app_record`'s
+  `effect_response`) lets the HTTP effect sink answer matching requests (supporting `*` wildcards)
+  with canned statuses and bodies, saved with the cases so replay sees identical replies
+  (#334, #451 by @Lewandox).
 - `bench`, `report` and the MCP `bench` tool leave functions whose recorded cases do not all match
   out of the overall speedup and the advice, and name them: a port that still panics was timed at
   the cost of catching the panic, which pulled the verdict down (#341, #470 by @AyhamJo7).

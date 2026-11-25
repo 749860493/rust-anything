@@ -54,6 +54,10 @@ rust-anything app record . --effects http,smtp --effect-env WEBHOOK_URL=http-url
 - **`--effect-env VAR=KIND`** points one of the app's own settings at a sink: `http-url`,
   `smtp-host`, `smtp-port` or `smtp-url`. Most apps read their webhook URL or mail host from a
   setting like this.
+- **`--effect-response 'METHOD /path=STATUS [BODY|@FILE]'`** (repeatable) makes the HTTP sink
+  answer matching requests with that status and body instead of `200 {}`: the first rule that
+  matches wins, `*` is a wildcard in the method and path, and `@FILE` is read once and saved with
+  the cases, so replay gets the same replies. Giving the flag again replaces the saved rules.
 - **`--db-reset` and `--db-dump`** are shell commands: reset puts the database in a known state
   before each case (each start, for servers), and dump prints its state after each case (each
   request, for servers). Cases then run one at a time. Both run in the folder the case runs in
@@ -232,7 +236,7 @@ rebuild, since `app front-door` never overwrites an existing `rust/app`.
 | `http.args` | `--arg` | Replaces if passed; keeps saved (cannot be cleared via CLI) |
 | `http.pace_ms` | `--pace` | Replaces if passed; `--pace 0` clears it |
 | `http.fresh` / `fresh` | `--fresh` | Replaces if passed; keeps saved (cannot be cleared via CLI) |
-| `effects` | `--effects`, `--effect-env`, `--db-reset`, `--db-dump` | Merges with saved sink and database settings |
+| `effects` | `--effects`, `--effect-env`, `--effect-response`, `--db-reset`, `--db-dump` | Merges with saved sink and database settings; `--effect-response` replaces the saved rules |
 | `float_tolerance` | `--float-tolerance` | Replaces if passed; `--float-tolerance 0` clears it |
 | `float_files` | `--float-file` | Replaces if passed; keeps saved otherwise |
 | `unordered` | *(written by `app record`)* | Recomputed from `order` noise; tells `replay` to compare those lines in any order |
