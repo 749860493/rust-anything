@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 5.0.0 (2026-11-25)
+
+The old program is the judge, now with sharper eyes: every mismatch says where it starts and
+which bug it belongs to, live traffic can be shadowed, drift is checked in CI, and `gate` catches
+ports that copy the recording instead of computing it. Ideas from Anthropic's write-up on moving
+the Messages API to Rust.
+
 - `bridge` on a crate folder that already has a port names the next step: run
   `rust-anything refresh <crate>` to regenerate the bindings, pass `--out` or `--name` for a new
   crate, or remove the folder to start over (#568, #599 by @alvaroalonsoparrondo-a11y).
@@ -56,6 +63,12 @@
   repository). `go` puts them in TASK.md (and so in every retry prompt), both MCP prompts end with
   them, and the MCP server's instructions, the `rules` tool and the skill tell agents to read them
   before porting and to add each correction the user makes.
+
+- Docs and tests: translated READMEs link the Types and packaging pages, CONTRIBUTING lists every
+  test file, the FAQ states the PHP and .NET requirements, `build` and `refresh` help covers every
+  language, and new unit tests cover `c_literal`, `local_module_version`, `shell_quote` and the
+  base64 helpers (#564 by @Lewandox, #578 by @XiaoBinGan, #585 to #596 and #600 to #603 by
+  @alvaroalonsoparrondo-a11y).
 
 ### Upgrading
 
