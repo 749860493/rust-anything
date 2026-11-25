@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- HTTP cases support binary request bodies via `body_base64` and `body_file` in `--inputs` and case
+  `.toml` files, `curl --data-binary @file` reads raw bytes instead of UTF-8 text, and `curl -F` /
+  `--form` builds deterministic `multipart/form-data` uploads (#336, #452 by @Lewandox).
 - `app record --effect-response 'METHOD /path=STATUS [BODY|@FILE]'` (and MCP `app_record`'s
   `effect_response`) lets the HTTP effect sink answer matching requests (supporting `*` wildcards)
   with canned statuses and bodies, saved with the cases so replay sees identical replies

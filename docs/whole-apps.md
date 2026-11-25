@@ -169,8 +169,10 @@ rust-anything app wire . api --route 'GET /users/{id}' --route '*'
 rust-anything app lift .
 ```
 
-- Requests come from `curl` lines in the app's docs (`curl -X POST -d ... http://localhost:8080/x`),
-  `--inputs` (`{"name", "method", "path", "headers", "body"}`) and traps: path segments and query
+- Requests come from `curl` lines in the app's docs (`curl -X POST -d ... http://localhost:8080/x`,
+  `--data-binary @file` sent as raw bytes, `-F`/`--form` as a `multipart/form-data` upload),
+  `--inputs` (`{"name", "method", "path", "headers", "body" | "body_base64" | "body_file"}`, a
+  `body_file` relative to the inputs file or the repository) and traps: path segments and query
   values swapped for the same traps as CLI arguments, bodies for text and JSON traps, and an
   unknown route. Each run starts the server fresh and sends the requests in name order, so state
   between requests is kept.

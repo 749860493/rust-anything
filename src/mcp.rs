@@ -600,7 +600,7 @@ fn tool_schemas() -> Value {
                 "name": { "type": "string", "description": "Name the app is invoked by in its docs." },
                 "timeout": { "type": "integer", "description": "Seconds before a run is killed (default 30)." },
                 "traps": { "type": "boolean", "description": "Add semantic-trap cases (default true)." },
-                "http": { "type": "boolean", "description": "The app is a server: `run` starts it (it takes its port from PORT or {port}); cases are requests from curl lines in its docs, `inputs` ({\"name\", \"method\", \"path\", \"headers\", \"body\"}) and traps." },
+                "http": { "type": "boolean", "description": "The app is a server: `run` starts it (it takes its port from PORT or {port}); cases are requests from curl lines in its docs, `inputs` ({\"name\", \"method\", \"path\", \"headers\", \"body\" | \"body_base64\" | \"body_file\"}) and traps." },
                 "port": { "type": "integer", "description": "A port the server always listens on (implies http)." },
                 "effects": { "type": "array", "items": { "type": "string" }, "description": "Record what leaves the process: \"http\" (a local sink set as HTTP_PROXY, http_proxy and RUST_ANYTHING_HTTP_SINK), \"smtp\" (a local mail server, SMTP_HOST and SMTP_PORT, recording decoded headers and MIME parts) and \"smtp-raw\" (raw MIME DATA). Each case stores what reached them, in order, and replay compares it." },
                 "effect_env": { "type": "array", "items": { "type": "string" }, "description": "Point the app's own settings at a sink: VAR=http-url, VAR=smtp-host, VAR=smtp-port or VAR=smtp-url." },
