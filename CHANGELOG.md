@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `--batch function:param` with an unknown function or parameter lists the ones `src/port.rs` has
+  (`(functions: add)`, `(parameters: a, b)`), and an empty side (`add:` or `:a`) gets the same
+  "write it as function:param" error as a spec without a colon (#504, #521 by
+  @alvaroalonsoparrondo-a11y).
 - `enable --only` (and `--partial`) with an unknown name lists the unit's exports after the unknown
   ones, so the right spelling is in the error (#500, #520 by @Papito084).
 - `package --version` (and MCP `package`'s `version`) is refused before anything is written,
