@@ -1,5 +1,5 @@
 {
-  "version": "5.0.0",
+  "version": "5.0.1",
   "commands": [
     {
       "command": "",
@@ -43,7 +43,7 @@
     },
     {
       "command": "go",
-      "help": "The hot-path loop in one command: profile the workload, bridge the top portable function, record it, hand the port to an agent, then build, diff and gate it, and switch it on only when everything matches. `rust-anything go --agent claude -- python3 app.py`\n\nUsage: rust-anything go [OPTIONS] [ROOT] -- <COMMAND>...\n\nArguments:\n  [ROOT]        Repository root, as `profile` takes it\n  <COMMAND>...  The workload, after `--`\n\nOptions:\n      --root <ROOT>          Repository root\n      --agent <AGENT>        `claude`, `codex`, or any command that reads a prompt on stdin. Without it, `go` writes the crate's TASK.md and stops; run it again once `src/port.rs` is ported\n      --function <FUNCTION>  Port this function instead of the profile's pick\n      --lang <LANG>          Source language; detected from the repository when omitted [possible values: ts, python, c, go, ruby, java, kotlin, php, csharp, powershell]\n      --count <COUNT>        Generated cases per function, on top of the calls the workload makes [default: 200]\n      --rounds <ROUNDS>      Agent turns: the port, then one more per failing diff or gate [default: 3]\n      --json                 Print the machine-readable report as JSON\n  -h, --help                 Print help\n"
+      "help": "The hot-path loop in one command: profile the workload, bridge the top portable function, record it, hand the port to an agent, then build, diff and gate it, and switch it on only when everything matches. `rust-anything go --agent claude -- python3 app.py`\n\nUsage: rust-anything go [OPTIONS] [ROOT] -- <COMMAND>...\n\nArguments:\n  [ROOT]        Repository root, as `profile` takes it\n  <COMMAND>...  The workload, after `--`\n\nOptions:\n      --root <ROOT>          Repository root\n      --agent <AGENT>        `claude`, `codex`, or any command that reads a prompt on stdin. Without it, `go` writes the crate's TASK.md and stops; run it again once `src/port.rs` is ported\n      --function <FUNCTION>  Port this function instead of the profile's pick\n      --lang <LANG>          Source language; detected from the repository when omitted [possible values: ts, python, c, go, ruby, java, kotlin, php, csharp, powershell]\n      --count <COUNT>        Generated cases per function, on top of the calls the workload makes [default: 200]\n      --rounds <ROUNDS>      Agent turns: the port, then one more per failing diff or gate (default: 3)\n      --json                 Print the machine-readable report as JSON\n  -h, --help                 Print help\n"
     },
     {
       "command": "enable",

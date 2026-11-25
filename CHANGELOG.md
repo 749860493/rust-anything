@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 5.0.1 (2026-11-26)
+
 - rust-anything is now dual licensed under MIT OR Apache-2.0, the usual license for Rust projects. You
   can keep using it under MIT exactly as before; Apache-2.0 adds an explicit patent grant. `LICENSE` is
   now `LICENSE-MIT`, next to a new `LICENSE-APACHE`, and both ship in the crate, the npm package and
