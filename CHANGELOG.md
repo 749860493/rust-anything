@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `fuzz --time` given a negative or non-finite value says
+  `` `--time` must be 0 or more seconds (0 runs one round), not -1 `` instead of
+  `` `--time` takes seconds ``, and `--time -1` (with a space) gets the same message instead of clap's
+  `unexpected argument '-1' found`. The MCP `fuzz` tool's `time` says the same (#612).
+
 ## 5.0.0 (2026-11-25)
 
 The old program is the judge, now with sharper eyes: every mismatch says where it starts and
