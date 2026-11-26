@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `docs/whole-apps.md` says six of the seven `app` commands are MCP tools and that `app shadow` is
+  CLI only, instead of "All six are MCP tools too" (#672, #674 by @XiaoBinGan).
 - The MCP `app_record` tool refuses a `ready`, `name`, `db_reset` or `db_dump` that is neither a
   string nor `null`, with `` `ready` must be a string, not 42 ``, instead of recording as if it had
   not been given. A `null` still means not given (#671, #673 by @XiaoBinGan).

@@ -292,8 +292,9 @@ rebuild, since `app front-door` never overwrites an existing `rust/app`.
 | `unordered` | *(written by `app record`)* | Recomputed from `order` noise; tells `replay` to compare those lines in any order |
 | `recorded` | *(written by `app record`)* | Tracks generated case names so stale cases are cleaned up on the next `app record` |
 
-All six are MCP tools too: `app_record`, `app_replay`, `app_front_door`, `app_wire`,
-`app_lift` and `app_drift`.
+Six of the seven are MCP tools: `app_record`, `app_replay`, `app_front_door`, `app_wire`, `app_lift`
+and `app_drift`. `app shadow` is CLI only: it holds a proxy open in front of two servers, so a call has
+nothing to return until the session ends.
 
 ### Keep up with the original
 
