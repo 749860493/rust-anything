@@ -57,6 +57,10 @@ pub struct HttpConfig {
     /// Unset keeps the default, `READY`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready_secs: Option<u64>,
+    /// A request that says the app is ready once it answers (`app record --ready GET /health`).
+    /// Without it, an open port counts as ready.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ready_request: Option<String>,
 }
 
 /// How long a start waits for the port: the saved `--ready-timeout`, or `READY`.
@@ -73,7 +77,8 @@ pub(crate) fn merge_config(
         || opts.port.is_some()
         || opts.server_args.is_some_and(|args| !args.is_empty())
         || opts.pace_ms.is_some()
-        || opts.ready_secs.is_some();
+        || opts.ready_secs.is_some()
+        || opts.ready_request.is_some();
     if opts.http == Some(false) {
         ensure!(
             !asked,
@@ -100,6 +105,9 @@ pub(crate) fn merge_config(
     }
     if let Some(secs) = opts.ready_secs {
         config.ready_secs = (secs > 0).then_some(secs);
+    }
+    if let Some(request) = opts.ready_request {
+        config.ready_request = Some(request.to_string());
     }
     Ok(Some(config))
 }
@@ -411,6 +419,41 @@ fn connect(addr: SocketAddr, req: &Req, host: &str, timeout: Duration) -> Result
     Ok(stream)
 }
 
+/// Polls `request` (`"GET /health"`) until it answers 2xx, so a server that opens its port
+/// before its routes work is not recorded against half-initialised responses.
+fn wait_ready(addr: SocketAddr, request: &str, deadline: Option<Instant>) -> Result<()> {
+    let (method, path) = request
+        .split_once(' ')
+        .map_or(("GET", request), |(m, p)| (m, p));
+    let probe = Req {
+        method: method.to_string(),
+        path: path.to_string(),
+        headers: BTreeMap::new(),
+        body: None,
+        body_base64: None,
+        body_file: None,
+    };
+    let mut last = String::from("no answer");
+    loop {
+        // The probe's own timeout comes out of the same budget, so an endless chunked response
+        // cannot outlive `--ready-timeout`: `send` sets that timeout on the socket as well.
+        let budget = deadline.map(|d| d.saturating_duration_since(Instant::now()));
+        let timeout = budget.map_or(Duration::from_secs(5), |b| b.min(Duration::from_secs(5)));
+        if timeout.is_zero() {
+            bail!("`{request}` did not answer 2xx within the wait ({last})");
+        }
+        match send(addr, &probe, timeout) {
+            Ok(resp) if resp.status < 300 => return Ok(()),
+            Ok(resp) => last = format!("status {}", resp.status),
+            Err(e) => last = format!("{e:#}"),
+        }
+        if deadline.is_some_and(|d| Instant::now() > d) {
+            bail!("`{request}` did not answer 2xx within the wait ({last})");
+        }
+        std::thread::sleep(Duration::from_millis(50));
+    }
+}
+
 fn send(addr: SocketAddr, req: &Req, timeout: Duration) -> Result<Resp> {
     let mut stream = connect(addr, req, &addr.to_string(), timeout)?;
     read_response(&mut stream, req.method == "HEAD")
@@ -640,6 +683,39 @@ impl Server {
             }
             std::thread::sleep(Duration::from_millis(50));
         };
+        // A framework can open the port long before its routes answer. With `--ready`, the app is
+        // ready only once that request stops failing.
+        if let Some(request) = launch.ready_request {
+            match wait_ready(addr, request, deadline) {
+                Ok(()) => {
+                    // The probe itself may have hit the sinks; what it produced belongs to no case.
+                    if let Some(sinks) = &sinks {
+                        let _ = sinks.take(&cwd, repo);
+                    }
+                }
+                Err(e) => {
+                    // The whole tree, as `stop` does: a shell or launcher may hold the server.
+                    #[cfg(unix)]
+                    end_tree(
+                        child.id(),
+                        Duration::from_secs(5),
+                        processes,
+                        |signal, pids| {
+                            let _ = Command::new("kill")
+                                .arg(signal)
+                                .arg("--")
+                                .args(pids.iter().map(u32::to_string))
+                                .stderr(Stdio::null())
+                                .status();
+                        },
+                    );
+                    let _ = child.kill();
+                    let _ = child.wait();
+                    let _ = std::fs::remove_dir_all(&dir);
+                    return Err(e);
+                }
+            }
+        }
         Ok(Server {
             child,
             addr,
@@ -877,6 +953,8 @@ pub(crate) struct Launch<'a> {
     pub(crate) effects: Option<&'a crate::effects::EffectsConfig>,
     /// How long to wait for the port before giving up.
     pub(crate) ready: Duration,
+    /// A request that must answer before the app counts as ready, e.g. `GET /health`.
+    pub(crate) ready_request: Option<&'a str>,
 }
 
 /// Starts a server on an auto-picked ephemeral port, retrying if another process claims the port
@@ -1705,6 +1783,7 @@ pub(crate) fn record(
         pace: http.pace_ms.map(Duration::from_millis),
         effects: config.effects.as_ref(),
         ready: ready_timeout(&http),
+        ready_request: http.ready_request.as_deref(),
     };
     let one = run_all(&config.run, &launch, repo, fixed, &reqs, timeout)?;
     let two = run_all(&config.run, &launch, repo, fixed, &reqs, timeout)?;
@@ -2003,6 +2082,7 @@ pub(crate) fn replay(
         pace: http.pace_ms.map(Duration::from_millis),
         effects: config.effects.as_ref(),
         ready: ready_timeout(&http),
+        ready_request: http.ready_request.as_deref(),
     };
     let answers = run_all(command, &launch, repo, fixed_port, &reqs, timeout)?;
     let mut outcome = ReplayOutcome {
@@ -2194,6 +2274,7 @@ mod tests {
             float_files: &[],
             effects: None,
             ready_secs,
+            ready_request: None,
         };
         let old: HttpConfig = serde_json::from_str(r#"{"port":8080}"#).unwrap();
         assert_eq!(ready_timeout(&old), READY);
@@ -2969,6 +3050,7 @@ mod tests {
             float_files: &[],
             effects: None,
             ready_secs: None,
+            ready_request: None,
         };
         let saved = HttpConfig {
             port: Some(8080),
@@ -2976,6 +3058,7 @@ mod tests {
             fresh: vec!["data".into()],
             pace_ms: Some(25),
             ready_secs: None,
+            ready_request: None,
         };
 
         // `--no-http` drops the saved server configuration.
@@ -3052,6 +3135,7 @@ mod tests {
             pace: None,
             effects: None,
             ready: Duration::from_secs(1),
+            ready_request: None,
         };
         let repo = std::env::temp_dir();
 

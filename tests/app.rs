@@ -90,6 +90,7 @@ fn record_then_replay(repo: &Path, run: &str, buggy: &str) {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     assert_eq!(outcome.examples, 7, "{outcome:?}");
@@ -667,6 +668,7 @@ fn lift_end_to_end(repo: &Path, run: &str, semantics: &Semantics, original: &str
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     let door = front_door::front_door(&FrontDoorOptions {
@@ -1148,6 +1150,7 @@ fn drift_finds_upstream_changes_and_new_examples() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     let replay_report = app::cases_dir(&repo).join(app::REPORT_FILE);

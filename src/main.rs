@@ -447,7 +447,7 @@ enum Cmd {
     /// Record the whole app's behavior and replay any build against it (CLIs and servers).
     App {
         #[command(subcommand)]
-        command: AppCmd,
+        command: Box<AppCmd>,
     },
     /// Serve every step as MCP tools over stdio.
     Mcp,
@@ -544,7 +544,14 @@ enum AppCmd {
         #[arg(long, conflicts_with = "no_http")]
         http: bool,
         /// Drop a saved server recording and record as a CLI again.
-        #[arg(long, conflicts_with_all = ["http", "port", "server_args", "pace", "ready_timeout"])]
+        #[arg(long, conflicts_with_all = [
+            "http",
+            "port",
+            "server_args",
+            "pace",
+            "ready_timeout",
+            "ready",
+        ])]
         no_http: bool,
         /// A port the server always listens on (implies --http); 0 removes a saved port.
         #[arg(long)]
@@ -582,6 +589,11 @@ enum AppCmd {
         /// the default.
         #[arg(long, value_name = "SECS")]
         ready_timeout: Option<u64>,
+        /// A request that says the server is ready once it answers 2xx, e.g. `GET /health`, for a
+        /// framework that opens its port before its routes work. Implies --http; saved with the
+        /// cases and used by replay and the front door.
+        #[arg(long, value_name = "METHOD PATH")]
+        ready: Option<String>,
         /// Numbers in the output match when they differ by at most this times the larger
         /// magnitude (absolute below 1), e.g. 1e-9 for numeric code. Saved with the cases; 0
         /// removes it.
@@ -1647,7 +1659,7 @@ fn run() -> Result<ExitCode> {
                 return Ok(ExitCode::FAILURE);
             }
         }
-        Cmd::App { command } => return run_app(command),
+        Cmd::App { command } => return run_app(*command),
         Cmd::Mcp => mcp::serve()?,
         Cmd::Setup {
             agents,
@@ -1763,6 +1775,7 @@ fn run_app(command: AppCmd) -> Result<ExitCode> {
             no_fresh,
             pace,
             ready_timeout,
+            ready,
             float_tolerance,
             float_files,
             effects,
@@ -1816,6 +1829,7 @@ fn run_app(command: AppCmd) -> Result<ExitCode> {
                 float_files: &float_files,
                 effects,
                 ready_secs: ready_timeout,
+                ready_request: ready.as_deref(),
             })?;
             if json {
                 say!("{}", serde_json::to_string_pretty(&outcome)?);

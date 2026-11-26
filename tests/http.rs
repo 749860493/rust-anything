@@ -76,6 +76,7 @@ fn record(repo: &Path, run: &str, traps: bool) -> app::RecordOutcome {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap()
 }
@@ -173,6 +174,7 @@ fn a_server_started_for_replay_is_gone_after_it() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     let recorded = std::fs::read_to_string(&pid_file)
@@ -245,6 +247,7 @@ fn the_second_recording_gets_a_fresh_server_process() {
             float_files: &[],
             effects: None,
             ready_secs: None,
+            ready_request: None,
         })
         .unwrap();
         std::fs::read_to_string(&pid_file)
@@ -312,6 +315,7 @@ fn a_server_started_through_a_shell_is_gone_after_record() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     let pid = std::fs::read_to_string(repo.join("server.pid")).unwrap_or_default();
@@ -321,6 +325,107 @@ fn a_server_started_through_a_shell_is_gone_after_record() {
     assert!(
         !alive(pid.trim()),
         "the server (pid {pid}) is still running after record"
+    );
+}
+
+/// A server that opens its port, answers 503 to everything until its third `/health`, then 200.
+const LATE_HEALTH: &str = r#"import os
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+STATE = {"health": 0}
+
+
+class H(BaseHTTPRequestHandler):
+    def do_GET(self):
+        # The port is open, the routes are not: what a framework does while it migrates or warms up.
+        ready = STATE["health"] >= 3
+        if self.path == "/health":
+            STATE["health"] += 1
+        if not ready and self.path == "/health":
+            # Not registered yet: a 404 must not count as ready either.
+            body = b'{"error":"no route"}'
+            self.send_response(404)
+        elif not ready:
+            body = b'{"ready":false}'
+            self.send_response(503)
+        elif self.path == "/health":
+            body = b'{"ready":true}'
+            self.send_response(200)
+        else:
+            body = b'{"ok":true}'
+            self.send_response(200)
+        if self.path != "/health":
+            # What the app said to the recorded request itself, for the test to assert on.
+            open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "served.txt"), "a").write(
+                "%d\n" % (200 if ready else 503)
+            )
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, *args):
+        pass
+
+
+HTTPServer(("127.0.0.1", int(os.environ["PORT"])), H).serve_forever()
+"#;
+
+#[test]
+fn a_ready_request_waits_until_the_routes_answer() {
+    // The port accepting a connection is not the same as the app being ready: a framework answers
+    // 503 until its routes are up, and a recording made then keeps half-initialised responses.
+    let Some(python) = common::python() else {
+        return;
+    };
+    let repo = std::env::temp_dir().join(format!("rust-anything-http-late-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&repo);
+    std::fs::create_dir_all(&repo).unwrap();
+    std::fs::write(repo.join("server.py"), LATE_HEALTH).unwrap();
+    std::fs::write(
+        repo.join("inputs.jsonl"),
+        "{\"name\":\"ok\",\"path\":\"/\"}\n",
+    )
+    .unwrap();
+    let out = app::record(&RecordOptions {
+        repo: &repo,
+        run: &[python.to_string(), "server.py".to_string()],
+        inputs: Some(&repo.join("inputs.jsonl")),
+        normalize: &[],
+        name: None,
+        traps: false,
+        timeout_secs: None,
+        http: Some(true),
+        server_args: None,
+        fresh: None,
+        pace_ms: None,
+        port: None,
+        float_tolerance: None,
+        float_files: &[],
+        ready_secs: None,
+        ready_request: Some("GET /health"),
+        effects: None,
+    })
+    .unwrap();
+    let saved =
+        std::fs::read_to_string(repo.join("rust/app-cases/rust-anything.json")).unwrap_or_default();
+    let served = std::fs::read_to_string(repo.join("served.txt")).unwrap_or_default();
+    let _ = std::fs::remove_dir_all(&repo);
+    assert_eq!(out.cases, 1, "{out:?}");
+    assert!(
+        saved.contains("GET /health"),
+        "the request is saved: {saved}"
+    );
+    // `all()` on an empty list is true, so the emptiness is asserted first.
+    let statuses: Vec<&str> = served
+        .lines()
+        .map(str::trim)
+        .filter(|l| !l.is_empty())
+        .collect();
+    assert!(!statuses.is_empty(), "the fixture recorded nothing");
+    assert!(
+        statuses.iter().all(|s| *s == "200"),
+        "the case reached a not-ready app: {statuses:?}"
     );
 }
 
@@ -354,6 +459,7 @@ fn a_port_that_is_taken_is_named_before_the_build_runs() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap_err();
     let text = format!("{err:#}");
@@ -395,6 +501,7 @@ fn a_ready_timeout_shortens_the_wait_for_a_server_that_never_listens() {
         float_files: &[],
         effects: None,
         ready_secs: Some(1),
+        ready_request: None,
     })
     .unwrap_err();
     let waited = started.elapsed();
@@ -439,6 +546,7 @@ fn a_build_that_exits_before_listening_says_so() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap_err();
     let text = format!("{err:#}");
@@ -484,6 +592,7 @@ fn http_record_keeps_distinct_requests_with_the_same_name() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     let repeated = replay(&repo, None);
@@ -547,6 +656,7 @@ fn http_fresh_files_and_arguments_reach_every_start() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     let body = std::fs::read_to_string(out.dir.join("a2.body")).unwrap();
@@ -612,6 +722,7 @@ fn http_rerecord_uses_the_existing_fixed_port() {
             float_files: &[],
             effects: None,
             ready_secs: None,
+            ready_request: None,
         })
     };
     let first = record(Some(port));
@@ -1072,6 +1183,7 @@ fn http_fixed_port_rejects_existing_listener_and_early_exit() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap_err();
     assert!(
@@ -1100,6 +1212,7 @@ fn http_fixed_port_rejects_existing_listener_and_early_exit() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     assert!(recorded.cases > 0);
@@ -1192,6 +1305,7 @@ fn a_server_listening_only_on_ipv6_loopback_is_recorded_and_replayed() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     assert_eq!(out.cases, 1);
@@ -1281,6 +1395,7 @@ fn a_server_started_through_a_wrapper_is_stopped_with_it() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     });
     let still_listening = std::net::TcpStream::connect_timeout(
         &std::net::SocketAddr::from(([127, 0, 0, 1], port)),
@@ -1511,6 +1626,7 @@ http.server.HTTPServer(("127.0.0.1", port), H).serve_forever()
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     assert_eq!(rec.cases, 3, "{rec:?}");
@@ -1599,6 +1715,7 @@ http.server.HTTPServer(("127.0.0.1", int(os.environ["PORT"])), H).serve_forever(
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     assert_eq!(rec1.cases, 1);
@@ -1697,6 +1814,7 @@ http.server.HTTPServer(("127.0.0.1", int(os.environ["PORT"])), H).serve_forever(
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     });
     assert!(failed_clear.is_err());
     assert!(app::cases_dir(&repo).join("files/data/msg.txt").is_file());
@@ -1926,6 +2044,7 @@ fn shadow_answers_with_the_original_and_logs_the_build_mismatch_as_a_shape() {
         float_files: &[],
         effects: None,
         ready_secs: None,
+        ready_request: None,
     })
     .unwrap();
     assert_eq!(rerecorded.inputs, 1, "{rerecorded:?}");

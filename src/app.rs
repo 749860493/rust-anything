@@ -1599,6 +1599,9 @@ pub struct RecordOptions<'a> {
     /// Servers: seconds to wait for the port before giving up; kept from the last recording when
     /// `None`; 0 restores the default, a minute.
     pub ready_secs: Option<u64>,
+    /// Servers: a request that says the app is ready once it answers, e.g. `GET /health`; kept from
+    /// the last recording when `None`.
+    pub ready_request: Option<&'a str>,
 }
 
 fn is_zero(n: &usize) -> bool {
@@ -3252,6 +3255,7 @@ mod tests {
             float_files: &[],
             effects: None,
             ready_secs: None,
+            ready_request: None,
         })
         .unwrap();
         assert_eq!(recorded.cases, 1);
@@ -3540,6 +3544,7 @@ mod tests {
             float_files: &[],
             effects: None,
             ready_secs: None,
+            ready_request: None,
         })
         .unwrap();
         let read = |name: &str| std::fs::read_to_string(recorded.dir.join(name)).unwrap();
@@ -3575,6 +3580,7 @@ mod tests {
                 float_files: &[],
                 effects: None,
                 ready_secs: None,
+                ready_request: None,
             })
             .unwrap();
             Config::load(&repo).unwrap().unwrap().name
@@ -3669,6 +3675,7 @@ mod tests {
             float_files: &[],
             effects: None,
             ready_secs: None,
+            ready_request: None,
         })
         .unwrap_err();
         let rec_msg = format!("{rec_err:#}");

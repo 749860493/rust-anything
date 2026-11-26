@@ -202,7 +202,13 @@ async fn main() {{
 
 /// `in_root`: the original runs in the repository, as recorded; otherwise in the front door's
 /// own working directory (the recording copies fresh files there).
-pub(crate) fn original_rs(run: &[String], in_root: bool, ready_secs: u64) -> String {
+pub(crate) fn original_rs(
+    run: &[String],
+    in_root: bool,
+    ready_secs: u64,
+    ready_request: Option<&str>,
+) -> String {
+    let ready = ready_request.map_or("None".to_string(), |r| format!("Some({r:?})"));
     let words: Vec<String> = run.iter().map(|w| format!("{w:?}")).collect();
     let cwd = if in_root {
         ".current_dir(ROOT)
@@ -230,6 +236,7 @@ const ROOT: &str = match option_env!(\"RUST_ANYTHING_REPO\") {{
 }};
 const RUN: &[&str] = &[{words}];
 const FALLBACK_LOG: &str = \"{log}\";
+const READY: Option<&str> = {ready};
 
 fn resolve(word: &str, port: u16) -> OsString {{
     let word = word.replace(\"{{port}}\", &port.to_string());
@@ -282,24 +289,56 @@ impl Original {{
             .spawn()
             .expect(\"starting the original\");
         let deadline = Instant::now().checked_add(Duration::from_secs({ready_secs}));
-        while tokio::net::TcpStream::connect((\"127.0.0.1\", port))
-            .await
-            .is_err()
-        {{
-            if let Ok(Some(status)) = child.try_wait() {{
-                panic!(\"the original exited ({{status}}) before listening on port {{port}}\");
-            }}
-            assert!(
-                deadline.is_none_or(|d| Instant::now() < d),
-                \"the original did not listen on port {{port}}\"
-            );
-            tokio::time::sleep(Duration::from_millis(50)).await;
-        }}
         let client = reqwest::Client::builder()
             .no_proxy()
             .redirect(reqwest::redirect::Policy::none())
             .build()
             .expect(\"an HTTP client\");
+        loop {{
+            // Each attempt gets only the budget that is left, so a connect that never answers
+            // still honours `--ready-timeout`.
+            let left = deadline.map_or(Duration::from_secs(5), |d| {{
+                d.saturating_duration_since(Instant::now())
+                    .min(Duration::from_secs(5))
+            }});
+            let up = if let Some(request) = READY {{
+                // A framework opens the port before its routes answer, so the configured request
+                // has to succeed: an open port alone is not ready.
+                let (method, path) = request.split_once(' ').unwrap_or((\"GET\", request));
+                let method = reqwest::Method::from_bytes(method.as_bytes())
+                    .unwrap_or(reqwest::Method::GET);
+                let url = format!(\"http://127.0.0.1:{{port}}{{path}}\");
+                left > Duration::ZERO
+                    && tokio::time::timeout(
+                        left,
+                        client.request(method, url).send(),
+                    )
+                    .await
+                    .is_ok_and(|r| r.is_ok_and(|resp| resp.status().is_success()))
+            }} else {{
+                left > Duration::ZERO
+                    && tokio::time::timeout(
+                        left,
+                        tokio::net::TcpStream::connect((\"127.0.0.1\", port)),
+                    )
+                    .await
+                    .is_ok_and(|r| r.is_ok())
+            }};
+            if up {{
+                break;
+            }}
+            if let Ok(Some(status)) = child.try_wait() {{
+                panic!(\"the original exited ({{status}}) before listening on port {{port}}\");
+            }}
+            if !deadline.is_none_or(|d| Instant::now() < d) {{
+                // Dropping a `Child` neither kills nor reaps it, and `Original` is not built yet,
+                // so the server has to be stopped here.
+                let _ = child.kill();
+                let _ = child.wait();
+                panic!(\"the original did not listen on port {{port}}\");
+            }}
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }}
         Original {{
             base: format!(\"http://127.0.0.1:{{port}}\"),
             client,
@@ -592,6 +631,23 @@ mod tests {
         }
         let versions = main_rs_versions();
         assert!(!versions[1].contains("nodelay") && !versions[1].contains("ListenerExt"));
+    }
+
+    #[test]
+    fn the_original_waits_for_the_saved_ready_request() {
+        let run = ["python3".to_string(), "server.py".to_string()];
+        let code = original_rs(&run, true, 60, Some("GET /health"));
+        assert!(
+            code.contains("const READY: Option<&str> = Some(\"GET /health\");"),
+            "{code}"
+        );
+        assert!(code.contains("resp.status().is_success()"), "{code}");
+        assert!(!code.contains("reqwest::Client::new()"), "{code}");
+        let plain = original_rs(&run, true, 60, None);
+        assert!(
+            plain.contains("const READY: Option<&str> = None;"),
+            "{plain}"
+        );
     }
 
     #[test]
