@@ -828,8 +828,7 @@ fn opt_bool(args: &Value, key: &str) -> Result<Option<bool>> {
 
 fn call(name: &str, args: &Value) -> Result<Value> {
     let path = |key: &str| -> Result<PathBuf> {
-        args[key]
-            .as_str()
+        opt_string(args, key)?
             .map(PathBuf::from)
             .with_context(|| format!("missing `{key}`"))
     };
@@ -1315,6 +1314,25 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert_eq!(err, "`ready` must be a string, not 42");
+    }
+
+    #[test]
+    fn a_required_path_that_is_not_a_string_is_named_not_reported_missing() {
+        // Issue #685: `"root": 5` was reported as `missing `root``, which sends the caller looking
+        // for a typo in the key instead of the value.
+        let err = |args: Value| call("analyze", &args).unwrap_err().to_string();
+        assert_eq!(err(json!({ "root": 5 })), "`root` must be a string, not 5");
+        assert_eq!(err(json!({})), "missing `root`");
+        assert_eq!(err(json!({ "root": null })), "missing `root`");
+        let err = |tool: &str, args: Value| call(tool, &args).unwrap_err().to_string();
+        assert_eq!(
+            err("app_lift", json!({ "repo": true })),
+            "`repo` must be a string, not true"
+        );
+        assert_eq!(
+            err("package", json!({ "crate": ["x"] })),
+            "`crate` must be a string, not [\"x\"]"
+        );
     }
 
     #[test]

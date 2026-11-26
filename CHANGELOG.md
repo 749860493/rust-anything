@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Every MCP tool's required path (`root`, `repo` or `crate`) that is there but not a string is
+  refused with `` `root` must be a string, not 5 `` instead of `` missing `root` ``. An absent or
+  `null` path still says `` missing `root` `` (#685, #688 by @susheelg1197).
 - The MCP `bridge` and `app_wire` tools refuse a `unit` that is not a string with
   `` `unit` must be a string, not 5 `` instead of `` missing `unit` ``, and `bridge` refuses a `name`
   that is not a string instead of writing the bridge under the default name. A missing or `null`
