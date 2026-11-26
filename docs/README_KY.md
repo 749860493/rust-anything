@@ -285,6 +285,15 @@ C# да ушундай эле иштейт: `analyze` `.csproj` долбоорл
 </p>
 
 <p align="center">
+  <a href="https://www.atakdomain.com/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/domain-dark.svg">
+      <img src="assets/sponsors/domain-light.svg" width="800" alt="Domain sponsor: Atak Domain">
+    </picture>
+  </a>
+</p>
+
+<p align="center">
   <a href="https://github.com/sponsors/erkamyaman">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/sponsors-dark.svg">

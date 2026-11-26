@@ -297,6 +297,15 @@ petites méthodes plus lentes que .NET ; il n'y a pas encore de `shadow` pour C#
 </p>
 
 <p align="center">
+  <a href="https://www.atakdomain.com/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/domain-dark.svg">
+      <img src="assets/sponsors/domain-light.svg" width="800" alt="Domain sponsor: Atak Domain">
+    </picture>
+  </a>
+</p>
+
+<p align="center">
   <a href="https://github.com/sponsors/erkamyaman">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/sponsors-dark.svg">

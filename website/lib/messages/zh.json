@@ -272,6 +272,7 @@
     "sponsorsTitle": "赞助商",
     "sponsorsDesc": "rust-anything 免费且开源。如果它对你的工作有帮助，欢迎考虑赞助。你的支持让开发得以持续。",
     "companySponsor": "企业赞助商",
+    "domainSponsor": "域名赞助商",
     "becomeSponsor": "成为赞助商"
   }
 }

@@ -272,6 +272,7 @@
     "sponsorsTitle": "Sponsoren",
     "sponsorsDesc": "rust-anything ist kostenlos und Open Source. Wenn es dir bei deiner Arbeit hilft, denk bitte über ein Sponsoring nach. Deine Unterstützung hält die Entwicklung am Laufen.",
     "companySponsor": "Firmensponsor",
+    "domainSponsor": "Domain-Sponsor",
     "becomeSponsor": "Sponsor werden"
   }
 }

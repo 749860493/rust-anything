@@ -237,6 +237,7 @@ export const en = {
     sponsorsDesc:
       'rust-anything is free and open source. If it helps your work, please consider sponsoring it. Your support keeps development going.',
     companySponsor: 'Company sponsor',
+    domainSponsor: 'Domain sponsor',
     becomeSponsor: 'Become a sponsor',
   },
 }

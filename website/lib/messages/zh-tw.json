@@ -272,6 +272,7 @@
     "sponsorsTitle": "贊助者",
     "sponsorsDesc": "rust-anything 是免費的開源軟體。如果它對你的工作有幫助，請考慮贊助。你的支持能讓開發持續下去。",
     "companySponsor": "企業贊助者",
+    "domainSponsor": "網域贊助者",
     "becomeSponsor": "成為贊助者"
   }
 }

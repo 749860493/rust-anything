@@ -272,6 +272,7 @@
     "sponsorsTitle": "후원사",
     "sponsorsDesc": "rust-anything은 무료 오픈 소스입니다. 작업에 도움이 된다면 후원을 고려해 주세요. 여러분의 후원이 개발을 이어 가게 합니다.",
     "companySponsor": "기업 후원사",
+    "domainSponsor": "도메인 후원사",
     "becomeSponsor": "후원하기"
   }
 }
