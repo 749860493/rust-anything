@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- `app record --http --inputs` records every input, including one that repeats an earlier request.
+  Cases run in name order against one server, so a read after a write is a case of its own; it
+  used to be dropped as a duplicate, and the read the recording was made for was never recorded.
+  Examples and generated traps are still deduplicated. `app replay`, and the replays `app wire`
+  and `app lift` run, send HTTP cases in that same case-name order: sorting file names put
+  `add-again` before `add`, so a server with state answered differently than when recorded
+  (#677 by @antont).
 - The generated `src/utf16.rs` has `slice_units`, JS `slice` on code units with a cut surrogate
   pair kept, and `bridge`'s string-offsets note says to return such a substring through
   `js::utf16_string(utf16::slice_units(..))`. `utf16::slice`, which the note pointed to before,
