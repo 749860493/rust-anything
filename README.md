@@ -48,8 +48,8 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 ## Sponsors
 
 <p align="center">
-  Made in Türkiye 🇹🇷 by <a href="https://github.com/erkamyaman">erKam Yaman</a>. <a href="https://github.com/erkamyaman/rust-anything">Rust Anything</a> is free and open source. If it helps your work, please consider sponsoring it.<br>
-  Your support keeps development going.
+  Made in Türkiye 🇹🇷 by <a href="https://github.com/erkamyaman">erKam Yaman</a><br>
+  Rust Anything is free and open source. If it helps your work, sponsoring keeps it going.
 </p>
 
 <p align="center"><sub>Your safety comes first: sponsors get a logo and a link here, nothing more. No paid recommendations and no setup guides for third-party AI API resellers, so nothing here steers your code, keys or data somewhere you didn't choose.</sub></p>
