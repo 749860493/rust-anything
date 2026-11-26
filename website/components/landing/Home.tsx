@@ -1,80 +1,8 @@
 import { REPO_URL } from '../../lib/site'
-import { messages, withLocale, fill, type Messages } from '../../lib/i18n'
+import { messages, withLocale, fill } from '../../lib/i18n'
 import Rich from '../Rich'
 import CONTRIBUTORS from '../../content/contributors.json'
 import './landing.css'
-
-function RecordViz() {
-  const rows = [
-    ['wordCount', '"a\\u00a0b"'],
-    ['parse', '"1 \u017f"'],
-    ['slugify', '"\u03a3\u038a\u03a3\u03a5\u03a6\u039f\u03a3"'],
-    ['format', '-0'],
-    ['round', '-2.5'],
-  ]
-  return (
-    <div className="w-full font-mono text-[11px] leading-[22px] text-muted">
-      {rows.map(([fn, args]) => (
-        <div key={fn} className="truncate">
-          {'{'}<span className="text-brand-ink">"fn"</span>:"{fn}",<span className="text-brand-ink">"args"</span>:[{args}]{'}'}
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function PortViz({ m }: { m: Messages['home'] }) {
-  return (
-    <div className="flex w-full items-center justify-center gap-3 font-mono text-xs">
-      <div className="grid grid-cols-2 gap-1.5">
-        {['TS', 'Py', 'Go', 'Rb', 'Java', 'C'].map((l) => (
-          <span key={l} className="rounded border border-line px-2 py-0.5 text-center text-muted">
-            {l}
-          </span>
-        ))}
-      </div>
-      <svg width="48" height="20" viewBox="0 0 48 20" aria-hidden className="text-brand">
-        <path d="M0 10 H42 M34 3 L43 10 L34 17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      <div className="rounded-md border border-brand/50 bg-brand-soft px-3 py-2 text-center text-brand-ink">
-        port.rs
-        <div className="mt-0.5 text-[10px] text-muted">{m.vizSameApi}</div>
-      </div>
-    </div>
-  )
-}
-
-function CheckViz({ m }: { m: Messages['home'] }) {
-  return (
-    <div className="text-center">
-      <div className="font-display text-4xl font-semibold tracking-tight">
-        3,414<span className="text-muted">/</span>3,414
-      </div>
-      <div className="mt-2 text-xs text-muted">{m.vizCheck}</div>
-      <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-good-soft px-2.5 py-0.5 text-xs font-medium text-good">{m.vizGate}</div>
-    </div>
-  )
-}
-
-function LiftViz({ m }: { m: Messages['home'] }) {
-  const steps = [99.8, 22.6, 0].map((v, i) => ({ label: m.vizLiftSteps[i], v }))
-  return (
-    <div className="w-full space-y-2.5">
-      <div className="text-[11px] text-muted">{m.vizLift}</div>
-      {steps.map((x) => (
-        <div key={x.label}>
-          <div className="mb-1 flex justify-between text-[11px] text-muted">
-            <span>{x.label}</span>
-            <span className="tabular-nums">{x.v}%</span>
-          </div>
-          <div className="h-1.5 rounded-full bg-line">
-            <div className="h-1.5 rounded-full bg-brand" style={{ width: `${Math.max(x.v, 1.5)}%`, opacity: x.v ? 1 : 0.4 }} />
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
 
 const STEP_CMDS = ['record', 'bridge', 'diff, gate', 'app lift']
 
@@ -91,10 +19,17 @@ const LANGS = [
   { key: 'powershell', name: 'PowerShell', tested: true },
 ] as const
 
-const TRENDSHIFT = ['daily', 'daily?language=Rust', 'weekly', 'weekly?language=Rust']
-
 const CODERABBIT = 'https://coderabbit.link/er-kam'
 const ATAK_DOMAIN = 'https://www.atakdomain.com/'
+
+const SPONSORS = [
+  { login: 'santoshyadavdev', name: 'Santosh Yadav' },
+  { login: 'hakansoyturk', name: 'Hakan Soytürk' },
+  { login: 'aliyilmazco', name: 'Ali Yilmaz' },
+  { login: 'ashley-hunter', name: 'Ashley Hunter' },
+  { login: 'fatihuzuntas', name: 'Fatih Uzuntaş' },
+  { login: 'bugrcvi', name: 'bugrcvi' },
+]
 
 const BENCH = [
   ['GET /posts', '11.1k / 10.8k', '27.3k / 23.9k', '19.7k / 20.4k', '115.0k / 110.7k'],
@@ -105,34 +40,23 @@ const BENCH = [
 export default function Home({ hero, install, locale = 'en' }: { hero: React.ReactNode; install: React.ReactNode; locale?: string }) {
   const m = messages(locale).home
   const L = (p: string) => withLocale(p, locale)
-  const vizzes = [<RecordViz key="r" />, <PortViz key="p" m={m} />, <CheckViz key="c" m={m} />, <LiftViz key="l" m={m} />]
   return (
     <div className="home">
       {hero}
       <div className="wrap">
-        <div className="stats">
+        <dl className="ledger">
           {m.stats.map((x) => (
-            <div key={x.k} className="stat">
-              <div className="v">
+            <div key={x.k} className="ledger-row">
+              <dt>
                 {x.v}
                 {x.unit && <small>{x.unit}</small>}
-              </div>
-              <div className="k">{x.k}</div>
+              </dt>
+              <dd>{x.k}</dd>
             </div>
           ))}
-        </div>
-        <div className="trend-badges">
-          {TRENDSHIFT.map((b) => (
-            <a key={b} href="https://trendshift.io/repositories/363468">
-              <img src={`https://trendshift.io/api/badge/trendshift/repositories/363468/${b}`} width={250} height={55} alt={`rust-anything on Trendshift (${b})`} loading="lazy" />
-            </a>
-          ))}
-        </div>
+        </dl>
         <p className="sponsored-by">
-          {m.sponsoredBy}{' '}
-          <a href={CODERABBIT}>
-            <img src="/brands/coderabbit.png" width={22} height={22} alt="" /> CodeRabbit
-          </a>
+          {m.sponsoredBy} <a href={CODERABBIT}>CodeRabbit</a> <span aria-hidden>/</span> <a href={ATAK_DOMAIN}>Atak Domain</a>
         </p>
       </div>
 
@@ -176,9 +100,6 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
           <ol className="steps">
             {m.steps.map((s, i) => (
               <li key={i} className="step">
-                <div className="step-viz" aria-hidden>
-                  {vizzes[i]}
-                </div>
                 <span className="step-n" aria-hidden>
                   {i + 1}
                 </span>
@@ -330,7 +251,6 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
               <li key={l.key}>
                 <a href={'tested' in l ? `${REPO_URL}#languages` : L(`/docs/languages/${l.key}`)} className="lang">
                   <span className="lang-top">
-                    <img src={`/langs/${l.key}.svg`} width={28} height={28} alt="" decoding="async" />
                     <span className={`badge${'tested' in l ? ' preview' : ''}`}>{'tested' in l ? m.tested : m.verified}</span>
                   </span>
                   <span className="name">{l.name.replace('/', '/\u200b')}</span>
@@ -350,18 +270,17 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
             </h2>
             <p className="section-desc">{m.contributorsDesc}</p>
           </div>
-          <ul className="people">
-            {CONTRIBUTORS.slice(0, 30).map((p) => (
-              <li key={p.login}>
-                <a href={`https://github.com/${p.login}`} className="person">
-                  <img src={`https://github.com/${p.login}.png?size=96`} width={48} height={48} alt="" loading="lazy" decoding="async" />
-                  <span>{p.login}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-          <div className="people-more">
-            <a className="btn btn-quiet" href={`${REPO_URL}/graphs/contributors`}>
+          <div className="people-row">
+            <ul className="people">
+              {CONTRIBUTORS.slice(0, 24).map((p) => (
+                <li key={p.login}>
+                  <a href={`https://github.com/${p.login}`} className="person" title={p.login}>
+                    <img src={`https://github.com/${p.login}.png?size=64`} width={36} height={36} alt={p.login} loading="lazy" decoding="async" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a className="people-all" href={`${REPO_URL}/graphs/contributors`}>
               {fill(m.contributorsAll, { n: String(CONTRIBUTORS.length) })}
             </a>
           </div>
@@ -376,26 +295,43 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
             </h2>
             <p className="section-desc">{m.sponsorsDesc}</p>
           </div>
-          <div className="sponsors">
-            <a href={CODERABBIT} className="sponsor-company">
-              <img src="/brands/coderabbit.png" width={48} height={48} alt="" loading="lazy" />
-              <span>
-                <span className="who">CodeRabbit</span>
-                <span className="role">{m.companySponsor}</span>
+          <div className="sponsor-tiers">
+            <a href={CODERABBIT} className="sponsor-tier">
+              <span className="sponsor-co">
+                <img src="/brands/coderabbit.png" width={36} height={36} alt="" loading="lazy" />
+                CodeRabbit
               </span>
+              <span className="sponsor-role">{m.companySponsor}</span>
             </a>
-            <a href={ATAK_DOMAIN} className="sponsor-company sponsor-logo">
-              <img className="only-light" src="/brands/atak-domain.svg" width={178} height={40} alt="Atak Domain" loading="lazy" />
-              <img className="only-dark" src="/brands/atak-domain-dark.svg" width={178} height={40} alt="Atak Domain" loading="lazy" />
-            </a>
-            <a className="btn btn-quiet" href="https://github.com/sponsors/erkamyaman">
-              {m.becomeSponsor}
+            <a href={ATAK_DOMAIN} className="sponsor-tier">
+              <span className="sponsor-co">
+                <img className="only-light" src="/brands/atak-domain.svg" width={150} height={34} alt="Atak Domain" loading="lazy" />
+                <img className="only-dark" src="/brands/atak-domain-dark.svg" width={150} height={34} alt="Atak Domain" loading="lazy" />
+              </span>
+              <span className="sponsor-role">{m.domainSponsor}</span>
             </a>
           </div>
-          <a href="https://github.com/sponsors/erkamyaman" className="sponsor-wall">
-            <img className="only-light" src="/sponsors/sponsors-light.svg" alt={m.sponsorWallAlt} loading="lazy" />
-            <img className="only-dark" src="/sponsors/sponsors-dark.svg" alt={m.sponsorWallAlt} loading="lazy" />
-          </a>
+          <div className="sponsor-people-row">
+            <span className="sponsor-role">{m.peopleSponsors}</span>
+            <ul className="sponsor-people">
+              {SPONSORS.map((p) => (
+                <li key={p.login}>
+                  <a href={`https://github.com/${p.login}`}>
+                    <img src={`https://github.com/${p.login}.png?size=64`} width={28} height={28} alt="" loading="lazy" decoding="async" />
+                    {p.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="sponsor-cta">
+            <a className="btn btn-primary" href="https://github.com/sponsors/erkamyaman">
+              {m.becomeSponsor}
+            </a>
+            <a className="btn btn-quiet" href="https://buymeacoffee.com/erkamyaman">
+              {m.buyCoffee}
+            </a>
+          </div>
         </div>
       </section>
     </div>

@@ -111,7 +111,7 @@ export async function renderOg({ title, eyebrow }) {
       'div',
       { alignItems: 'center', gap: '24px' },
       h('img', { src: logo, width: 88, height: 88 }),
-      h('div', { fontSize: 36, fontWeight: 600, fontFamily: 'PlexCond' }, 'rust-anything'),
+      h('div', { fontSize: 36, fontWeight: 600, fontFamily: 'PlexCond' }, 'Rust Anything'),
     ),
     h(
       'div',

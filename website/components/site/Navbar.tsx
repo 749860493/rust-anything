@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import Logo from '../Logo'
 import ThemeToggle from './ThemeToggle'
 import SearchDialog, { SearchButton } from './SearchDialog'
-import { CloseIcon, DiscordIcon, GitHubIcon, HeartIcon, MenuIcon } from './icons'
+import { CloseIcon, GitHubIcon, HeartIcon, MenuIcon } from './icons'
 import type { NavGroup } from '../../lib/nav'
 import type { Messages } from '../../lib/messages/en'
 import { LOCALES, stripLocale, withLocale } from '../../lib/locales'
@@ -38,7 +38,6 @@ function LanguageMenu({ currentPath, locale, label }: { currentPath: string; loc
         title={label}
       >
         <Flag l={current} />
-        <span className="hidden xl:inline">{current.name}</span>
         <svg className="hidden opacity-60 sm:block" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
           <path d="M6 9l6 6 6-6" />
         </svg>
@@ -142,13 +141,16 @@ export default function Navbar({
             </a>
           ))}
         </nav>
-        <div className="hidden sm:block">
+        <div className="hidden xl:block">
           <SearchButton ui={ui} onOpen={() => setSearchOpen(true)} />
         </div>
-        <div className="sm:hidden">
+        <div className="xl:hidden">
           <SearchButton ui={ui} compact onOpen={() => setSearchOpen(true)} />
         </div>
         <LanguageMenu currentPath={currentPath} locale={locale} label={ui.language} />
+        <div className="hidden lg:block">
+          <ThemeToggle ui={ui} />
+        </div>
         <a
           href={REPO_URL}
           className="inline-flex h-9 w-9 items-center justify-center rounded-md text-fg/80 hover:text-fg"
@@ -157,19 +159,12 @@ export default function Navbar({
           <GitHubIcon className="h-[22px] w-[22px]" />
         </a>
         <a
-          href="https://discord.gg/FXhUEA8eBR"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-fg/80 hover:text-fg"
-          aria-label="Discord"
-        >
-          <DiscordIcon className="h-[22px] w-[22px]" />
-        </a>
-        <a
           href="https://github.com/sponsors/erkamyaman"
-          className="group inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-2 text-sm text-fg/80 hover:text-fg xl:border xl:border-line xl:px-3 xl:hover:border-[#db61a2]/60"
+          className="group inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-2 text-sm text-fg/80 hover:text-fg"
           aria-label={ui.sponsor}
           title={ui.sponsor}
         >
-          <HeartIcon className="h-[18px] w-[18px] fill-transparent stroke-[#db61a2] stroke-2 transition-colors group-hover:fill-[#db61a2] motion-reduce:transition-none" />
+          <HeartIcon className="h-[18px] w-[18px] fill-transparent stroke-current stroke-2 transition-colors group-hover:fill-current motion-reduce:transition-none" />
           <span className="hidden xl:inline">{ui.sponsor}</span>
         </a>
         <button

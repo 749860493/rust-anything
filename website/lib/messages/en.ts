@@ -18,8 +18,8 @@ export const en = {
     closeMenu: 'Close menu',
     menu: 'Menu',
     language: 'Language',
-    home: 'rust-anything home',
-    github: 'rust-anything on GitHub',
+    home: 'Rust Anything home',
+    github: 'Rust Anything on GitHub',
     onThisPage: 'On this page',
     editPage: 'Edit this page on GitHub',
     previous: 'Previous',
@@ -56,7 +56,7 @@ export const en = {
       project: 'Project',
     },
     items: {
-      '/docs/introduction/what-is-rust-anything': 'What is rust-anything',
+      '/docs/introduction/what-is-rust-anything': 'What is Rust Anything',
       '/docs/introduction/quick-start': 'Quick start',
       '/docs/introduction/install': 'Install',
       '/docs/introduction/agents': 'Set up your agent',
@@ -106,7 +106,7 @@ export const en = {
   hero: {
     title1: 'Rewrite your app in Rust.',
     title2: 'Prove it behaves the same.',
-    sub: 'rust-anything records what your code does, then replays every recorded case against the Rust port. Your agent writes the Rust. Nothing ships until the outputs match.',
+    sub: 'Rust Anything records what your code does, then replays every recorded case against the Rust port. Your agent writes the Rust. Nothing ships until the outputs match.',
     cta: 'Read the quick start',
     source: 'Source on GitHub',
     discord: 'Join Discord',
@@ -125,11 +125,11 @@ export const en = {
     installTitle: 'Install',
     installDesc: 'Install the CLI, then register the MCP server and the workflow skill with Claude Code, Codex, Cursor and Gemini CLI.',
     installNote: 'Prebuilt binaries for macOS, Linux and Windows are on each [GitHub release]({releases}).',
-    agentPrompt: 'Install rust-anything: run `cargo install rust-anything`, then `rust-anything setup`.',
+    agentPrompt: 'Install Rust Anything: run `cargo install rust-anything`, then `rust-anything setup`.',
     agentRestart: 'Tell me when to restart you.',
     loopTitle: 'How a port gets done',
     loopDesc:
-      'The original stays the source of truth. rust-anything does not translate code: it supplies what an agent cannot guess, and a gate that says when a port is done.',
+      'The original stays the source of truth. Rust Anything does not translate code: it supplies what an agent cannot guess, and a gate that says when a port is done.',
     steps: [
       {
         title: 'Record',
@@ -229,14 +229,17 @@ export const en = {
     prettierTitle: 'Prettier, ported to Rust',
     prettierDesc: 'Prettier and its Rust port format the same 59 real files, one process per file: Prettier takes 3.63 s, the Rust port 0.20 s, with the same output byte for byte.',
     prettierAlt: 'Prettier and its Rust port format the same 59 files; the Rust port is 19x faster with identical output.',
-    sponsorWallAlt: 'The people who sponsor rust-anything on GitHub',
+    sponsorWallAlt: 'The people who sponsor Rust Anything on GitHub',
     contributorsTitle: 'Built by {n} contributors',
     contributorsDesc: 'Ports, parser fixes, translations and bug reports from people who use it. A good first issue is the easiest way in.',
     contributorsAll: 'Show all {n} contributors',
     sponsorsTitle: 'Sponsors',
     sponsorsDesc:
-      'rust-anything is free and open source. If it helps your work, please consider sponsoring it. Your support keeps development going.',
+      'Rust Anything is free and open source. If it helps your work, please consider sponsoring it. Your support keeps development going.',
     companySponsor: 'Company sponsor',
+    domainSponsor: 'Domain sponsor',
+    peopleSponsors: 'Individual sponsors',
+    buyCoffee: 'Buy me a coffee',
     becomeSponsor: 'Become a sponsor',
   },
 }
