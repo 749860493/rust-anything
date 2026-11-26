@@ -7,7 +7,7 @@ stars=$(printf "%s" "$counts" | cut -d' ' -f1 | python3 -c 'import sys; print(f"
 forks=$(printf "%s" "$counts" | cut -d' ' -f2 | python3 -c 'import sys; print(f"{int(sys.argv[1]):,}")' "$(cat)")
 sed -e "s/{{stars}}/$stars/" -e "s/{{forks}}/$forks/" social.html > .social.render.html
 chrome="${CHROME:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
-"$chrome" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=1 \
+"$chrome" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=1 --allow-file-access-from-files --virtual-time-budget=3000 \
   --window-size=1280,640 --screenshot="$PWD/social-preview.png" "file://$PWD/.social.render.html" 2>/dev/null
 rm -f .social.render.html
 echo "social-preview.png: $stars stars, $forks forks"
