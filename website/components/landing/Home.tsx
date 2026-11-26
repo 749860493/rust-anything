@@ -178,63 +178,73 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
           <Head id="loop-title" title={m.loopTitle} desc={m.loopDesc} locale={locale} />
           <div className="how">
             {m.steps.map((_, i) => (
-              <input key={i} type="radio" name="how" id={`how-${i}`} className="how-radio" defaultChecked={i === 0} />
+              <input key={i} type="radio" name="ra-steps" id={`ra-step-${i}`} className="how-radio" defaultChecked={i === 0} />
             ))}
             <div className="how-tabs">
               {m.howTabs.map((t, i) => (
-                <label key={t} htmlFor={`how-${i}`} className={`how-tab t-${i}`}>
+                <label key={t} htmlFor={`ra-step-${i}`} className={`how-tab ra-st-${i}`}>
                   <span className="n">{String(i + 1).padStart(2, '0')}</span>
                   {t}
                 </label>
               ))}
             </div>
-            {m.steps.map((s, i) => (
-              <div key={i} className={`how-panel p-${i}`}>
-                <div className="how-canvas">
-                  <div className="how-flow">
-                    <div className="how-node">
-                      <b>{m.howYourCode}</b>
-                      <span>{m.howYourCodeSub}</span>
-                    </div>
-                    <div className="how-link" aria-hidden />
-                    <div className="how-node core">
-                      <b>
-                        <span className="rust">Rust</span> Anything <code>{STEP_CMDS[i]}</code>
-                      </b>
-                      <ul>
-                        {m.howBullets[i].map((x) => (
-                          <li key={x}>{x}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="how-link" aria-hidden />
-                    <div className="how-node">
-                      <b>{m.howPort}</b>
-                      <span>{m.howPortSub}</span>
+            <div className="how-panel">
+              <div className="how-canvas">
+                <div className="how-flow">
+                  <div className="how-node">
+                    <b>{m.howYourCode}</b>
+                    <span>{m.howYourCodeSub}</span>
+                  </div>
+                  <div className="how-link" aria-hidden />
+                  <div className="how-node core">
+                    <div className="how-swap">
+                      {m.steps.map((_, i) => (
+                        <div key={i} className={`ra-sv-${i}`}>
+                          <b>
+                            <span className="rust">Rust</span> Anything <code>{STEP_CMDS[i]}</code>
+                          </b>
+                          <ul>
+                            {m.howBullets[i].map((x) => (
+                              <li key={x}>{x}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  <div className="how-example">
-                    <code>
-                      <Hl code={m.howExample[i]} />
-                    </code>
+                  <div className="how-link" aria-hidden />
+                  <div className="how-node">
+                    <b>{m.howPort}</b>
+                    <span>{m.howPortSub}</span>
                   </div>
                 </div>
-                <aside className="how-aside">
-                  <h3>{s.title}</h3>
-                  <p>
-                    <Rich text={s.text} />
-                  </p>
-                  <div className="how-docs-label">{m.howDocs}</div>
-                  <ul className="how-docs">
-                    {HOW_DOCS[i].map(([t, href]) => (
-                      <li key={href}>
-                        <a href={L(href)}>{t}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </aside>
+                <div className="how-example how-swap">
+                  {m.steps.map((_, i) => (
+                    <code key={i} className={`ra-sv-${i}`}>
+                      <Hl code={m.howExample[i]} />
+                    </code>
+                  ))}
+                </div>
               </div>
-            ))}
+              <div className="how-aside how-swap">
+                {m.steps.map((s, i) => (
+                  <aside key={i} className={`ra-sv-${i}`}>
+                    <h3>{s.title}</h3>
+                    <p>
+                      <Rich text={s.text} />
+                    </p>
+                    <div className="how-docs-label">{m.howDocs}</div>
+                    <ul className="how-docs">
+                      {HOW_DOCS[i].map(([t, href]) => (
+                        <li key={href}>
+                          <a href={L(href)}>{t}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </aside>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

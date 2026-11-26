@@ -124,6 +124,11 @@ export const en = {
     bridge: 'bridge',
     verified: 'Verified {lang} port, {what}: {count} recorded cases match',
     tested: '{lang} ports are tested end to end against recordings of the original.',
+    agentLabel: 'Or paste this into your coding agent',
+    agentPrompt:
+      'Install Rust Anything with npm i -g rust-anything, then run rust-anything setup. Run rust-anything go -- <slow command of this app> and finish the port until rust-anything gate passes.',
+    copy: 'Copy',
+    copied: 'Copied',
   },
   home: {
     stats: [
@@ -150,7 +155,7 @@ export const en = {
         text: '`bridge` generates the Rust crate and a wrapper, so callers keep the original API. You or your agent write the Rust.',
       },
       {
-        title: 'Check',
+        title: 'Verify',
         text: '`diff` replays every recorded case against the Rust, and nothing ships until they all match and `gate` passes.',
       },
       {
@@ -254,7 +259,7 @@ export const en = {
     raceFaster: 'faster on this set',
     raceHow: 'How it was measured',
     sponsorEmail: 'Sponsoring as a company? Write to',
-    howTabs: ['Record', 'Port', 'Check', 'Lift'],
+    howTabs: ['Record', 'Port', 'Verify', 'Lift'],
     howYourCode: 'Your code',
     howYourCodeSub: 'Node, Python, Go, Ruby, Java, C and more',
     howPort: 'Rust port',

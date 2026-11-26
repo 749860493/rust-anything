@@ -103,23 +103,22 @@ function useCount(target: number, run: number, delay: number) {
 
 export default function Hero({ t, locale = 'en' }: { t: Messages['hero']; locale?: string }) {
   const [i, setI] = useState(0)
-  const [auto, setAuto] = useState(true)
   const [run, setRun] = useState(0)
+  const [copied, setCopied] = useState(false)
   const tabs = useRef<(HTMLButtonElement | null)[]>([])
   const lang = LANGS[i]
   const count = useCount(lang.proof?.total ?? 0, run, 250)
 
   useEffect(() => {
-    if (!auto || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const t = window.setTimeout(() => {
       setI((v) => SHOWN[(SHOWN.indexOf(v) + 1) % SHOWN.length])
       setRun((r) => r + 1)
     }, 5200)
     return () => clearTimeout(t)
-  }, [auto, i])
+  }, [i, run])
 
   const pick = (n: number) => {
-    setAuto(false)
     setI(n)
     setRun((r) => r + 1)
   }
@@ -151,9 +150,46 @@ export default function Hero({ t, locale = 'en' }: { t: Messages['hero']; locale
               {t.source}
             </a>
           </div>
+          <div className="agent-prompt">
+            <span className="agent-trail" aria-hidden>
+              <svg>
+                <rect pathLength={100} />
+              </svg>
+              <span className="walker">
+                <img src="/logo-mark.png" alt="" width={16} height={16} />
+              </span>
+            </span>
+            <div className="agent-head">
+              <span className="agent-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <rect x="4" y="8" width="16" height="12" rx="3" />
+                  <path d="M12 8V4M10 4h4M9 13v1.5M15 13v1.5M2 13v3M22 13v3" />
+                </svg>
+                {t.agentLabel}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard?.writeText(t.agentPrompt).then(
+                    () => {
+                      setCopied(true)
+                      setTimeout(() => setCopied(false), 1800)
+                    },
+                    () => {},
+                  )
+                }}
+              >
+                <span className="swap-label">
+                  <span aria-hidden={copied} data-on={!copied}>{t.copy}</span>
+                  <span aria-hidden={!copied} data-on={copied}>{t.copied}</span>
+                </span>
+              </button>
+            </div>
+            <p>{t.agentPrompt}</p>
+          </div>
         </div>
 
-        <div className="flow" aria-live="polite">
+        <div className="flow">
           <div className="flow-card">
             <div className="flow-grid">
               <div className="flow-col">
@@ -175,7 +211,7 @@ export default function Hero({ t, locale = 'en' }: { t: Messages['hero']; locale
                         onClick={() => pick(n)}
                       >
                         {l.name}
-                        {n === i && auto && <span className="timer" key={run} aria-hidden />}
+                        {n === i && <span className="timer" key={run} aria-hidden />}
                       </button>
                     )
                   })}

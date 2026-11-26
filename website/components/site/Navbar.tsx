@@ -37,11 +37,15 @@ function LanguageMenu({ currentPath, locale, label }: { currentPath: string; loc
         aria-label={label}
         title={label}
       >
-        <Flag l={current} />
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z" />
+        </svg>
+        <span className="font-mono text-xs uppercase tracking-wide">{current.code.split('-')[0]}</span>
       </summary>
       <div className="absolute end-0 top-11 z-[70] w-[24rem] max-sm:fixed max-sm:inset-x-3 max-sm:top-[4.25rem] max-sm:w-auto rounded-xl border border-line bg-bg p-2 shadow-2xl">
         <div className="px-2 pb-1.5 pt-1 text-sm font-medium text-muted">{label}</div>
-        <ul className="thin-scrollbar grid max-h-[min(30rem,75vh)] grid-cols-2 gap-0.5 overflow-y-auto">
+        <ul className="thin-scrollbar grid max-h-[75vh] grid-cols-2 gap-0.5 overflow-y-auto sm:max-h-none sm:overflow-visible">
           {LOCALES.map((l) => {
             const on = l.code === locale
             return (
@@ -58,7 +62,6 @@ function LanguageMenu({ currentPath, locale, label }: { currentPath: string; loc
                     } catch {}
                   }}
                 >
-                  <Flag l={l} />
                   <span className="min-w-0 flex-1 truncate">{l.name}</span>
                   {on && (
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden>
@@ -221,28 +224,5 @@ export default function Navbar({
 
       <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} ui={ui} locale={locale} />
     </div>
-  )
-}
-
-function Flag({ l }: { l: (typeof LOCALES)[number] }) {
-  const country = 'country' in l ? l.country : undefined
-  if (!country) {
-    return (
-      <svg className="h-[15px] w-5 shrink-0 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z" />
-      </svg>
-    )
-  }
-  return (
-    <img
-      src={`/flags/${country}.svg`}
-      width={20}
-      height={15}
-      alt=""
-      loading="lazy"
-      decoding="async"
-      className="h-[15px] w-5 shrink-0 rounded-[2px] object-cover ring-1 ring-black/10"
-    />
   )
 }

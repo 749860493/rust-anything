@@ -91,15 +91,15 @@ function ogImageFor(path: string): string {
 }
 
 export default defineMiddleware(async (c, next) => {
+  const raw = c.isRewritten() ? (c.originalUrl()?.pathname ?? c.req.path) : c.req.path
+  const path = publicPath(raw)
   const reqUrl = new URL(c.req.url)
   if (reqUrl.hostname.startsWith('www.')) {
     return new Response(null, {
       status: 301,
-      headers: { Location: `https://${reqUrl.hostname.slice(4)}${reqUrl.pathname}${reqUrl.search}` },
+      headers: { Location: `https://${reqUrl.hostname.slice(4)}${path}${reqUrl.search}` },
     })
   }
-  const raw = c.isRewritten() ? (c.originalUrl()?.pathname ?? c.req.path) : c.req.path
-  const path = publicPath(raw)
   c.set('shared', { path })
   c.set('headDefaults', {
     script: [{ innerHTML: THEME_BOOTSTRAP }, { innerHTML: EXTERNAL_LINKS }],
@@ -137,6 +137,7 @@ export default defineMiddleware(async (c, next) => {
     `<meta name="twitter:description" content="${escapeAttr(description)}">`,
     `<meta property="og:url" content="${SITE_ORIGIN}${path}">`,
     `<link rel="canonical" href="${SITE_ORIGIN}${path}">`,
+    `<link rel="alternate" type="text/plain" title="llms.txt" href="${SITE_ORIGIN}/llms.txt">`,
     structuredData(path, title, description),
   ].join('')
   const info = localeInfo(localeOf(path))

@@ -43,7 +43,10 @@ export default function InstallBox({ ui, agent }: { ui: Messages['ui']; agent: [
           aria-label={ui.copyInstall}
         >
           {copied ? <CheckIcon className="text-[#63c3a7]" /> : <CopyIcon />}
-          {copied ? ui.copied : ui.copy}
+          <span className="swap-label">
+            <span aria-hidden={copied} data-on={!copied}>{ui.copy}</span>
+            <span aria-hidden={!copied} data-on={copied}>{ui.copied}</span>
+          </span>
         </button>
       </div>
       <div className="py-2">
