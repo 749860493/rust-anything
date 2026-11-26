@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The MCP `app_record` tool refuses a `ready`, `name`, `db_reset` or `db_dump` that is neither a
+  string nor `null`, with `` `ready` must be a string, not 42 ``, instead of recording as if it had
+  not been given. A `null` still means not given (#671, #673 by @XiaoBinGan).
 - `app record --http --inputs` records every input, including one that repeats an earlier request.
   Cases run in name order against one server, so a read after a write is a case of its own; it
   used to be dropped as a duplicate, and the read the recording was made for was never recorded.
