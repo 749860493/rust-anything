@@ -14,15 +14,20 @@ const HOW_DOCS = [
 ]
 
 function Head({ id, title, desc, locale, dark }: { id: string; title: string; desc: string; locale: string; dark?: boolean }) {
-  const cut = /^(.+?[.。!?])\s+([\s\S]+)$/.exec(desc)
-  const lead = cut ? cut[1] : ''
-  const rest = cut ? cut[2] : desc
+  const cut = /^(.+?[.。!?])\s*([\s\S]+)$/.exec(desc)
+  const short = !!cut && cut[1].length <= 64 && !cut[1].includes('`')
+  const lead = short && cut ? cut[1] : ''
+  const rest = short && cut ? cut[2] : desc
   return (
     <div className={`section-head${dark ? ' on-dark' : ''}`}>
       <h2 id={id} className="section-title">
         {title}
-        {/[.。!?]$/.test(title) ? ' ' : '. '}
-        {lead && <span className="soft">{lead}</span>}
+        {lead && (
+          <>
+            {/[.。!?]$/.test(title) ? ' ' : /[\u3040-\u30ff\u4e00-\u9fff]/.test(title) ? '。' : '. '}
+            <span className="soft">{lead}</span>
+          </>
+        )}
       </h2>
       <p className="section-desc">
         <Rich text={rest} locale={locale} />
@@ -95,9 +100,45 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
       <section className="section" aria-labelledby="prettier-title">
         <div className="wrap">
           <Head id="prettier-title" title={m.prettierTitle} desc={m.prettierDesc} locale={locale} />
-          <a href="https://github.com/erkamyaman/rust-anything/blob/main/docs/real-world.md#prettier" className="prettier-demo">
-            <img src="/prettier.gif" width={820} alt={m.prettierAlt} loading="lazy" />
-          </a>
+          <div className="race">
+            <div className="race-card">
+              <div className="race-lane">
+                <div className="race-top">
+                  <b>Prettier</b>
+                  <span className="race-chip">Node 24</span>
+                </div>
+                <code className="race-cmd">$ prettier &lt;file&gt;</code>
+                <div className="race-time">3.63 s</div>
+                <div className="race-bar">
+                  <span className="slow" />
+                </div>
+                <div className="race-meta">59 / 59 {m.raceFiles}</div>
+              </div>
+              <div className="race-lane rust">
+                <div className="race-top">
+                  <b>
+                    <span className="rust-word">Rust</span> port
+                  </b>
+                  <span className="race-chip">one binary</span>
+                </div>
+                <code className="race-cmd">$ prettier-rs &lt;file&gt;</code>
+                <div className="race-time">0.20 s</div>
+                <div className="race-bar">
+                  <span className="fast" />
+                </div>
+                <div className="race-meta">59 / 59 {m.raceFiles}</div>
+              </div>
+            </div>
+            <div className="race-result">
+              <span className="what">{m.raceSame}</span>
+              <code>59 / 59</code>
+              <span className="state ok">match</span>
+              <span className="race-x">
+                <b>18x</b> {m.raceFaster}
+              </span>
+              <a href="https://github.com/erkamyaman/rust-anything/blob/main/docs/real-world.md#prettier">{m.raceHow}</a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -386,6 +427,9 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
               {m.buyCoffee}
             </a>
           </div>
+          <p className="sponsor-mail">
+            {m.sponsorEmail} <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a>
+          </p>
         </div>
       </section>
 

@@ -53,6 +53,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }) {
         ['GitHub', REPO_URL],
         ['Discord', 'https://discord.gg/FXhUEA8eBR'],
         [ui.sponsor, 'https://github.com/sponsors/erkamyaman'],
+        ['hello@rustanything.ai', 'mailto:hello@rustanything.ai'],
       ],
     },
   ]

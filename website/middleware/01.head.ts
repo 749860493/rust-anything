@@ -14,7 +14,6 @@ const THEME_BOOTSTRAP = `document.documentElement.setAttribute("data-theme","lig
 const EXTERNAL_LINKS = `(function(){
 function mark(a){if(a.host&&a.host!==location.host&&/^https?:$/.test(a.protocol)){a.target="_blank";a.rel="noopener noreferrer"}}
 document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(a)mark(a)},true);
-document.addEventListener("DOMContentLoaded",function(){document.querySelectorAll("a[href]").forEach(mark)});
 })();`
 
 const LOCALE_LINKS = (rest: string) =>

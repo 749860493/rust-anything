@@ -125,13 +125,13 @@ export default function Navbar({
       <a href={L('/')} className="shrink-0 font-display text-[17px] font-bold" aria-label={ui.home}>
         <Logo size={32} />
       </a>
-      <div className="ml-auto flex items-center gap-0.5 sm:gap-1">
-        <nav className="mr-3 hidden items-center gap-1 border-line pr-3 md:flex md:border-r" aria-label="Main">
+      <div className="ms-auto flex items-center gap-0.5 sm:gap-1">
+        <nav className="me-3 hidden items-center gap-1 border-line pe-3 lg:flex lg:border-e" aria-label={ui.docs}>
           {LINKS.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              className={`rounded-md px-3 py-1.5 text-sm ${active(l.match) ? 'font-semibold text-fg' : 'text-muted hover:text-fg'}`}
+              className={`whitespace-nowrap rounded-md px-3 py-1.5 text-sm ${active(l.match) ? 'font-semibold text-fg' : 'text-muted hover:text-fg'}`}
               aria-current={active(l.match) ? 'page' : undefined}
             >
               {l.title}
@@ -168,14 +168,15 @@ export default function Navbar({
 
       {menuOpen &&
         createPortal(
-        <div data-theme={themeToggle ? undefined : "dark"} className="fixed inset-0 z-[65] lg:hidden" role="dialog" aria-modal="true" aria-label={ui.menu}>
+        <div className="fixed inset-0 z-[65] lg:hidden" role="dialog" aria-modal="true" aria-label={ui.menu} onKeyDown={(e) => e.key === 'Escape' && setMenuOpen(false)}>
           <button type="button" tabIndex={-1} aria-label={ui.closeMenu} className="absolute inset-0 cursor-default bg-black/50" onClick={() => setMenuOpen(false)} />
-          <div className="absolute inset-y-0 right-0 flex w-[min(20rem,88vw)] flex-col border-l border-line bg-bg text-fg">
+          <div className="absolute inset-y-0 end-0 flex w-[min(20rem,88vw)] flex-col border-s border-line bg-bg text-fg">
             <div className="flex h-16 items-center justify-between border-b border-line px-4">
               <span className="font-display font-bold"><Logo size={26} /></span>
               <button
                 type="button"
                 className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted hover:text-fg"
+                autoFocus
                 onClick={() => setMenuOpen(false)}
                 aria-label={ui.closeMenu}
               >

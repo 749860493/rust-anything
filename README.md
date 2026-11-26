@@ -401,6 +401,8 @@ commands (see the [FAQ](docs/faq.md)).
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">Sponsoring as a company, or anything else? <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 ## Contributing
 
 Issues and pull requests are welcome; [CONTRIBUTING.md](./CONTRIBUTING.md) covers the setup, where

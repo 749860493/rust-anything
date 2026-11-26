@@ -38,7 +38,7 @@ export default function InstallBox({ ui, agent }: { ui: Messages['ui']; agent: [
         <button
           type="button"
           onClick={copy}
-          className="ml-auto inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-[#8c959c] hover:text-[var(--screen-fg)]"
+          className="ms-auto inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-[#8c959c] hover:text-[var(--screen-fg)]"
           aria-label={ui.copyInstall}
         >
           {copied ? <CheckIcon className="text-[#63c3a7]" /> : <CopyIcon />}
