@@ -84,8 +84,12 @@ export default function Footer({ locale = 'en' }: { locale?: string }) {
         </div>
         <div className="mt-14 flex flex-col gap-4 border-t border-line pt-6 text-sm text-muted md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <span>© 2026 Erkam Yaman</span>
-            <span>{ui.footerLicense}</span>
+            <a href="https://erkamyaman.dev" className="hover:text-fg">
+              © 2026 Erkam Yaman
+            </a>
+            <a href={`${REPO_URL}#license`} className="hover:text-fg">
+              {ui.footerLicense}
+            </a>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <a href="https://erkamyaman.dev" className="inline-flex items-center gap-2 hover:text-fg">

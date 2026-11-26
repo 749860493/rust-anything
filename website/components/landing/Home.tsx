@@ -1,6 +1,7 @@
 import { REPO_URL } from '../../lib/site'
 import { messages, withLocale, fill } from '../../lib/i18n'
 import Rich from '../Rich'
+import Hl from '../Hl'
 import CONTRIBUTORS from '../../content/contributors.json'
 import './landing.css'
 
@@ -15,7 +16,7 @@ const HOW_DOCS = [
 
 function Head({ id, title, desc, locale, dark }: { id: string; title: string; desc: string; locale: string; dark?: boolean }) {
   const cut = /^(.+?[.。!?])\s*([\s\S]+)$/.exec(desc)
-  const short = !!cut && cut[1].length <= 64 && !cut[1].includes('`')
+  const short = !!cut && cut[1].length <= 34 && !cut[1].includes('`')
   const lead = short && cut ? cut[1] : ''
   const rest = short && cut ? cut[2] : desc
   return (
@@ -213,7 +214,9 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
                     </div>
                   </div>
                   <div className="how-example">
-                    <code>{m.howExample[i]}</code>
+                    <code>
+                      <Hl code={m.howExample[i]} />
+                    </code>
                   </div>
                 </div>
                 <aside className="how-aside">
@@ -248,15 +251,15 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
                 <pre>
                   <span className="c">{m.demoComments.profile}</span>
                   {'\n'}
-                  <span className="p">$</span> rust-anything profile . -- node bench.mjs{'\n'}
-                  <span className="p">$</span> rust-anything bridge . src/fuzzy.ts --batch fuzzyScore:text{'\n'}
+                  <span className="p">$</span> <Hl code="rust-anything profile . -- node bench.mjs" />{'\n'}
+                  <span className="p">$</span> <Hl code="rust-anything bridge . src/fuzzy.ts --batch fuzzyScore:text" />{'\n'}
                   <span className="c">{m.demoComments.write}</span>
                   {'\n'}
-                  <span className="p">$</span> rust-anything record rust/fuzzy-rs{'\n'}
-                  <span className="p">$</span> rust-anything build rust/fuzzy-rs{'\n'}
-                  <span className="p">$</span> rust-anything diff rust/fuzzy-rs{'\n'}
-                  <span className="p">$</span> rust-anything bench rust/fuzzy-rs{'\n'}
-                  <span className="p">$</span> rust-anything gate rust/fuzzy-rs
+                  <span className="p">$</span> <Hl code="rust-anything record rust/fuzzy-rs" />{'\n'}
+                  <span className="p">$</span> <Hl code="rust-anything build rust/fuzzy-rs" />{'\n'}
+                  <span className="p">$</span> <Hl code="rust-anything diff rust/fuzzy-rs" />{'\n'}
+                  <span className="p">$</span> <Hl code="rust-anything bench rust/fuzzy-rs" />{'\n'}
+                  <span className="p">$</span> <Hl code="rust-anything gate rust/fuzzy-rs" />
                 </pre>
               </div>
               <div>

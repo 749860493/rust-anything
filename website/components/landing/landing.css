@@ -193,6 +193,7 @@
   white-space: nowrap;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   margin-bottom: 6px;
   font-family: var(--font-display);
@@ -377,7 +378,7 @@
   text-wrap: balance;
 }
 .section-title .soft {
-  color: #a8603a;
+  color: var(--rust);
 }
 .section-desc {
   max-width: 34rem;
@@ -1038,7 +1039,7 @@
   display: none;
 }
 .bench-panel > summary:hover {
-  color: var(--fg);
+  color: var(--screen-fg);
 }
 .bench-panel > summary .chev {
   flex-shrink: 0;
@@ -1559,4 +1560,58 @@
 }
 :is(:lang(ar), :lang(fa), :lang(ug)) :is(.hero h1, .section-title, .cta h2) {
   line-height: 1.3;
+}
+
+.sponsor-mail {
+  margin-top: 20px;
+  font-size: 15px;
+  color: var(--muted);
+}
+.sponsor-mail a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--rust);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.sponsor-mail a:hover {
+  color: var(--rust);
+}
+
+.panel.bench-panel {
+  margin-top: 28px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--fg);
+}
+.panel.bench-panel > summary.titlebar {
+  min-height: 56px;
+  padding: 0 20px;
+  border-bottom: 0;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--fg);
+}
+.panel.bench-panel[open] > summary.titlebar {
+  border-bottom: 1px solid var(--line);
+}
+.panel.bench-panel > summary.titlebar:hover {
+  color: var(--rust);
+}
+.panel.bench-panel .bench th {
+  color: var(--muted);
+}
+.panel.bench-panel .bench th,
+.panel.bench-panel .bench td {
+  border-bottom: 1px solid var(--line);
+}
+.panel.bench-panel .bench td.rust {
+  color: var(--rust);
+}
+.panel.bench-panel .panel-note {
+  color: var(--muted);
+}
+.panel.bench-panel .panel-note a {
+  color: var(--rust);
 }

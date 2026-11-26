@@ -1,6 +1,7 @@
 import type { Messages } from '../../lib/messages/en'
 import { useState } from 'react'
 import { CheckIcon, CopyIcon } from '../site/icons'
+import Hl from '../Hl'
 
 
 export default function InstallBox({ ui, agent }: { ui: Messages['ui']; agent: [string, string] }) {
@@ -49,7 +50,9 @@ export default function InstallBox({ ui, agent }: { ui: Messages['ui']; agent: [
         {current.lines.map((l) => (
           <div key={l} className="copy-line">
             <span className="prompt">{tab === 'agent' ? '>' : '$'}</span>
-            <code>{l}</code>
+            <code>
+              <Hl code={l} />
+            </code>
           </div>
         ))}
       </div>
