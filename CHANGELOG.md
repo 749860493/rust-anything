@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The MCP `package` tool refuses a `name`, `version`, `fallback` or `original` that is not a
+  string with `` `version` must be a string, not 2 ``, instead of dropping it and packaging with the
+  crate's own value. A missing or `null` value still means not given
+  (#683, #690 by @susheelg1197).
 - The MCP tools refuse an optional path (`out`, `inputs`, `module`, `resolve_from`, `ndk`,
   `jni_libs`) that is not a string with `` `out` must be a string, not 5 ``, instead of dropping
   it and using the default. A missing or `null` path still means not given
