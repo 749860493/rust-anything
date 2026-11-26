@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The MCP `app_replay` tool refuses a `build` or `case`, and `app_drift` a `build`, that is not a
+  string with `` `case` must be a string, not 5 ``, instead of dropping it and replaying every case
+  or the original. A missing or `null` value still means not given
+  (#682, #691 by @susheelg1197).
 - The MCP `package` tool refuses a `name`, `version`, `fallback` or `original` that is not a
   string with `` `version` must be a string, not 2 ``, instead of dropping it and packaging with the
   crate's own value. A missing or `null` value still means not given
