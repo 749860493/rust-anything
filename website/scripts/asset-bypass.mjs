@@ -21,6 +21,7 @@ const STATIC = [
   '/apple-touch-icon.png',
   '/logo-mark.png',
   '/og-home.png',
+  '/llms-full.txt',
 ]
 
 config.assets.run_worker_first = ['/**', ...STATIC.map((p) => `!${p}`)]
