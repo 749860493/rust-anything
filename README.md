@@ -22,6 +22,11 @@ Rewrite your app in Rust, and prove it still behaves the same.
 <b>Documentation:</b> <a href="https://rustanything.ai/">https://rustanything.ai/</a>
 </p>
 
+<p align="center">
+<a href="https://trendshift.io/repositories/363468" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/363468/daily?language=Rust" alt="erkamyaman/rust-anything: #1 Rust repository of the day on Trendshift" width="250" height="55"/></a>
+<a href="https://trendshift.io/repositories/363468" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/363468/weekly?language=Rust" alt="erkamyaman/rust-anything: #1 Rust repository of the week on Trendshift" width="250" height="55"/></a>
+</p>
+
 ## Quick start
 
 Paste this into your coding agent:
