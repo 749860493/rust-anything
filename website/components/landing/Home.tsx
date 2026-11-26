@@ -387,7 +387,6 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
             <a href={ATAK_DOMAIN} className="sponsor-company sponsor-logo">
               <img className="only-light" src="/brands/atak-domain.svg" width={178} height={40} alt="Atak Domain" loading="lazy" />
               <img className="only-dark" src="/brands/atak-domain-dark.svg" width={178} height={40} alt="Atak Domain" loading="lazy" />
-              <span className="role">{m.domainSponsor}</span>
             </a>
             <a className="btn btn-quiet" href="https://github.com/sponsors/erkamyaman">
               {m.becomeSponsor}
