@@ -598,7 +598,7 @@ fn a_ready_request_that_never_answers_2xx_fails_and_stops_the_server() {
         port: None,
         float_tolerance: None,
         float_files: &[],
-        ready_secs: Some(1),
+        ready_secs: Some(5),
         ready_request: Some("GET /health"),
         effects: None,
     })
