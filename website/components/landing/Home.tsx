@@ -6,6 +6,31 @@ import './landing.css'
 
 const STEP_CMDS = ['record', 'bridge', 'diff, gate', 'app lift']
 
+const HOW_DOCS = [
+  [['Record', '/docs/concepts/record'], ['Coverage', '/docs/concepts/coverage']],
+  [['Bridge', '/docs/concepts/bridge'], ['Port', '/docs/concepts/port']],
+  [['Diff', '/docs/concepts/diff'], ['Gate', '/docs/concepts/gate']],
+  [['Switch on and off', '/docs/concepts/switch'], ['Port a whole app', '/docs/whole-apps/overview']],
+]
+
+function Head({ id, title, desc, locale, dark }: { id: string; title: string; desc: string; locale: string; dark?: boolean }) {
+  const cut = /^(.+?[.。!?])\s+([\s\S]+)$/.exec(desc)
+  const lead = cut ? cut[1] : ''
+  const rest = cut ? cut[2] : desc
+  return (
+    <div className={`section-head${dark ? ' on-dark' : ''}`}>
+      <h2 id={id} className="section-title">
+        {title}
+        {/[.。!?]$/.test(title) ? ' ' : '. '}
+        {lead && <span className="soft">{lead}</span>}
+      </h2>
+      <p className="section-desc">
+        <Rich text={rest} locale={locale} />
+      </p>
+    </div>
+  )
+}
+
 const LANGS = [
   { key: 'typescript', name: 'TypeScript/JavaScript' },
   { key: 'python', name: 'Python' },
@@ -55,34 +80,51 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
             </div>
           ))}
         </dl>
-        <p className="sponsored-by">
-          {m.sponsoredBy} <a href={CODERABBIT}>CodeRabbit</a> <span aria-hidden>/</span> <a href={ATAK_DOMAIN}>Atak Domain</a>
-        </p>
+      </div>
+      <div className="band">
+        <div className="wrap">
+          <p>
+            {m.sponsoredBy} <a href={CODERABBIT}>CodeRabbit</a> and <a href={ATAK_DOMAIN}>Atak Domain</a>.
+          </p>
+          <p className="band-sub">
+            {m.bandText} <a href="https://github.com/sponsors/erkamyaman">{m.bandLink}</a>
+          </p>
+        </div>
       </div>
 
       <section className="section" aria-labelledby="prettier-title">
         <div className="wrap">
-          <div className="section-head">
-            <h2 id="prettier-title" className="section-title">
-              {m.prettierTitle}
-            </h2>
-            <p className="section-desc">{m.prettierDesc}</p>
-          </div>
+          <Head id="prettier-title" title={m.prettierTitle} desc={m.prettierDesc} locale={locale} />
           <a href="https://github.com/erkamyaman/rust-anything/blob/main/docs/real-world.md#prettier" className="prettier-demo">
             <img src="/prettier.gif" width={820} alt={m.prettierAlt} loading="lazy" />
           </a>
         </div>
       </section>
 
-      <section className="section" aria-labelledby="install-title">
+      <section className="section dark-band" aria-labelledby="install-title">
         <div className="wrap">
-          <div className="section-head">
-            <h2 id="install-title" className="section-title">
-              {m.installTitle}
-            </h2>
-            <p className="section-desc">{m.installDesc}</p>
+          <Head id="install-title" title={m.installTitle} desc={m.installDesc} locale={locale} dark />
+          <ol className="install-steps">
+            {m.installSteps.map((st, i) => (
+              <li key={st.title}>
+                <span className="n">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{st.title}</h3>
+                {i === 0 ? <div className="install">{install}</div> : null}
+                <p>
+                  <Rich text={st.text} />
+                </p>
+              </li>
+            ))}
+          </ol>
+          <div className="cmd-table">
+            {m.commands.map((c) => (
+              <div key={c.cmd} className="cmd-row">
+                <code>{c.cmd}</code>
+                <span className={`chip c-${c.tag.toLowerCase()}`}>{c.tag}</span>
+                <span className="cmd-text">{c.text}</span>
+              </div>
+            ))}
           </div>
-          <div className="install">{install}</div>
           <p className="note">
             <Rich text={fill(m.installNote, { releases: `${REPO_URL}/releases` })} />
           </p>
@@ -91,39 +133,71 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
 
       <section className="section" aria-labelledby="loop-title">
         <div className="wrap">
-          <div className="section-head">
-            <h2 id="loop-title" className="section-title">
-              {m.loopTitle}
-            </h2>
-            <p className="section-desc">{m.loopDesc}</p>
-          </div>
-          <ol className="steps">
-            {m.steps.map((s, i) => (
-              <li key={i} className="step">
-                <span className="step-n" aria-hidden>
-                  {i + 1}
-                </span>
-                <h3>{s.title}</h3>
-                <code className="step-cmd">{STEP_CMDS[i]}</code>
-                <p>
-                  <Rich text={s.text} />
-                </p>
-              </li>
+          <Head id="loop-title" title={m.loopTitle} desc={m.loopDesc} locale={locale} />
+          <div className="how">
+            {m.steps.map((_, i) => (
+              <input key={i} type="radio" name="how" id={`how-${i}`} className="how-radio" defaultChecked={i === 0} />
             ))}
-          </ol>
+            <div className="how-tabs">
+              {m.howTabs.map((t, i) => (
+                <label key={t} htmlFor={`how-${i}`} className={`how-tab t-${i}`}>
+                  <span className="n">{String(i + 1).padStart(2, '0')}</span>
+                  {t}
+                </label>
+              ))}
+            </div>
+            {m.steps.map((s, i) => (
+              <div key={i} className={`how-panel p-${i}`}>
+                <div className="how-canvas">
+                  <div className="how-flow">
+                    <div className="how-node">
+                      <b>{m.howYourCode}</b>
+                      <span>{m.howYourCodeSub}</span>
+                    </div>
+                    <div className="how-link" aria-hidden />
+                    <div className="how-node core">
+                      <b>
+                        <span className="rust">Rust</span> Anything <code>{STEP_CMDS[i]}</code>
+                      </b>
+                      <ul>
+                        {m.howBullets[i].map((x) => (
+                          <li key={x}>{x}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="how-link" aria-hidden />
+                    <div className="how-node">
+                      <b>{m.howPort}</b>
+                      <span>{m.howPortSub}</span>
+                    </div>
+                  </div>
+                  <div className="how-example">
+                    <code>{m.howExample[i]}</code>
+                  </div>
+                </div>
+                <aside className="how-aside">
+                  <h3>{s.title}</h3>
+                  <p>
+                    <Rich text={s.text} />
+                  </p>
+                  <div className="how-docs-label">{m.howDocs}</div>
+                  <ul className="how-docs">
+                    {HOW_DOCS[i].map(([t, href]) => (
+                      <li key={href}>
+                        <a href={L(href)}>{t}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </aside>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="section" aria-labelledby="demo-title">
         <div className="wrap">
-          <div className="section-head">
-            <h2 id="demo-title" className="section-title">
-              {m.demoTitle}
-            </h2>
-            <p className="section-desc">
-              <Rich text={m.demoDesc} />
-            </p>
-          </div>
+          <Head id="demo-title" title={m.demoTitle} desc={m.demoDesc} locale={locale} />
           <div className="panel">
             <div className="titlebar">
               <span>~/x18n</span>
@@ -164,12 +238,7 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
 
       <section className="section" aria-labelledby="ports-title">
         <div className="wrap">
-          <div className="section-head">
-            <h2 id="ports-title" className="section-title">
-              {m.portsTitle}
-            </h2>
-            <p className="section-desc">{m.portsDesc}</p>
-          </div>
+          <Head id="ports-title" title={m.portsTitle} desc={m.portsDesc} locale={locale} />
 
           <div className="ports">
             {m.ports.map((p) => (
@@ -240,12 +309,7 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
 
       <section className="section" aria-labelledby="langs-title">
         <div className="wrap">
-          <div className="section-head">
-            <h2 id="langs-title" className="section-title">
-              {m.langsTitle}
-            </h2>
-            <p className="section-desc">{m.langsDesc}</p>
-          </div>
+          <Head id="langs-title" title={m.langsTitle} desc={m.langsDesc} locale={locale} />
           <ul className="langs">
             {LANGS.map((l) => (
               <li key={l.key}>
@@ -264,12 +328,7 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
 
       <section className="section" aria-labelledby="people-title">
         <div className="wrap">
-          <div className="section-head">
-            <h2 id="people-title" className="section-title">
-              {fill(m.contributorsTitle, { n: String(CONTRIBUTORS.length) })}
-            </h2>
-            <p className="section-desc">{m.contributorsDesc}</p>
-          </div>
+          <Head id="people-title" title={fill(m.contributorsTitle, { n: String(CONTRIBUTORS.length) })} desc={m.contributorsDesc} locale={locale} />
           <div className="people-row">
             <ul className="people">
               {CONTRIBUTORS.slice(0, 24).map((p) => (
@@ -289,12 +348,7 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
 
       <section className="section last" aria-labelledby="sponsors-title">
         <div className="wrap">
-          <div className="section-head">
-            <h2 id="sponsors-title" className="section-title">
-              {m.sponsorsTitle}
-            </h2>
-            <p className="section-desc">{m.sponsorsDesc}</p>
-          </div>
+          <Head id="sponsors-title" title={m.sponsorsTitle} desc={m.sponsorsDesc} locale={locale} />
           <div className="sponsor-tiers">
             <a href={CODERABBIT} className="sponsor-tier">
               <span className="sponsor-co">
@@ -330,6 +384,23 @@ export default function Home({ hero, install, locale = 'en' }: { hero: React.Rea
             </a>
             <a className="btn btn-quiet" href="https://buymeacoffee.com/erkamyaman">
               {m.buyCoffee}
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="cta" aria-labelledby="cta-title">
+        <div className="wrap">
+          <h2 id="cta-title">
+            {m.ctaTitle1} <span className="soft">{m.ctaTitle2}</span>
+          </h2>
+          <p>{m.ctaSub}</p>
+          <div className="cta-actions">
+            <a className="btn btn-light" href={L('/docs/introduction/quick-start')}>
+              {messages(locale).hero.cta}
+            </a>
+            <a className="btn btn-ghost" href={L('/docs/introduction/what-is-rust-anything')}>
+              {m.ctaDocs}
             </a>
           </div>
         </div>

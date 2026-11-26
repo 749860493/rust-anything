@@ -38,9 +38,6 @@ function LanguageMenu({ currentPath, locale, label }: { currentPath: string; loc
         title={label}
       >
         <Flag l={current} />
-        <svg className="hidden opacity-60 sm:block" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
-          <path d="M6 9l6 6 6-6" />
-        </svg>
       </summary>
       <div className="absolute end-0 top-11 z-[70] w-[24rem] max-sm:fixed max-sm:inset-x-3 max-sm:top-[4.25rem] max-sm:w-auto rounded-xl border border-line bg-bg p-2 shadow-2xl">
         <div className="px-2 pb-1.5 pt-1 text-sm font-medium text-muted">{label}</div>
@@ -81,7 +78,7 @@ function LanguageMenu({ currentPath, locale, label }: { currentPath: string; loc
 export default function Navbar({
   currentPath,
   locale = 'en',
-  themeToggle = true,
+  themeToggle = false,
   ui,
   nav,
 }: {
@@ -128,8 +125,8 @@ export default function Navbar({
       <a href={L('/')} className="shrink-0 font-display text-[17px] font-bold" aria-label={ui.home}>
         <Logo size={32} />
       </a>
-      <div className="ml-auto flex items-center gap-1 sm:gap-2">
-        <nav className="mr-2 hidden items-center gap-1 md:flex" aria-label="Main">
+      <div className="ml-auto flex items-center gap-0.5 sm:gap-1">
+        <nav className="mr-3 hidden items-center gap-1 border-line pr-3 md:flex md:border-r" aria-label="Main">
           {LINKS.map((l) => (
             <a
               key={l.href}
@@ -141,16 +138,8 @@ export default function Navbar({
             </a>
           ))}
         </nav>
-        <div className="hidden xl:block">
-          <SearchButton ui={ui} onOpen={() => setSearchOpen(true)} />
-        </div>
-        <div className="xl:hidden">
-          <SearchButton ui={ui} compact onOpen={() => setSearchOpen(true)} />
-        </div>
+        <SearchButton ui={ui} compact onOpen={() => setSearchOpen(true)} />
         <LanguageMenu currentPath={currentPath} locale={locale} label={ui.language} />
-        <div className="hidden lg:block">
-          <ThemeToggle ui={ui} />
-        </div>
         <a
           href={REPO_URL}
           className="inline-flex h-9 w-9 items-center justify-center rounded-md text-fg/80 hover:text-fg"
@@ -165,7 +154,6 @@ export default function Navbar({
           title={ui.sponsor}
         >
           <HeartIcon className="h-[18px] w-[18px] fill-transparent stroke-current stroke-2 transition-colors group-hover:fill-current motion-reduce:transition-none" />
-          <span className="hidden xl:inline">{ui.sponsor}</span>
         </a>
         <button
           type="button"

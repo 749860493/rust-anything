@@ -9,14 +9,7 @@ declare module 'void' {
   }
 }
 
-const THEME_BOOTSTRAP = `(function(){
-var mq=matchMedia("(prefers-color-scheme: dark)");
-function read(){try{return localStorage.getItem("theme")}catch(_){return null}}
-function apply(d){document.documentElement.setAttribute("data-theme",d?"dark":"light")}
-function resolve(t){return t==="light"?false:t==="system"?mq.matches:true}
-apply(resolve(read()));
-mq.addEventListener("change",function(){if(read()==="system")apply(mq.matches)});
-})();`
+const THEME_BOOTSTRAP = `document.documentElement.setAttribute("data-theme","light")`
 
 const EXTERNAL_LINKS = `(function(){
 function mark(a){if(a.host&&a.host!==location.host&&/^https?:$/.test(a.protocol)){a.target="_blank";a.rel="noopener noreferrer"}}
