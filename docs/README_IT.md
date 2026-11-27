@@ -68,6 +68,8 @@ Rust Anything è gratuito e open source. Se ti aiuta nel lavoro, la tua sponsori
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">Sponsorizzazione come azienda, o qualcos'altro? <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">Stai portando una codebase in Rust? Offro consulenza per le migrazioni a Rust: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## Avvio rapido

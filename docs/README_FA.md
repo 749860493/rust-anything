@@ -70,6 +70,8 @@ Rust Anything رایگان و متن‌باز است. اگر به کارتان �
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">حمایت مالی به‌عنوان شرکت، یا هر موضوع دیگری؟ <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">کدبیس‌تان را به Rust منتقل می‌کنید؟ برای مهاجرت به Rust مشاوره می‌دهم: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## شروع سریع

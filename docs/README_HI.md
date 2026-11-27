@@ -68,6 +68,8 @@ Rust Anything मुफ़्त और ओपन सोर्स है। अ�
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">कंपनी के रूप में प्रायोजन, या कुछ और? <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">किसी कोडबेस को Rust में ले जा रहे हैं? मैं Rust माइग्रेशन के लिए कंसल्टिंग देता हूँ: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## त्वरित शुरुआत

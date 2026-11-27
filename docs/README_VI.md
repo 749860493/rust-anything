@@ -68,6 +68,8 @@ Rust Anything miễn phí và mã nguồn mở. Nếu nó giúp ích cho công v
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">Tài trợ với tư cách công ty, hay việc gì khác? <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">Đang chuyển một codebase sang Rust? Tôi cung cấp dịch vụ tư vấn chuyển đổi sang Rust: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## Bắt đầu nhanh

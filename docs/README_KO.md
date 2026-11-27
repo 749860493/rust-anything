@@ -68,6 +68,8 @@ Rust Anything은 무료 오픈 소스입니다. 작업에 도움이 된다면, �
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">기업 후원이나 그 밖의 문의가 있으신가요? <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">코드베이스를 Rust로 옮기시나요? Rust 마이그레이션 컨설팅을 제공합니다: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## 빠른 시작

@@ -70,6 +70,8 @@ Rust Anything مجاني ومفتوح المصدر. إن كان يفيدك في 
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">رعاية بصفتك شركة، أو أي أمر آخر؟ <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">تنقل قاعدة شيفرة إلى Rust؟ أقدّم استشارات لعمليات الترحيل إلى Rust: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## البدء السريع

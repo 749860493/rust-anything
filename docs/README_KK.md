@@ -68,6 +68,8 @@ Rust Anything тегін әрі ашық бастапқы кодты. Жұмыс
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">Компания ретінде демеушілік пе, әлде басқа нәрсе ме? <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">Код базаңызды Rust-қа көшіріп жатырсыз ба? Rust-қа көшу бойынша кеңес беремін: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## Жылдам бастау

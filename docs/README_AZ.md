@@ -68,6 +68,8 @@ Rust Anything pulsuz və açıq mənbəlidir. İşinizə yarayırsa, sponsorluğ
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">Şirkət olaraq sponsorluq və ya başqa bir mövzu? <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">Kod bazanızı Rust-a köçürürsünüz? Rust miqrasiyaları üzrə məsləhət xidməti göstərirəm: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## Sürətli başlanğıc

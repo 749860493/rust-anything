@@ -70,6 +70,8 @@ Rust Anything ฟรีและเป็นโอเพนซอร์ส ถ�
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">ต้องการสนับสนุนในนามบริษัท หรือเรื่องอื่น ๆ? <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">กำลังย้ายโค้ดเบสไปเป็น Rust อยู่หรือเปล่า? มีบริการให้คำปรึกษาด้านการย้ายระบบไปใช้ Rust: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## เริ่มต้นอย่างรวดเร็ว

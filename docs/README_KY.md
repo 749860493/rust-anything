@@ -68,6 +68,8 @@ Rust Anything акысыз жана ачык булактуу. Ишиңизге 
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
 
+<p align="center">Компания катары демөөрчүлүкпү же башка нерсеби? <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center">Код базаңызды Rust'ка көчүрүп жатасызбы? Rust'ка көчүү боюнча кеңеш берем: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
 
 ## Тез баштоо
