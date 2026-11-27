@@ -9,6 +9,7 @@
 <p align="center">
 <a href="https://crates.io/crates/rust-anything"><img src="https://img.shields.io/crates/v/rust-anything?style=flat&colorA=111111&colorB=b34a1a&label=crates.io" alt="crates.io version"></a>
 <a href="https://www.npmjs.com/package/rust-anything"><img src="https://img.shields.io/npm/v/rust-anything?style=flat&colorA=111111&colorB=b34a1a&label=npm" alt="npm version"></a>
+<a href="https://www.npmjs.com/package/rust-anything"><img src="https://img.shields.io/npm/dm/rust-anything?style=flat&colorA=111111&colorB=b34a1a&label=downloads" alt="npm downloads per month"></a>
 <a href="https://github.com/erkamyaman/rust-anything/stargazers"><img src="https://img.shields.io/github/stars/erkamyaman/rust-anything?style=flat&colorA=111111&colorB=b34a1a&label=stars" alt="GitHub stars"></a>
 <a href="https://discord.gg/FXhUEA8eBR"><img src="https://img.shields.io/badge/discord-join-111111?style=flat&colorA=111111&colorB=b34a1a" alt="Discord"></a>
 <a href="https://github.com/erkamyaman/rust-anything#license"><img src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-111111?style=flat&colorA=111111&colorB=b34a1a" alt="MIT or Apache-2.0 license"></a>
@@ -18,34 +19,16 @@
 เขียนแอปของคุณใหม่ด้วย Rust และพิสูจน์ว่าพฤติกรรมการทำงานยังคงเหมือนเดิมทุกประการ
 </p>
 
-<p align="center"><b>เอกสารคู่มือ:</b> <a href="https://rustanything.ai/">https://rustanything.ai/</a></p>
-
-<p align="center"><a href="translations.md">🌐 ภาษาอื่น</a></p>
-
-<p align="center"><sub>คำแปลนี้ดูแลโดยชุมชน และอาจอัปเดตช้ากว่า <a href="../README.md">README ภาษาอังกฤษ</a></sub></p>
-
 <p align="center">
 <a href="https://trendshift.io/repositories/363468" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/363468/daily?language=Rust" alt="erkamyaman/rust-anything: #1 Rust repository of the day on Trendshift" width="250" height="55"/></a>
 <a href="https://trendshift.io/repositories/363468" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/363468/weekly?language=Rust" alt="erkamyaman/rust-anything: #1 Rust repository of the week on Trendshift" width="250" height="55"/></a>
 </p>
 
-## เริ่มต้นอย่างรวดเร็ว
+<p align="center"><b>เอกสารคู่มือ:</b> <a href="https://rustanything.ai/">https://rustanything.ai/</a></p>
 
-วางข้อความนี้ลงในเอเจนต์เขียนโค้ดของคุณ:
+<p align="center"><a href="translations.md">🌐 ภาษาอื่น</a></p>
 
-```text
-Install Rust Anything with npm i -g rust-anything, then run rust-anything setup. Run rust-anything go -- <slow command of this app> and finish the port until rust-anything gate passes.
-```
-
-หรือติดตั้งเอง:
-
-```sh
-cargo install rust-anything   # or: npm install -g rust-anything
-rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CLI and OpenCode
-```
-
-> [!TIP]
-> **สำหรับเอเจนต์:** อ่าน [rustanything.ai/llms.txt](https://rustanything.ai/llms.txt) เพื่อดูขั้นตอนติดตั้ง คำสั่งทั้งหมด และขั้นตอนการพอร์ต
+<p align="center"><sub>คำแปลนี้ดูแลโดยชุมชน และอาจอัปเดตช้ากว่า <a href="../README.md">README ภาษาอังกฤษ</a></sub></p>
 
 ## ผู้สนับสนุน
 
@@ -85,6 +68,24 @@ Rust Anything ฟรีและเป็นโอเพนซอร์ส ถ�
   <a href="https://github.com/sponsors/erkamyaman"><img src="https://img.shields.io/badge/Become_a_sponsor-%E2%9D%A4-db61a2?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Become a sponsor"></a>
   <a href="https://buymeacoffee.com/erkamyaman"><img src="https://img.shields.io/badge/Buy_me_a_coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a>
 </p>
+
+## เริ่มต้นอย่างรวดเร็ว
+
+วางข้อความนี้ลงในเอเจนต์เขียนโค้ดของคุณ:
+
+```text
+Install Rust Anything with npm i -g rust-anything, then run rust-anything setup. Run rust-anything go -- <slow command of this app> and finish the port until rust-anything gate passes.
+```
+
+หรือติดตั้งเอง:
+
+```sh
+cargo install rust-anything   # or: npm install -g rust-anything
+rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CLI and OpenCode
+```
+
+> [!TIP]
+> **สำหรับเอเจนต์:** อ่าน [rustanything.ai/llms.txt](https://rustanything.ai/llms.txt) เพื่อดูขั้นตอนติดตั้ง คำสั่งทั้งหมด และขั้นตอนการพอร์ต
 
 ## สัญญาอนุญาต
 
