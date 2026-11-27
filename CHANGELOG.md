@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `package` refuses `--bin` and `--original` on a napi, wasm or PyO3 crate, and `--fallback` on a
+  wasm or PyO3 crate, naming the flag and what it is for, before anything is written (also with
+  `--dry-run`). They used to be dropped silently (#701, #708 by @Papito084).
 - `gate` starts every check's detail in the same column, padding names to the longest one, so
   `error cases` and `known diffs` line up with the rest (#700, #707 by @Papito084).
 - `gate` says "the 1 function that fails in the original has a recorded failing case" instead of
