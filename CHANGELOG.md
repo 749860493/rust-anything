@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `gate` says "the 1 function that fails in the original has a recorded failing case" instead of
+  "each of the 1 functions that fail" in the `error cases` check (#698, #706 by @Papito084).
 - `app drift` prints "1 case; build: ..." instead of "1 cases" for a one-case recording
   (#699, #705 by @Papito084).
 - A napi export called without an optional structured argument, such as an array, now gets
