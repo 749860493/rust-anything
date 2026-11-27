@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- On Windows, a debug build of the CLI (`cargo run`, and every test that runs the binary) no
+  longer overflows the 1 MB main-thread stack before it parses its arguments: the CLI runs on a
+  thread with an 8 MB stack on every OS. Release builds were not affected (#710 by @Layfate).
 - `package` refuses `--bin` and `--original` on a napi, wasm or PyO3 crate, and `--fallback` on a
   wasm or PyO3 crate, naming the flag and what it is for, before anything is written (also with
   `--dry-run`). They used to be dropped silently (#701, #708 by @Papito084).
