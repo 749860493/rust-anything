@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `analyze` flags three more TS/JS risks: `Intl and locale-aware strings` (high: `Intl.*`,
+  `localeCompare`, `toLocaleLowerCase`, `normalize("NFC")`), `Date parsing` (high: `Date.parse`,
+  `new Date(string)`) and `URL and encoding APIs` (medium: `new URL`, `URLSearchParams`,
+  `TextEncoder`/`TextDecoder`, `atob`/`btoa`), each with guidance on the traps a port must match
+  (#678, #711 by @antont).
 - On Windows, a debug build of the CLI (`cargo run`, and every test that runs the binary) no
   longer overflows the 1 MB main-thread stack before it parses its arguments: the CLI runs on a
   thread with an 8 MB stack on every OS. Release builds were not affected (#710 by @Layfate).
