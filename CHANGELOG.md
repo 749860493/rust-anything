@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `app record` no longer keeps a separator that two runs' random values happen to share: request
+  ids `k2Pq_x9Lm4` and `Zt7w_bR3nV` now record as `[..]` instead of `[..]_[..]`, so a replay whose id
+  has no `_` passes. A separator next to a part both runs agree on stays, so `id=[..]` keeps its
+  `=`. Recordings made before keep their wildcards until the next `app record`
+  (#680, #692 by @XiaoBinGan).
 - `analyze` flags three more TS/JS risks: `Intl and locale-aware strings` (high: `Intl.*`,
   `localeCompare`, `toLocaleLowerCase`, `normalize("NFC")`), `Date parsing` (high: `Date.parse`,
   `new Date(string)`) and `URL and encoding APIs` (medium: `new URL`, `URLSearchParams`,
