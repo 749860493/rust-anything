@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `app record --fresh` writes the files a case removed (`<case>.removed`) with `/` between folders
+  on Windows too, so a recording made on Windows replays on Linux and macOS instead of failing on
+  `stale\old.txt`. Recordings made on Windows before need a fresh `app record`
+  (#727 by @Layfate).
 - `gate` starts a failed check's extra detail lines and its `fix:` line in the same column as the
   first line of its detail, instead of a fixed 12 spaces that no longer lined up after #707
   (#713, #725 by @Layfate).
