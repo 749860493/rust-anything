@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- The Android 16 KB page-size check says "1 LOAD segment is not 16 KB aligned" for one
+  misaligned segment and "2 LOAD segments are not 16 KB aligned" for more, instead of
+  "LOAD segment(s) are" (#718, #728 by @MannXo).
 - `app record --fresh` writes the files a case removed (`<case>.removed`) with `/` between folders
   on Windows too, so a recording made on Windows replays on Linux and macOS instead of failing on
   `stale\old.txt`. Recordings made on Windows before need a fresh `app record`
