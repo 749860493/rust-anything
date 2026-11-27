@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `gate` starts a failed check's extra detail lines and its `fix:` line in the same column as the
+  first line of its detail, instead of a fixed 12 spaces that no longer lined up after #707
+  (#713, #725 by @Layfate).
 - `gate`'s `ported` check says "1 place in port.rs" for one stub and "N places" for more,
   instead of "1 place(s)" (#712, #724 by @Layfate).
 - `analyze` also counts `toLocaleString`, `toLocaleDateString` and `toLocaleTimeString` calls as
