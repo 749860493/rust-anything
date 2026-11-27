@@ -94,8 +94,8 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
-    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works/ko-dark.svg">
+    <img src="assets/how-it-works/ko-light.svg" width="880" alt="analyze가 무엇을 포팅할지 계획하고, rust-anything go가 브리지, 기록, 에이전트의 포팅, gate를 기록된 모든 케이스가 일치할 때까지 반복한 뒤, enable이 호출을 Rust로 전환합니다">
   </picture>
 </p>
 

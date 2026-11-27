@@ -96,8 +96,8 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
-    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works/id-dark.svg">
+    <img src="assets/how-it-works/id-light.svg" width="880" alt="analyze merencanakan apa yang di-port; rust-anything go membuat jembatan, merekam, membiarkan agen Anda mem-port dan menjalankan gate, berulang sampai setiap kasus yang direkam cocok; lalu enable mengalihkan pemanggil ke Rust">
   </picture>
 </p>
 
