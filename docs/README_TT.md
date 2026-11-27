@@ -92,6 +92,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## Бу ничек эшли
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **Нәрсә әзер дип санала.** Тестларыгыз түгел, программаның үз-үзен тотышы. `record` оригиналны ясалган һәм бирелгән кертү мәгълүматлары белән эшләтә һәм һәр чакыру нәрсә кайтарганын, нәрсә ыргытканын һәм нәрсә чыгарганын саклый. Порт `gate` үткәч әзер: язылган һәр очрак туры килә, шулай ук fmt, clippy, `cargo test`, `unsafe` тикшерүе, stub тикшерүе һәм портка куелган язылган җавапларны тикшерү дә үтә. Үз тестларыгыз да эшли.
 
 **Хисап яки күчерү, үзегез сайлыйсыз.** `analyze` һәм `profile` хисап кына бирә: нәрсәне портларга кирәклекнең тәртипкә салынган планы һәм чын йөкләнештә нәрсә иң күп вакыт алуы. Болар гади боерыклар, шуңа күрә хисап бер токен да тотмый. `go` бер берәмлекне күчерә: иң кайнар функциягә күпер кора, аны яза, портны агентыгызга тапшыра, аннары җыя, чагыштыра һәм `gate` аша үткәрә, барысы да туры килгәндә генә кабыза (TS/JS, Python һәм PowerShell; `disable` кире сүндерә).

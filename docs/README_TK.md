@@ -92,6 +92,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## Bu nähili işleýär
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **Näme taýyn hasaplanýar.** Siziň testleriňiz däl-de, özüni alyp barşy. `record` asyl programmany döredilen we berlen girişler bilen işledýär we her çagyryşyň näme gaýtarýandygyny, näme zyňýandygyny we näme çap edýändigini saklaýar. Port `gate` geçende taýyn bolýar: ýazga alnan her ýagdaý gabat gelýär, şeýle hem fmt, clippy, `cargo test`, `unsafe` barlagy, stub barlagy we porta goýlan ýazga alnan jogaplaryň barlagy hem geçýär. Öz testleriňiz hem işleýär.
 
 **Hasabat ýa-da geçiş, özüňiz saýlaň.** `analyze` we `profile` diňe hasabat berýär: nämäni portlamalydygynyň tertipleşdirilen meýilnamasy we hakyky ýük astynda nämäniň iň köp wagt alýandygy. Bular ýönekeý buýruklar, şonuň üçin hasabat hiç hili token sarp etmeýär. `go` bir birligi geçirýär: iň gyzgyn funksiýa üçin köpri gurýar, ony ýazga alýar, porty agentiňize berýär, soňra ýygnaýar, deňeşdirýär we `gate` arkaly geçirýär, diňe hemme zat gabat gelende ony işe goýberýär (TS/JS, Python we PowerShell; `disable` ony ýene öçürýär).

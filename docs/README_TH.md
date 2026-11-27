@@ -94,6 +94,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## วิธีการทำงาน
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **อะไรนับว่าเสร็จ** พฤติกรรม ไม่ใช่เทสต์ของคุณ `record` รันโค้ดต้นฉบับกับอินพุตที่สร้างขึ้นและอินพุตที่กำหนดให้ แล้วบันทึกสิ่งที่แต่ละการเรียกคืนค่า โยนออกมา และพิมพ์ออกมา การพอร์ตถือว่าเสร็จเมื่อ `gate` ผ่าน: ทุกเคสที่บันทึกไว้ตรงกัน และ fmt, clippy, `cargo test`, การตรวจ `unsafe`, การตรวจ stub และการตรวจว่ามีคำตอบที่บันทึกไว้ถูกแปะลงในโค้ดที่พอร์ตหรือไม่ ผ่านทั้งหมด เทสต์ของคุณเองก็รันด้วย
 
 **รายงานหรือย้ายจริง คุณเลือกได้** `analyze` และ `profile` แค่รายงาน: แผนที่จัดลำดับว่าควรพอร์ตอะไร และส่วนไหนร้อนที่สุดภายใต้งานจริง ทั้งสองเป็นคำสั่งธรรมดา รายงานจึงไม่เสียโทเค็นเลย `go` ย้ายทีละหนึ่งยูนิต: สร้างบริดจ์ให้ฟังก์ชันที่ร้อนที่สุด บันทึกมัน ส่งงานพอร์ตให้เอเจนต์ของคุณ จากนั้น build, diff และรัน `gate` แล้วเปิดใช้เฉพาะเมื่อทุกอย่างตรงกัน (TS/JS, Python และ PowerShell; `disable` ปิดกลับได้)

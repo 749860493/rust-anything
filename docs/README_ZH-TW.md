@@ -92,6 +92,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## 運作方式
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **怎樣才算完成。** 看行為，而不是你的測試。`record` 用產生的和給定的輸入執行原始程式，儲存每次呼叫的回傳值、拋出的例外和印出的輸出。`gate` 通過時移植才算完成：每個錄製的案例都相符，而且 fmt、clippy、`cargo test`、`unsafe` 檢查、stub 檢查，以及檢查錄製的答案是否被直接貼進移植程式碼，全部通過。你自己的測試也會執行。
 
 **只看報告還是直接遷移，由你決定。** `analyze` 和 `profile` 只產生報告：一份依優先順序排列的移植計畫，以及真實負載下哪些程式碼最熱。它們是一般指令，所以報告不耗費 token。`go` 遷移一個單元：為最熱的函式建立橋接，錄製它，把移植交給你的代理，接著建置、比對並執行 `gate`，只有全部相符時才啟用（TS/JS、Python 和 PowerShell；`disable` 可以再關閉）。

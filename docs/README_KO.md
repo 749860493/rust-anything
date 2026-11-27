@@ -92,6 +92,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## 작동 방식
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **무엇이 완료인가.** 여러분의 테스트가 아니라 동작입니다. `record`는 생성된 입력과 주어진 입력으로 원본을 실행하고, 각 호출이 반환하고 던지고 출력하는 것을 저장합니다. `gate`가 통과하면 포팅이 완료됩니다: 기록된 모든 케이스가 일치하고, fmt, clippy, `cargo test`, `unsafe` 검사, 스텁 검사, 기록된 답을 포팅 코드에 붙여 넣었는지 보는 검사가 모두 통과해야 합니다. 여러분의 테스트도 함께 실행됩니다.
 
 **보고서 또는 마이그레이션, 선택은 여러분의 몫.** `analyze`와 `profile`은 보고만 합니다: 무엇을 포팅할지 순위를 매긴 계획과, 실제 워크로드에서 무엇이 뜨거운지. 일반 명령이므로 보고서에는 토큰이 들지 않습니다. `go`는 한 유닛을 마이그레이션합니다: 가장 뜨거운 함수를 브리지하고, 기록하고, 포팅을 에이전트에 넘긴 뒤, 빌드하고 diff로 비교하고 `gate`를 실행하며, 모든 것이 일치할 때만 켭니다 (TS/JS, Python, PowerShell; `disable`로 다시 끌 수 있습니다).

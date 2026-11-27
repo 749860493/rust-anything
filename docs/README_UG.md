@@ -93,6 +93,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## قانداق ئىشلەيدۇ
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **نېمە تامام دەپ ھېسابلىنىدۇ.** سىزنىڭ سىناقلىرىڭىز ئەمەس، ھەرىكەت. `record` ئەسلىي پروگراممىنى ھاسىل قىلىنغان ۋە بېرىلگەن كىرگۈزمىلەر بىلەن ئىجرا قىلىپ، ھەر بىر چاقىرىقنىڭ قايتۇرغىنى، تاشلىغىنى ۋە بېسىپ چىقارغىنىنى ساقلايدۇ. `gate` ئۆتسە كۆچۈرۈش تامام بولىدۇ: خاتىرىلەنگەن ھەر بىر ئەھۋال ماس كېلىدۇ، ھەمدە fmt، clippy، `cargo test`، `unsafe` تەكشۈرۈشى، stub تەكشۈرۈشى ۋە كۆچۈرمىگە چاپلانغان خاتىرىلەنگەن جاۋابلارنى تەكشۈرۈش ھەممىسى ئۆتىدۇ. ئۆزىڭىزنىڭ سىناقلىرىمۇ ئىجرا قىلىنىدۇ.
 
 **دوكلاتمۇ ياكى كۆچۈرۈشمۇ، ئۆزىڭىز تاللاڭ.** `analyze` ۋە `profile` پەقەت دوكلات بېرىدۇ: نېمىنى كۆچۈرۈش كېرەكلىكى ھەققىدە تەرتىپلەنگەن پىلان، ۋە ھەقىقىي يۈك ئاستىدا قايسى قىسىمنىڭ ئەڭ كۆپ ۋاقىت ئالىدىغانلىقى. بۇلار ئاددىي بۇيرۇقلار، شۇڭا دوكلات ھېچقانداق token خەجلىمەيدۇ. `go` بىر بىرلىكنى كۆچۈرىدۇ: ئەڭ كۆپ ۋاقىت ئالىدىغان فۇنكسىيە ئۈچۈن كۆۋرۈك قۇرىدۇ، ئۇنى خاتىرىلەيدۇ، كۆچۈرۈشنى ۋاكالەتچىڭىزگە تاپشۇرىدۇ، ئاندىن قۇرۇپ چىقىدۇ، سېلىشتۇرىدۇ ۋە `gate` دىن ئۆتكۈزىدۇ، ھەممە نەرسە ماس كەلگەندىلا ئۇنى قوزغىتىدۇ (TS/JS، Python ۋە PowerShell؛ `disable` ئۇنى قايتا تاقايدۇ).

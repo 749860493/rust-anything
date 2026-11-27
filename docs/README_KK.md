@@ -92,6 +92,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## Бұл қалай жұмыс істейді
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **Не дайын деп саналады.** Сіздің тесттеріңіз емес, мінез-құлық. `record` түпнұсқаны генерацияланған және берілген кіріс деректерімен іске қосып, әр шақырудың нені қайтаратынын, лақтыратынын және шығаратынын сақтайды. Порт `gate` өткенде дайын: жазылған әр жағдай сәйкес келеді, сондай-ақ fmt, clippy, `cargo test`, `unsafe` тексерісі, stub тексерісі және портқа қойылған жазылған жауаптарды тексеру де өтеді. Өз тесттеріңіз де іске қосылады.
 
 **Есеп пе, көшіру ме, өзіңіз таңдайсыз.** `analyze` және `profile` тек есеп береді: нені порттау керектігінің реттелген жоспары және нақты жүктеме кезінде не ең көп уақыт алатыны. Бұлар қарапайым командалар, сондықтан есеп ешқандай токен жұмсамайды. `go` бір бірлікті көшіреді: ең қызу функцияға көпір жасайды, оны жазады, портты агентіңізге береді, содан кейін құрастырады, салыстырады және `gate` арқылы өткізеді, бәрі сәйкес келгенде ғана қосады (TS/JS, Python және PowerShell; `disable` қайта өшіреді).

@@ -92,6 +92,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## 仕組み
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **何をもって完了とするか。** あなたのテストではなく、振る舞いです。`record` は生成した入力と与えた入力でオリジナルを実行し、各呼び出しが返す値、投げる例外、出力する内容を保存します。`gate` が通れば移植は完了です。つまり、記録したすべてのケースが一致し、fmt、clippy、`cargo test`、`unsafe` チェック、スタブチェック、記録済みの答えを移植版に貼り付けていないかのチェックがすべて通ることです。あなた自身のテストも実行されます。
 
 **レポートか移行か、選べます。** `analyze` と `profile` はレポートだけを出します。何を移植すべきかの優先順位付きプランと、実際のワークロードで何がホットかです。普通のコマンドなので、レポートにトークンはかかりません。`go` は 1 つのユニットを移行します。最もホットな関数をブリッジし、記録し、移植をエージェントに渡し、ビルド、diff、`gate` を実行して、すべて一致したときだけ有効にします（TS/JS、Python、PowerShell。`disable` で再び無効にできます）。

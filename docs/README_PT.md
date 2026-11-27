@@ -92,6 +92,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## Como funciona
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **O que conta como concluído.** O comportamento, não os seus testes. `record` executa o original com entradas geradas e fornecidas e guarda o que cada chamada devolve, lança e imprime. Uma migração está concluída quando `gate` passa: todos os casos gravados coincidem, e fmt, clippy, `cargo test`, a verificação de `unsafe`, a verificação de stubs e a verificação de respostas gravadas coladas na migração passam todas. Os seus próprios testes também são executados.
 
 **Relatório ou migração, você escolhe.** `analyze` e `profile` apenas relatam: um plano ordenado do que migrar e do que está quente sob uma carga real. São comandos simples, por isso o relatório não gasta tokens. `go` migra uma unidade: cria a ponte para a função mais quente, grava-a, entrega a migração ao seu agente, depois compila, compara e passa-a pelo `gate`, e só a ativa quando tudo coincide (TS/JS, Python e PowerShell; `disable` volta a desativá-la).

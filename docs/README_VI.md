@@ -92,6 +92,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## Cách hoạt động
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **Thế nào là xong.** Hành vi, không phải test của bạn. `record` chạy bản gốc trên các input được sinh ra và được cung cấp, rồi lưu lại những gì mỗi lời gọi trả về, ném ra và in ra. Một bản port xong khi `gate` qua: mọi case đã ghi đều khớp, và fmt, clippy, `cargo test`, kiểm tra `unsafe`, kiểm tra stub và kiểm tra câu trả lời đã ghi bị dán vào bản port đều qua. Test của chính bạn cũng được chạy.
 
 **Báo cáo hay chuyển đổi, bạn chọn.** `analyze` và `profile` chỉ báo cáo: một kế hoạch xếp hạng những gì nên port, và phần nào nóng dưới tải thực. Đây là các lệnh thường, nên báo cáo không tốn token nào. `go` chuyển đổi một unit: tạo cầu nối cho hàm nóng nhất, ghi lại nó, giao bản port cho agent của bạn, rồi build, diff và chạy `gate`, và chỉ bật nó lên khi mọi thứ khớp (TS/JS, Python và PowerShell; `disable` tắt nó đi).

@@ -93,6 +93,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## كيف يعمل
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **ما الذي يُعدّ منجزًا.** السلوك، لا اختباراتك. يشغّل `record` الأصل على مدخلات مولّدة ومعطاة، ويحفظ ما يعيده كل استدعاء وما يرميه وما يطبعه. يكتمل النقل عندما ينجح `gate`: تتطابق كل حالة مسجّلة، وتنجح جميعها: fmt وclippy و`cargo test` وفحص `unsafe` وفحص البدائل الفارغة (stub) وفحص الإجابات المسجّلة الملصوقة في النقل. وتُشغَّل اختباراتك أيضًا.
 
 **تقرير أو ترحيل، الخيار لك.** يكتفي `analyze` و`profile` بالتقرير: خطة مرتّبة لما يجب نقله، وما هو الأكثر استهلاكًا للوقت تحت حمل عمل حقيقي. إنهما أمران عاديان، فلا يكلّف التقرير أي رموز (tokens). أما `go` فيرحّل وحدة واحدة: يبني جسرًا لأكثر دالة استهلاكًا للوقت، ويسجّلها، ويسلّم النقل إلى وكيلك، ثم يُجمّعه ويقارنه ويمرّره على `gate`، ولا يفعّله إلا عندما يتطابق كل شيء (TS/JS وPython وPowerShell؛ و`disable` يوقفه من جديد).

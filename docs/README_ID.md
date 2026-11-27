@@ -94,6 +94,13 @@ rust-anything setup           # adds it to Claude Code, Codex, Cursor, Gemini CL
 
 ## Cara kerjanya
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
+    <img src="assets/how-it-works-light.svg" width="880" alt="analyze plans what to port; rust-anything go bridges, records, lets your agent port and gates it, looping until every recorded case matches; enable then switches callers to Rust">
+  </picture>
+</p>
+
 **Apa yang dianggap selesai.** Perilaku, bukan tes Anda. `record` menjalankan versi asli dengan input yang dihasilkan dan yang diberikan, lalu menyimpan apa yang dikembalikan, dilempar, dan dicetak setiap panggilan. Port selesai saat `gate` lolos: setiap kasus yang direkam cocok, dan fmt, clippy, `cargo test`, pemeriksaan `unsafe`, pemeriksaan stub, serta pemeriksaan jawaban rekaman yang ditempel ke port semuanya lolos. Tes Anda sendiri juga dijalankan.
 
 **Laporan atau migrasi, Anda yang pilih.** `analyze` dan `profile` hanya melapor: rencana berperingkat tentang apa yang perlu di-port, dan bagian mana yang panas di bawah beban kerja nyata. Keduanya perintah biasa, jadi laporannya tidak memakan token. `go` memigrasikan satu unit: membuat jembatan untuk fungsi terpanas, merekamnya, menyerahkan port ke agen Anda, lalu mem-build, membandingkan, dan menjalankan `gate` padanya, dan baru mengaktifkannya saat semuanya cocok (TS/JS, Python, dan PowerShell; `disable` mematikannya kembali).
