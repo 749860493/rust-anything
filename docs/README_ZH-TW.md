@@ -29,6 +29,8 @@
 
 <p align="center"><a href="translations.md">🌐 其他語言</a></p>
 
+<p align="center">要把程式碼庫遷移到 Rust？我提供 Rust 遷移諮詢： <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>本譯文由社群維護，可能落後於<a href="../README.md">英文 README</a>。</sub></p>
 
 ## 贊助商

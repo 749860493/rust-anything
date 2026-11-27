@@ -29,6 +29,8 @@
 
 <p align="center"><a href="translations.md">🌐 ภาษาอื่น</a></p>
 
+<p align="center">กำลังย้ายโค้ดเบสไปเป็น Rust อยู่หรือเปล่า? มีบริการให้คำปรึกษาด้านการย้ายระบบไปใช้ Rust: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>คำแปลนี้ดูแลโดยชุมชน และอาจอัปเดตช้ากว่า <a href="../README.md">README ภาษาอังกฤษ</a></sub></p>
 
 ## ผู้สนับสนุน

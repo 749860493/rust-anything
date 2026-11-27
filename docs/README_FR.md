@@ -29,6 +29,8 @@ Réécrivez votre application en Rust, et prouvez qu'elle se comporte toujours d
 
 <p align="center"><a href="translations.md">🌐 Autres langues</a></p>
 
+<p align="center">Vous migrez une base de code vers Rust ? Je propose du conseil pour les migrations vers Rust : <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Cette traduction est maintenue par la communauté et peut être en retard sur le <a href="../README.md">README anglais</a>.</sub></p>
 
 ## Sponsors

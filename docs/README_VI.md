@@ -29,6 +29,8 @@ Viết lại ứng dụng bằng Rust, và chứng minh nó vẫn hoạt động
 
 <p align="center"><a href="translations.md">🌐 Ngôn ngữ khác</a></p>
 
+<p align="center">Đang chuyển một codebase sang Rust? Tôi cung cấp dịch vụ tư vấn chuyển đổi sang Rust: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Bản dịch này do cộng đồng duy trì và có thể chậm hơn <a href="../README.md">README tiếng Anh</a>.</sub></p>
 
 ## Nhà tài trợ

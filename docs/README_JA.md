@@ -29,6 +29,8 @@
 
 <p align="center"><a href="translations.md">🌐 他の言語</a></p>
 
+<p align="center">コードベースを Rust に移行しますか？ Rust 移行のコンサルティングを行っています: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>この翻訳はコミュニティによって管理されており、<a href="../README.md">英語版 README</a> より古い場合があります。</sub></p>
 
 ## スポンサー

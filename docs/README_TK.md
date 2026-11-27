@@ -29,6 +29,8 @@ Programmaňyzy Rust-da täzeden ýazyň we onuň henizem öňküsi ýaly işleý
 
 <p align="center"><a href="translations.md">🌐 Beýleki diller</a></p>
 
+<p align="center">Kod bazaňyzy Rust-a geçirýärsiňizmi? Rust-a geçiş boýunça maslahat hyzmatyny hödürleýärin: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Bu terjimäni jemgyýetçilik goldaýar, şonuň üçin ol <a href="../README.md">iňlisçe README</a> faýlyndan yzda galyp biler.</sub></p>
 
 ## Hemaýatkärler

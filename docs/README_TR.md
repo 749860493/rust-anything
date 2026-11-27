@@ -29,6 +29,8 @@ Uygulamanızı Rust ile yeniden yazın ve hâlâ aynı davrandığını kanıtla
 
 <p align="center"><a href="translations.md">🌐 Diğer diller</a></p>
 
+<p align="center">Bir kod tabanını Rust'a mı taşıyorsunuz? Rust geçişleri için danışmanlık veriyorum: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Bu çeviri topluluk tarafından sürdürülmektedir ve <a href="../README.md">İngilizce README</a>'nin gerisinde kalabilir.</sub></p>
 
 ## Sponsorlar

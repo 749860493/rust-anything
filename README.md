@@ -31,6 +31,8 @@ Migrate your app to Rust, and prove it still behaves the same.
 
 <p align="center"><a href="docs/translations.md">🌐 Other languages</a></p>
 
+<p align="center">Moving a codebase to Rust? I offer consulting for Rust migrations: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 ## Sponsors
 
 <p align="center">

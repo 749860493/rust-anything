@@ -29,6 +29,8 @@ Tulis ulang aplikasi Anda dalam Rust, dan buktikan perilakunya tetap sama.
 
 <p align="center"><a href="translations.md">🌐 Bahasa lain</a></p>
 
+<p align="center">Memindahkan codebase ke Rust? Saya menawarkan konsultasi untuk migrasi ke Rust: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Terjemahan ini dikelola oleh komunitas dan bisa tertinggal dari <a href="../README.md">README berbahasa Inggris</a>.</sub></p>
 
 ## Sponsor

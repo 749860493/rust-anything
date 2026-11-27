@@ -31,6 +31,8 @@
 
 <p align="center"><a href="translations.md">🌐 لغات أخرى</a></p>
 
+<p align="center">تنقل قاعدة شيفرة إلى Rust؟ أقدّم استشارات لعمليات الترحيل إلى Rust: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>هذه الترجمة يحافظ عليها المجتمع، وقد تتأخر عن <a href="../README.md">README الإنجليزي</a>.</sub></p>
 
 ## الرعاة

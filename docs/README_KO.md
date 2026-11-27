@@ -29,6 +29,8 @@
 
 <p align="center"><a href="translations.md">🌐 다른 언어</a></p>
 
+<p align="center">코드베이스를 Rust로 옮기시나요? Rust 마이그레이션 컨설팅을 제공합니다: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>이 번역은 커뮤니티에서 관리하며 <a href="../README.md">영어 README</a>보다 늦게 반영될 수 있습니다.</sub></p>
 
 ## 후원자

@@ -29,6 +29,8 @@ Schreibe deine App in Rust neu und beweise, dass sie sich weiterhin genauso verh
 
 <p align="center"><a href="translations.md">🌐 Andere Sprachen</a></p>
 
+<p align="center">Du überträgst eine Codebasis nach Rust? Ich biete Beratung für Rust-Migrationen an: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Diese Übersetzung wird von der Community gepflegt und kann hinter dem <a href="../README.md">englischen README</a> zurückliegen.</sub></p>
 
 ## Sponsoren

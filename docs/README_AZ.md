@@ -29,6 +29,8 @@ Tətbiqinizi Rust-da yenidən yazın və onun hələ də eyni davrandığını s
 
 <p align="center"><a href="translations.md">🌐 Digər dillər</a></p>
 
+<p align="center">Kod bazanızı Rust-a köçürürsünüz? Rust miqrasiyaları üzrə məsləhət xidməti göstərirəm: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Bu tərcümə icma tərəfindən dəstəklənir və <a href="../README.md">ingiliscə README</a>-dən geri qala bilər.</sub></p>
 
 ## Sponsorlar

@@ -31,6 +31,8 @@
 
 <p align="center"><a href="translations.md">🌐 باشقا تىللار</a></p>
 
+<p align="center">كود ئامبىرىڭىزنى Rust قا كۆچۈرمەكچىمۇ؟ Rust قا كۆچۈش توغرىسىدا مەسلىھەت مۇلازىمىتى بېرىمەن: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>بۇ تەرجىمىنى جامائەت ئاسرايدۇ، شۇڭا ئۇ <a href="../README.md">ئىنگلىزچە README</a> دىن ئارقىدا قېلىشى مۇمكىن.</sub></p>
 
 ## ھامىيلار

@@ -31,6 +31,8 @@
 
 <p align="center"><a href="translations.md">🌐 زبان‌های دیگر</a></p>
 
+<p align="center">کدبیس‌تان را به Rust منتقل می‌کنید؟ برای مهاجرت به Rust مشاوره می‌دهم: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>این ترجمه را جامعه نگهداری می‌کند و ممکن است از <a href="../README.md">README انگلیسی</a> عقب بماند.</sub></p>
 
 ## حامیان

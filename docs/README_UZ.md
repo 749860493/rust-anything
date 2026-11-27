@@ -29,6 +29,8 @@ Ilovangizni Rust'da qayta yozing va u hamon xuddi shunday ishlashini isbotlang.
 
 <p align="center"><a href="translations.md">🌐 Boshqa tillar</a></p>
 
+<p align="center">Kod bazangizni Rust'ga ko'chiryapsizmi? Rust'ga migratsiya bo'yicha konsalting xizmatini taklif qilaman: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Bu tarjima hamjamiyat tomonidan yuritiladi va <a href="../README.md">inglizcha README</a>dan ortda qolishi mumkin.</sub></p>
 
 ## Homiylar

@@ -29,6 +29,8 @@
 
 <p align="center"><a href="translations.md">🌐 Інші мови</a></p>
 
+<p align="center">Переносите кодову базу на Rust? Я консультую з міграції на Rust: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Цей переклад підтримує спільнота, тому він може відставати від <a href="../README.md">англійського README</a>.</sub></p>
 
 ## Спонсори

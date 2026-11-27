@@ -29,6 +29,8 @@
 
 <p align="center"><a href="translations.md">🌐 अन्य भाषाएँ</a></p>
 
+<p align="center">किसी कोडबेस को Rust में ले जा रहे हैं? मैं Rust माइग्रेशन के लिए कंसल्टिंग देता हूँ: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>इस अनुवाद का रखरखाव समुदाय करता है, इसलिए यह <a href="../README.md">अंग्रेज़ी README</a> से पीछे हो सकता है।</sub></p>
 
 ## प्रायोजक

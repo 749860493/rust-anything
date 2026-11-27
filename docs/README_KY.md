@@ -29,6 +29,8 @@
 
 <p align="center"><a href="translations.md">🌐 Башка тилдер</a></p>
 
+<p align="center">Код базаңызды Rust'ка көчүрүп жатасызбы? Rust'ка көчүү боюнча кеңеш берем: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Бул котормону коомчулук колдойт, ошондуктан ал <a href="../README.md">англисче README</a> нускасынан артта калышы мүмкүн.</sub></p>
 
 ## Демөөрчүлөр

@@ -29,6 +29,8 @@
 
 <p align="center"><a href="translations.md">🌐 Башка телләр</a></p>
 
+<p align="center">Код базагызны Rust'ка күчерәсезме? Rust'ка күчү буенча консультация бирәм: <a href="mailto:hello@rustanything.ai">hello@rustanything.ai</a></p>
+
 <p align="center"><sub>Бу тәрҗемәне җәмәгатьчелек алып бара, шуңа күрә ул <a href="../README.md">инглизчә README</a> файлыннан калышырга мөмкин.</sub></p>
 
 ## Спонсорлар
