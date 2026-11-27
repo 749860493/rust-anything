@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `analyze` also counts `toLocaleString`, `toLocaleDateString` and `toLocaleTimeString` calls as
+  `Intl and locale-aware strings`: they format numbers and dates with the same ICU data as
+  `localeCompare` (#714, #722 by @chuenchen309).
 - `analyze` no longer flags `new Date(-1)` (a negative number literal) as `Date parsing`
   (#715, #721 by @brixtonpham).
 - `app record` no longer keeps a separator that two runs' random values happen to share: request
