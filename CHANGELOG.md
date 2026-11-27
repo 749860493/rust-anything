@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `--db-dump` output is recorded with `\n` line endings: on Windows, Python's `print` and `sqlite3`
+  end lines with `\r\n`, so `.effects` mixed both and a recording made there failed replay on Linux
+  and macOS. Recordings made on Windows with `--db-dump` before need a fresh `app record`
+  (#729 by @Layfate).
 - The Android 16 KB page-size check says "1 LOAD segment is not 16 KB aligned" for one
   misaligned segment and "2 LOAD segments are not 16 KB aligned" for more, instead of
   "LOAD segment(s) are" (#718, #728 by @MannXo).
