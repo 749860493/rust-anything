@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `gate` starts every check's detail in the same column, padding names to the longest one, so
+  `error cases` and `known diffs` line up with the rest (#700, #707 by @Papito084).
 - `gate` says "the 1 function that fails in the original has a recorded failing case" instead of
   "each of the 1 functions that fail" in the `error cases` check (#698, #706 by @Papito084).
 - `app drift` prints "1 case; build: ..." instead of "1 cases" for a one-case recording
