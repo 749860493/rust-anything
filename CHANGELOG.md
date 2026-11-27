@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `gate`'s `ported` check says "1 place in port.rs" for one stub and "N places" for more,
+  instead of "1 place(s)" (#712, #724 by @Layfate).
 - `analyze` also counts `toLocaleString`, `toLocaleDateString` and `toLocaleTimeString` calls as
   `Intl and locale-aware strings`: they format numbers and dates with the same ICU data as
   `localeCompare` (#714, #722 by @chuenchen309).
