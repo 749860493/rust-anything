@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": {
+    "routes": [
+      {
+        "pattern": "rustanything.ai",
+        "custom_domain": true
+      },
+      {
+        "pattern": "www.rustanything.ai",
+        "custom_domain": true
+      },
+      {
+        "pattern": "rust-anything.com",
+        "custom_domain": true
+      },
+      {
+        "pattern": "www.rust-anything.com",
+        "custom_domain": true
+      }
+    ],
+    "workers_dev": true,
+    "preview_urls": true,
+    "assets": {
+      "run_worker_first": [
+        "/**",
+        "!/assets/*",
+        "!/langs/*",
+        "!/flags/*",
+        "!/brands/*",
+        "!/sponsors/*",
+        "!/og/**",
+        "!/favicon.ico",
+        "!/favicon.svg",
+        "!/favicon-96.png",
+        "!/icon-192.png",
+        "!/icon-512.png",
+        "!/apple-touch-icon.png",
+        "!/logo-mark.png",
+        "!/og-home.png",
+        "!/llms-full.txt"
+      ]
+    }
+  },
+  "resolved": {
+    "routes": [
+      {
+        "pattern": "rustanything.ai",
+        "custom_domain": true
+      },
+      {
+        "pattern": "www.rustanything.ai",
+        "custom_domain": true
+      },
+      {
+        "pattern": "rust-anything.com",
+        "custom_domain": true
+      },
+      {
+        "pattern": "www.rust-anything.com",
+        "custom_domain": true
+      }
+    ],
+    "workers_dev": true,
+    "preview_urls": true,
+    "account_id": "e7a5010daa4e469f25be7c6c44f5c484",
+    "kv_namespaces": [
+      {
+        "binding": "ISR_CACHE",
+        "id": "4b2331af12b5470da307a5e2e5ac0e75"
+      }
+    ],
+    "name": "rust-anything-website",
+    "assets": {
+      "run_worker_first": [
+        "/**",
+        "!/assets/*",
+        "!/langs/*",
+        "!/flags/*",
+        "!/brands/*",
+        "!/sponsors/*",
+        "!/og/**",
+        "!/favicon.ico",
+        "!/favicon.svg",
+        "!/favicon-96.png",
+        "!/icon-192.png",
+        "!/icon-512.png",
+        "!/apple-touch-icon.png",
+        "!/logo-mark.png",
+        "!/og-home.png",
+        "!/llms-full.txt"
+      ]
+    }
+  },
+  "text": "{\n  \"routes\": [\n    {\n      \"pattern\": \"rustanything.ai\",\n      \"custom_domain\": true\n    },\n    {\n      \"pattern\": \"www.rustanything.ai\",\n      \"custom_domain\": true\n    },\n    {\n      \"pattern\": \"rust-anything.com\",\n      \"custom_domain\": true\n    },\n    {\n      \"pattern\": \"www.rust-anything.com\",\n      \"custom_domain\": true\n    }\n  ],\n  \"workers_dev\": true,\n  \"preview_urls\": true,\n  \"account_id\": \"e7a5010daa4e469f25be7c6c44f5c484\",\n  \"kv_namespaces\": [\n    {\n      \"binding\": \"ISR_CACHE\",\n      \"id\": \"4b2331af12b5470da307a5e2e5ac0e75\"\n    }\n  ],\n  \"name\": \"rust-anything-website\",\n  \"assets\": {\n    \"run_worker_first\": [\n      \"/**\",\n      \"!/assets/*\",\n      \"!/langs/*\",\n      \"!/flags/*\",\n      \"!/brands/*\",\n      \"!/sponsors/*\",\n      \"!/og/**\",\n      \"!/favicon.ico\",\n      \"!/favicon.svg\",\n      \"!/favicon-96.png\",\n      \"!/icon-192.png\",\n      \"!/icon-512.png\",\n      \"!/apple-touch-icon.png\",\n      \"!/logo-mark.png\",\n      \"!/og-home.png\",\n      \"!/llms-full.txt\"\n    ]\n  }\n}\n"
+}
